@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AutoVoiceOver.Api/AutoVoiceOver.Api.csproj" />
+    <Project Path="src/AutoVoiceOver.Bll/AutoVoiceOver.Bll.csproj" />
+    <Project Path="src/AutoVoiceOver.Dal/AutoVoiceOver.Dal.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/AutoVoiceOver.Tests/AutoVoiceOver.Tests.csproj" />
+  </Folder>
+</Solution>
