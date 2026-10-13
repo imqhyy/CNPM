@@ -3,43 +3,16 @@ using AutoVoiceOver.Dal.Entities;
 
 namespace AutoVoiceOver.Dal.Repositories;
 
-public class KhoYeuCauThuyetMinh : IKhoYeuCauThuyetMinh
+public class KhoYeuCauThuyetMinh : KhoDuLieuChung<YeuCauThuyetMinh>, IKhoYeuCauThuyetMinh
 {
-    private readonly NguCanhDuLieuApp _nguCanh;
-
-    public KhoYeuCauThuyetMinh(NguCanhDuLieuApp nguCanh)
+    public KhoYeuCauThuyetMinh(NguCanhDuLieuApp nguCanh) : base(nguCanh)
     {
-        _nguCanh = nguCanh;
     }
 
-    public async Task<YeuCauThuyetMinh?> LayTheoMaAsync(object id)
-    {
-        return await _nguCanh.BangYeuCauThuyetMinh.FindAsync(id);
-    }
-
-    public async Task<List<YeuCauThuyetMinh>> LayTatCaAsync()
-    {
-        return await _nguCanh.BangYeuCauThuyetMinh.ToListAsync();
-    }
-
-    public async Task ThemAsync(YeuCauThuyetMinh thucThe)
-    {
-        await _nguCanh.BangYeuCauThuyetMinh.AddAsync(thucThe);
-    }
-
-    public void CapNhat(YeuCauThuyetMinh thucThe)
-    {
-        _nguCanh.BangYeuCauThuyetMinh.Update(thucThe);
-    }
-
-    public async Task<int> LuuThayDoiAsync()
-    {
-        return await _nguCanh.SaveChangesAsync();
-    }
-
+    // Chỉ cần viết thêm hàm đặc thù của YeuCauThuyetMinh, các hàm CRUD cơ bản đã thừa hưởng từ KhoDuLieuChung
     public async Task<List<YeuCauThuyetMinh>> LayDanhSachDangChoAsync()
     {
-        return await _nguCanh.BangYeuCauThuyetMinh
+        return await _tapThucThe
             .Where(x => x.TrangThai == TrangThaiYeuCau.DangCho)
             .ToListAsync();
     }
