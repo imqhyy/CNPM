@@ -20,10 +20,10 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Restore dependencies
-      run: dotnet restore AutoVoiceOver.sln
+      run: dotnet restore AutoVoiceOver.slnx
 
     - name: Build Solution
-      run: dotnet build AutoVoiceOver.sln --no-restore --configuration Release
+      run: dotnet build AutoVoiceOver.slnx --no-restore --configuration Release
 
     - name: Run Unit Tests
       run: dotnet test tests/AutoVoiceOver.Tests/AutoVoiceOver.Tests.csproj --no-build --configuration Release --verbosity normal
