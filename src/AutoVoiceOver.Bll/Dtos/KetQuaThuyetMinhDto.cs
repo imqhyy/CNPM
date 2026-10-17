@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AutoVoiceOver.Bll.Dtos
 {
-    internal class KetQuaThuyetMinhDto
+    public class KetQuaThuyetMinhDto
     {
     }
 }
