@@ -8,8 +8,8 @@ namespace AutoVoiceOver.Tests;
 
 public class DichVuDichThuatTests
 {
-	// HttpMessageHandler giả: không gọi mạng thật, chỉ trả về nội dung định sẵn
-	private sealed class BoXuLyGia : HttpMessageHandler
+	// HttpMessageHandler giả: không gọi mạng thật, chỉ trả về nội dung định sẵn (dùng mạng giả vì nếu rớt mạng thật thì test sẽ fail)
+	private sealed class BoXuLyGia : HttpMessageHandler 
 	{
 		private readonly HttpStatusCode _maTrangThai;
 		private readonly string _noiDung;
