@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
-using AutoVoiceOver.Bll.Dtos;
-using AutoVoiceOver.Bll.Interface;
+using AutoVoiceOver.Bll.Dtos.Admin;
+using AutoVoiceOver.Bll.Interface.Admin;
 using AutoVoiceOver.Dal.Entities;
 using AutoVoiceOver.Dal.Repositories;
 
-namespace AutoVoiceOver.Bll.Service;
+namespace AutoVoiceOver.Bll.Service.Admin;
 
 public class DichVuGiongDoc : IDichVuGiongDoc
 {

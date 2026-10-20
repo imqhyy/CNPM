@@ -1,9 +1,9 @@
-﻿using AutoVoiceOver.Bll.Dtos;
+﻿using AutoVoiceOver.Bll.Dtos.Admin;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace AutoVoiceOver.Bll.Interface
+namespace AutoVoiceOver.Bll.Interface.Admin
 {
     public interface IDichVuThuyetMinh
     {

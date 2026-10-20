@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using AutoVoiceOver.Dal.Entities;
 
-namespace AutoVoiceOver.Dal;
+namespace AutoVoiceOver.Dal.Repositories;
 
 public class NguCanhDuLieuApp : DbContext
 {

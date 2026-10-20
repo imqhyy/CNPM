@@ -1,10 +1,10 @@
 using System.Net.Http.Headers;
 using System.Security;
 using System.Text;
-using AutoVoiceOver.Bll.Interface;
+using AutoVoiceOver.Bll.Interface.Admin;
 using Microsoft.Extensions.Configuration;
 
-namespace AutoVoiceOver.Bll.Service;
+namespace AutoVoiceOver.Bll.Service.Admin;
 
 /// <summary>
 /// Hiện thực hóa dịch vụ tổng hợp giọng nói từ văn bản (TTS).

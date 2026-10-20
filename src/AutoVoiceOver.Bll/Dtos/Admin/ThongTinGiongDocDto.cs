@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AutoVoiceOver.Bll.Dtos;
+namespace AutoVoiceOver.Bll.Dtos.Admin;
 
 public class ThongTinGiongDocDto
 {

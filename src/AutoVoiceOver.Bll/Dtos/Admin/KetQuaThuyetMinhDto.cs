@@ -1,4 +1,4 @@
-﻿namespace AutoVoiceOver.Bll.Dtos;
+﻿namespace AutoVoiceOver.Bll.Dtos.Admin;
 
 public class KetQuaThuyetMinhDto
 {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using AutoVoiceOver.Bll.Dtos;
-namespace AutoVoiceOver.Bll.Interface
+using AutoVoiceOver.Bll.Dtos.Admin;
+namespace AutoVoiceOver.Bll.Interface.Admin
 {
     internal interface IDichVuGiongDoc
     {
