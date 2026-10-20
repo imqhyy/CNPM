@@ -4,9 +4,9 @@ using System.Text;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using AutoVoiceOver.Bll.Interface;
+using AutoVoiceOver.Bll.Interface.Admin;
 
-namespace AutoVoiceOver.Bll.Service
+namespace AutoVoiceOver.Bll.Service.Admin
 {
 	public class DichVuDichThuat : IDichVuDichThuat
 	{

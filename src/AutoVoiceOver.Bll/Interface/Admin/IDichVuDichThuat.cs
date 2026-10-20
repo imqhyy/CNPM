@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AutoVoiceOver.Bll.Interface
+namespace AutoVoiceOver.Bll.Interface.Admin
 {
 	public interface IDichVuDichThuat //để bên thuyết minh gọi được
 	{

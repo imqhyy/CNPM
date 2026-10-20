@@ -1,4 +1,4 @@
-namespace AutoVoiceOver.Bll.Interface;
+namespace AutoVoiceOver.Bll.Interface.Admin;
 
 /// <summary>
 /// Giao diện dịch vụ tổng hợp giọng nói (Text-To-Speech).
