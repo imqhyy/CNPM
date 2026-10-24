@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoVoiceOver - Cổng Hệ Thống Thuyết Minh Di Tích</title>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome 6.5.1 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- QR Code Generator library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --bg-main: #080C16;
+            --bg-card: #0F172A;
+            --primary: #3B82F6;
+            --accent-gold: #F59E0B;
+            --accent-cyan: #06B6D4;
+            --accent-emerald: #10B981;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            background-image: radial-gradient(circle at 50% 20%, rgba(59, 130, 246, 0.12) 0%, transparent 60%);
+        }
+        .portal-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            max-width: 650px;
+        }
+        .portal-logo-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #D97706 100%);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #000;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.35);
+        }
+        .portal-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+        .portal-header p {
+            font-size: 1rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.75rem;
+            width: 100%;
+            max-width: 900px;
+            margin-bottom: 2rem;
+        }
+        .portal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem 1.75rem;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .portal-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+        .portal-card.card-user:hover {
+            border-color: var(--accent-gold);
+            box-shadow: 0 15px 35px rgba(245, 158, 11, 0.2);
+        }
+        .portal-card.card-admin:hover {
+            border-color: var(--primary);
+            box-shadow: 0 15px 35px rgba(59, 130, 246, 0.2);
+        }
+        .card-badge {
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            margin-bottom: 1.25rem;
+        }
+        .badge-user {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--accent-gold);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        .badge-admin {
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--primary);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        .card-icon {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+        }
+        .card-user .card-icon { color: var(--accent-gold); }
+        .card-admin .card-icon { color: var(--primary); }
+        .portal-card h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            color: #fff;
+        }
+        .portal-card p {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+            flex: 1;
+        }
+        .card-btn-text {
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-user .card-btn-text { color: var(--accent-gold); }
+        .card-admin .card-btn-text { color: var(--primary); }
+        
+        /* QR Code Simulation Area */
+        .qr-section {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.75rem;
+            max-width: 900px;
+            width: 100%;
+        }
+        .qr-box {
+            background: #fff;
+            padding: 10px;
+            border-radius: 12px;
+            flex-shrink: 0;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .qr-desc h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.35rem;
+        }
+        .qr-desc p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 0.5rem;
+        }
+        .qr-link-pill {
+            display: inline-block;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid var(--border-color);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-family: monospace;
+            color: var(--accent-cyan);
+            word-break: break-all;
+        }
+        @media (max-width: 640px) {
+            .qr-section { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="portal-header">
+        <div class="portal-logo-icon">
+            <i class="fa-solid fa-headphones-simple"></i>
+        </div>
+        <h1>Hệ Thống Thuyết Minh Di Tích Tự Động</h1>
+        <p>Ứng dụng công nghệ nhận diện tọa độ và bán kính để tự động phát âm thanh đa ngôn ngữ cho du khách tham quan di tích / bảo tàng.</p>
+    </div>
+
+    <div class="cards-grid">
+        <!-- Card 1: Web User (Du Khách) -->
+        <a href="/user/" class="portal-card card-user">
+            <span class="card-badge badge-user"><i class="fa-solid fa-mobile-screen"></i> Giao diện Du khách</span>
+            <div class="card-icon"><i class="fa-solid fa-person-walking-luggage"></i></div>
+            <h2>Dành cho Du khách</h2>
+            <p>Mô phỏng tham quan di tích: Nhập biệt danh, chạm di chuyển trên bản đồ, tự động phát audio khi đến gần điểm tham quan, tua 5s và đọc văn bản.</p>
+            <div class="card-btn-text">
+                Khám phá ngay <i class="fa-solid fa-arrow-right"></i>
+            </div>
+        </a>
+
+        <!-- Card 2: Web Admin (Quản trị viên) -->
+        <a href="/admin/" class="portal-card card-admin">
+            <span class="card-badge badge-admin"><i class="fa-solid fa-shield-halved"></i> Trung tâm Quản trị</span>
+            <div class="card-icon"><i class="fa-solid fa-tower-broadcast"></i></div>
+            <h2>Dành cho Ban Quản lý</h2>
+            <p>Radar giám sát vị trí du khách realtime qua SignalR, thêm điểm tham quan, tùy chỉnh bán kính nhận diện ($r$), tải lên audio và văn bản đa ngôn ngữ.</p>
+            <div class="card-btn-text">
+                Vào trang Quản trị <i class="fa-solid fa-arrow-right"></i>
+            </div>
+        </a>
+    </div>
+
+    <!-- QR Code Scan Box for Mobile LAN test -->
+    <div class="qr-section">
+        <div class="qr-box" id="qrcode"></div>
+        <div class="qr-desc">
+            <h3><i class="fa-solid fa-qrcode text-accent"></i> Quét mã QR để mở trên Điện thoại</h3>
+            <p>Mở camera điện thoại (cùng kết nối Wi-Fi) quét mã để trải nghiệm Web User tự động thuyết minh như khách tham quan thực tế.</p>
+            <span class="qr-link-pill" id="qrLinkText">Đang tạo liên kết QR...</span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentHost = window.location.host;
+            const userUrl = window.location.protocol + '//' + currentHost + '/user/';
+            
+            document.getElementById('qrLinkText').innerText = userUrl;
+
+            // Sinh mã QR tự động bằng qrcodejs
+            new QRCode(document.getElementById("qrcode"), {
+                text: userUrl,
+                width: 100,
+                height: 100,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.M
+            });
+        });
+    </script>
+</body>
+</html>

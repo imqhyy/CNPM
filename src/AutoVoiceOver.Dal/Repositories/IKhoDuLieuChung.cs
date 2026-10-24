@@ -6,5 +6,6 @@ public interface IKhoDuLieuChung<T> where T : class
     Task<List<T>> LayTatCaAsync();
     Task ThemAsync(T thucThe);
     void CapNhat(T thucThe);
+    void Xoa(T thucThe);
     Task<int> LuuThayDoiAsync();
 }

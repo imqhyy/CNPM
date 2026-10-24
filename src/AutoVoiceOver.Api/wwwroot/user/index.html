@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Thuyết Minh Di Tích Tự Động - Hoàng Thành Thăng Long</title>
+    <meta name="description" content="Hệ thống thuyết minh điểm tham quan tự động theo tọa độ vị trí và bán kính nhận diện dành cho du khách.">
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome 6.5.1 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- User Portal Stylesheet -->
+    <link rel="stylesheet" href="user.css?v=20261025_09">
+</head>
+<body>
+    <!-- Top Floating Navbar -->
+    <header class="user-header">
+        <div class="user-badge" id="userBadgeBtn" title="Thông tin du khách">
+            <span class="user-status-dot"></span>
+            <span class="user-name" id="displayNickname">Khách tham quan</span>
+        </div>
+
+        <div class="header-center-info">
+            <h1 class="header-title" id="mapTitleHeader">Bản đồ Di tích</h1>
+        </div>
+
+        <div class="header-actions">
+            <!-- Language Selector Dropdown -->
+            <div class="lang-selector">
+                <button class="lang-btn" id="langSelectorBtn">
+                    <i class="fa-solid fa-globe"></i>
+                    <span id="currentLangLabel">VI</span>
+                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <div class="lang-option active" data-lang="vi">Tiếng Việt (VI)</div>
+                    <div class="lang-option" data-lang="en">English (EN)</div>
+                    <div class="lang-option" data-lang="fr">Français (FR)</div>
+                    <div class="lang-option" data-lang="ja">日本語 (JA)</div>
+                    <div class="lang-option" data-lang="ko">한국어 (KO)</div>
+                    <div class="lang-option" data-lang="zh">中文 (ZH)</div>
+                </div>
+            </div>
+
+            <!-- Help Button -->
+            <button class="icon-btn" id="btnHelp" title="Hướng dẫn sử dụng">
+                <i class="fa-solid fa-circle-question"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Map Container -->
+    <main class="map-viewport" id="mapViewport">
+        <div class="map-stage" id="mapStage">
+            <img id="mapBackgroundImage" alt="Bản đồ Di tích Hoàng Thành Thăng Long">
+            <canvas id="userMapCanvas" width="1200" height="800"></canvas>
+        </div>
+        
+        <!-- Interactive Tip Overlay -->
+        <div class="map-instruction-bubble" id="instructionBubble">
+            <div class="bubble-icon"><i class="fa-solid fa-hand-pointer animate-bounce"></i></div>
+            <div class="bubble-text">
+                <strong>Chạm trên bản đồ</strong> để di chuyển đến các điểm tham quan
+            </div>
+            <button class="bubble-close" id="btnCloseBubble">&times;</button>
+        </div>
+
+        <!-- Coordinates Floating Pill -->
+        <div class="coord-pill" id="coordPill">
+            <i class="fa-solid fa-location-crosshairs text-accent"></i>
+            <span>Tọa độ: <strong id="currentCoords">(250, 350)</strong></span>
+        </div>
+
+        <!-- Reset View / Center User Button -->
+        <button class="map-floating-btn btn-center" id="btnCenterUser" title="Căn lại vị trí của tôi">
+            <i class="fa-solid fa-crosshairs"></i>
+        </button>
+    </main>
+
+    <!-- Proximity Alert Toast (Interactive Tap to Play on iOS) -->
+    <div class="proximity-banner" id="proximityBanner">
+        <div class="proximity-icon">
+            <i class="fa-solid fa-volume-high animate-pulse"></i>
+        </div>
+        <div class="proximity-content" id="proximityContent">
+            <div class="proximity-tag">ĐÃ ĐẾN GẦN ĐIỂM THAM QUAN</div>
+            <h4 class="proximity-title" id="proximitySpotName">Cổng Đoan Môn</h4>
+            <p class="proximity-desc" id="proximityDesc">Đang phát bài thuyết minh tự động...</p>
+        </div>
+        <button class="proximity-play-btn" id="btnProximityPlay" title="Nghe thuyết minh">
+            <i class="fa-solid fa-play"></i> Nghe
+        </button>
+    </div>
+
+    <!-- Smart Floating Audio Player (Docked at Bottom) -->
+    <div class="audio-player-dock" id="audioPlayerDock">
+        <div class="dock-collapsed-bar" id="dockCollapsedBar">
+            <div class="dock-thumb-wrapper">
+                <img id="dockSpotThumb" src="" alt="Thumbnail" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\' fill=\'%2364748b\' viewBox=\'0 0 24 24\'><path d=\'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z\'/></svg>'">
+            </div>
+
+            <div class="dock-meta" id="btnOpenTextModalFromDock">
+                <h3 class="dock-spot-name" id="dockSpotName">Đang khám phá...</h3>
+                <p class="dock-spot-subtitle" id="dockSpotSubtitle">Di chuyển vào vòng tròn để nghe thuyết minh</p>
+            </div>
+
+            <!-- Player Quick Controls -->
+            <div class="dock-controls">
+                <!-- Rewind 5s -->
+                <button class="btn-audio-circle btn-seek" id="btnRewind5s" title="Tua lùi 5 giây" disabled>
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span class="seek-tag">5s</span>
+                </button>
+
+                <!-- Play / Pause -->
+                <button class="btn-audio-circle btn-play-main" id="btnPlayPause" title="Phát / Dừng" disabled>
+                    <i class="fa-solid fa-play" id="iconPlayPause"></i>
+                </button>
+
+                <!-- Fast Forward 5s -->
+                <button class="btn-audio-circle btn-seek" id="btnForward5s" title="Tua tới 5 giây" disabled>
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span class="seek-tag">5s</span>
+                </button>
+
+                <!-- Read Text Button -->
+                <button class="btn-audio-circle btn-text-sheet" id="btnOpenNarrationText" title="Xem văn bản thuyết minh" disabled>
+                    <i class="fa-solid fa-book-open"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Audio Scrubber & Progress Bar -->
+        <div class="dock-scrubber-row">
+            <span class="time-label" id="currentTimeLabel">00:00</span>
+            <div class="scrubber-bar-container" id="scrubberContainer">
+                <div class="scrubber-track">
+                    <div class="scrubber-fill" id="scrubberFill"></div>
+                    <div class="scrubber-thumb" id="scrubberThumb"></div>
+                </div>
+            </div>
+            <span class="time-label" id="totalDurationLabel">00:00</span>
+        </div>
+
+        <!-- Hidden Native Audio Element -->
+        <audio id="nativeAudioElement" preload="metadata"></audio>
+    </div>
+
+    <!-- MODAL 1: CHÀO MỪNG & NHẬP BIỆT DANH (Không cần đăng nhập) -->
+    <div class="modal-backdrop show" id="welcomeModal">
+        <div class="modal-dialog welcome-dialog">
+            <div class="welcome-card">
+                <div class="welcome-header">
+                    <div class="welcome-badge-icon">
+                        <i class="fa-solid fa-headphones-simple"></i>
+                    </div>
+                    <h2>Chào mừng bạn đến với</h2>
+                    <h1>Hoàng Thành Thăng Long</h1>
+                    <p class="welcome-subtitle">Hệ thống Thuyết minh Tự động Đa ngôn ngữ</p>
+                </div>
+
+                <form id="formWelcome" class="welcome-form">
+                    <div class="form-group">
+                        <label for="inputNickname"><i class="fa-solid fa-user-pen"></i> Tên hoặc biệt danh của bạn:</label>
+                        <input type="text" id="inputNickname" class="form-control" placeholder="Ví dụ: Du khách Tuấn, Alex..." maxlength="30" autofocus required>
+                        <small class="form-hint">Không cần mật khẩu hay tạo tài khoản.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="welcomeLangSelect"><i class="fa-solid fa-globe"></i> Ngôn ngữ thuyết minh:</label>
+                        <select id="welcomeLangSelect" class="form-control">
+                            <option value="vi" selected>Tiếng Việt</option>
+                            <option value="en">English (Tiếng Anh)</option>
+                            <option value="fr">Français (Tiếng Pháp)</option>
+                            <option value="ja">日本語 (Tiếng Nhật)</option>
+                            <option value="ko">한국어 (Tiếng Hàn)</option>
+                            <option value="zh">中文 (Tiếng Trung)</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block btn-lg" id="btnStartTour">
+                        <i class="fa-solid fa-compass"></i> Bắt đầu Tham quan Ngay
+                    </button>
+                </form>
+
+                <div class="welcome-footer">
+                    <p><i class="fa-solid fa-volume-high"></i> Hãy bật âm lượng điện thoại để nghe thuyết minh tự động khi đến gần các điểm di tích.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: SLIDING BOTTOM SHEET ĐỌC VĂN BẢN THUYẾT MINH -->
+    <div class="sheet-backdrop" id="sheetBackdrop">
+        <div class="narration-sheet" id="narrationSheet">
+            <div class="sheet-handle-bar" id="sheetHandle">
+                <div class="sheet-pill"></div>
+            </div>
+
+            <div class="sheet-header">
+                <div class="sheet-title-meta">
+                    <span class="sheet-lang-badge" id="sheetLangBadge">TIẾNG VIỆT</span>
+                    <h2 id="sheetSpotTitle">Điện Kính Thiên</h2>
+                </div>
+                <button class="sheet-close-btn" id="btnCloseSheet">&times;</button>
+            </div>
+
+            <div class="sheet-body">
+                <!-- Spot Illustration Image -->
+                <div class="sheet-hero-image" id="sheetHeroWrapper">
+                    <img id="sheetHeroImage" src="" alt="Ảnh di tích">
+                </div>
+
+                <!-- Text Size Adjuster -->
+                <div class="text-controls-bar">
+                    <span>Cỡ chữ:</span>
+                    <button class="btn-text-size" id="btnTextSmaller">A-</button>
+                    <button class="btn-text-size" id="btnTextBigger">A+</button>
+                </div>
+
+                <!-- Narration Text Body -->
+                <article class="narration-article" id="narrationArticle">
+                    <p id="narrationParagraph">Đang tải nội dung văn bản thuyết minh...</p>
+                </article>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: HƯỚNG DẪN SỬ DỤNG -->
+    <div class="modal-backdrop" id="helpModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fa-solid fa-circle-info text-accent"></i> Hướng dẫn Du khách</h3>
+                    <button class="btn-close" id="btnCloseHelpModal">&times;</button>
+                </div>
+                <div class="modal-body help-body">
+                    <div class="help-step">
+                        <div class="step-num">1</div>
+                        <div class="step-desc">
+                            <strong>Di chuyển trên sơ đồ:</strong> Chạm hoặc bấm chuột vào bất kỳ vị trí nào trên bản đồ di tích để mô phỏng bạn đang bước tới đó.
+                        </div>
+                    </div>
+                    <div class="help-step">
+                        <div class="step-num">2</div>
+                        <div class="step-desc">
+                            <strong>Tự động thuyết minh:</strong> Khi bạn bước vào vòng tròn bán kính nhận diện của một điểm di tích, điện thoại sẽ tự động phát âm thanh giới thiệu.
+                        </div>
+                    </div>
+                    <div class="help-step">
+                        <div class="step-num">3</div>
+                        <div class="step-desc">
+                            <strong>Điều khiển âm thanh:</strong> Dùng thanh điều khiển dưới đáy màn hình để Dừng/Phát, tua lùi 5s, tua tới 5s hoặc bấm nút <i class="fa-solid fa-book-open"></i> để đọc văn bản nếu không nghe rõ.
+                        </div>
+                    </div>
+                    <div class="help-step">
+                        <div class="step-num">4</div>
+                        <div class="step-desc">
+                            <strong>Đổi ngôn ngữ:</strong> Bấm vào biểu tượng quả địa cầu <i class="fa-solid fa-globe"></i> trên cùng để đổi sang tiếng Anh, Pháp, Nhật, Hàn...
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-block" id="btnGotIt">Tôi đã hiểu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts: Microsoft SignalR + User App Logic -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+    <script src="user.js?v=20261025_09"></script>
+</body>
+</html>

@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AutoVoiceOver.Dal.Entities;
 
-namespace AutoVoiceOver.Dal.Repositories
+namespace AutoVoiceOver.Dal.Repositories;
+
+public interface IKhoDiaDiem : IKhoDuLieuChung<DiaDiemThamQuan>
 {
-    internal interface IKhoDiaDiem
-    {
-    }
+    Task<List<DiaDiemThamQuan>> TimKiemTheoTenAsync(string ten);
+    Task<List<DiaDiemThamQuan>> LayTheoBanDoAsync(Guid maBanDo);
+    Task<DiaDiemThamQuan?> LayChiTietKemNoiDungAsync(Guid maDiaDiem);
 }

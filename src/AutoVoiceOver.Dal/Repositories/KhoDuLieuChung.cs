@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace AutoVoiceOver.Dal.Repositories;
 
@@ -31,6 +31,11 @@ public class KhoDuLieuChung<T> : IKhoDuLieuChung<T> where T : class
     public virtual void CapNhat(T thucThe)
     {
         _tapThucThe.Update(thucThe);
+    }
+
+    public virtual void Xoa(T thucThe)
+    {
+        _tapThucThe.Remove(thucThe);
     }
 
     public virtual async Task<int> LuuThayDoiAsync()

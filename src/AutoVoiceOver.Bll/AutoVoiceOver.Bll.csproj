@@ -8,6 +8,19 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Dtos\Admin\" />
+    <Folder Include="Dtos\Visitor\" />
+    <Folder Include="Interface\Admin\" />
+    <Folder Include="Interface\Visitor\" />
+    <Folder Include="Service\Admin\" />
+    <Folder Include="Service\Visitor\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>

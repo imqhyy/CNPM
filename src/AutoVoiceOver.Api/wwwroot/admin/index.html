@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoVoiceOver - Quản trị Thuyết minh & Giám sát Du khách</title>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Custom Admin Stylesheet -->
+    <link rel="stylesheet" href="admin.css?v=20261025_04">
+</head>
+<body>
+    <!-- Top Navigation Header -->
+    <header class="admin-header">
+        <div class="header-brand">
+            <div class="brand-logo-icon">
+                <i class="fa-solid fa-headphones-simple"></i>
+            </div>
+            <div class="brand-info">
+                <h1>AutoVoiceOver <span>Admin Portal</span></h1>
+                <p>Hệ thống Thuyết minh Điểm tham quan Tự động</p>
+            </div>
+        </div>
+
+        <div class="header-status-area">
+            <!-- Real-time Online Indicator -->
+            <div class="live-pill" id="liveStatusBadge">
+                <span class="live-indicator-dot"></span>
+                <span class="live-text">SignalR: <strong id="signalrStatus">Đang kết nối...</strong></span>
+            </div>
+
+            <!-- Active Visitors Counter Widget -->
+            <div class="visitor-counter-card" title="Số du khách đang mở web tham quan">
+                <i class="fa-solid fa-users-viewfinder"></i>
+                <div class="visitor-counter-info">
+                    <span class="label">Du khách online</span>
+                    <span class="counter-number" id="onlineVisitorCount">0</span>
+                </div>
+            </div>
+
+            <button class="btn btn-outline" id="btnRefreshData" title="Làm mới dữ liệu">
+                <i class="fa-solid fa-rotate"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Admin Container -->
+    <div class="admin-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar">
+            <nav class="nav-menu">
+                <button class="nav-item active" data-tab="tab-live" id="navTabLive">
+                    <i class="fa-solid fa-radar"></i>
+                    <span>Radar & Giám sát Live</span>
+                </button>
+                <button class="nav-item" data-tab="tab-spots" id="navTabSpots">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                    <span>Quản lý Điểm tham quan</span>
+                </button>
+                <button class="nav-item" data-tab="tab-narration" id="navTabNarration">
+                    <i class="fa-solid fa-language"></i>
+                    <span>Thuyết minh Đa ngôn ngữ</span>
+                </button>
+                <button class="nav-item" data-tab="tab-map" id="navTabMap">
+                    <i class="fa-solid fa-map"></i>
+                    <span>Sơ đồ Bản đồ Khu vực</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="system-tag">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>AutoVoiceOver v2.0 - Kiến trúc 3 Lớp</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="admin-content">
+            <!-- TAB 1: RADAR & GIÁM SÁT LIVE -->
+            <section class="tab-pane active" id="tab-live">
+                <div class="pane-header">
+                    <div>
+                        <h2><i class="fa-solid fa-tower-broadcast"></i> Giám sát Trực quan Thời gian thực</h2>
+                        <p class="subtitle">Theo dõi vị trí du khách trên bản đồ di tích và phạm vi nhận diện của các điểm tham quan.</p>
+                    </div>
+                    <div class="pane-actions">
+                        <button class="btn btn-primary" id="btnOpenAddSpotQuick">
+                            <i class="fa-solid fa-plus"></i> Thêm điểm trên bản đồ
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Overview Row -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon icon-purple"><i class="fa-solid fa-landmark"></i></div>
+                        <div class="stat-meta">
+                            <span class="stat-title">Điểm tham quan</span>
+                            <span class="stat-val" id="statSpotCount">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-green"><i class="fa-solid fa-street-view"></i></div>
+                        <div class="stat-meta">
+                            <span class="stat-title">Khách đang online</span>
+                            <span class="stat-val" id="statVisitorOnline">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-blue"><i class="fa-solid fa-microphone-lines"></i></div>
+                        <div class="stat-meta">
+                            <span class="stat-title">Bản ghi thuyết minh</span>
+                            <span class="stat-val" id="statAudioCount">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-amber"><i class="fa-solid fa-circle-nodes"></i></div>
+                        <div class="stat-meta">
+                            <span class="stat-title">Bán kính mặc định</span>
+                            <span class="stat-val">50 mét</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Map & Visitors Split Layout -->
+                <div class="radar-split-grid">
+                    <div class="card map-monitor-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fa-solid fa-map"></i> Sơ đồ di tích & Radar vị trí
+                            </div>
+                            <div class="card-controls">
+                                <span class="badge badge-pulse"><i class="fa-solid fa-circle"></i> Live Feed</span>
+                                <button class="btn btn-sm btn-outline" id="btnResetCanvasView" title="Đưa bản đồ về căn giữa">
+                                    <i class="fa-solid fa-compress"></i> Căn vừa
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body canvas-container-wrapper" id="canvasWrapper">
+                            <canvas id="liveRadarCanvas" width="900" height="600"></canvas>
+                            <div class="canvas-legend">
+                                <div class="legend-item"><span class="legend-color spot-color"></span> Điểm tham quan</div>
+                                <div class="legend-item"><span class="legend-color radius-color"></span> Phạm vi nhận diện</div>
+                                <div class="legend-item"><span class="legend-color visitor-color"></span> Vị trí Du khách</div>
+                            </div>
+                            <div class="canvas-overlay-tip" id="canvasTip">
+                                <i class="fa-solid fa-circle-info"></i> Click vào bản đồ để chọn tọa độ (X, Y) hoặc click vào điểm để xem thông tin
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card online-visitors-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fa-solid fa-users"></i> Danh sách Khách đang xem
+                            </div>
+                            <span class="badge badge-info" id="badgeVisitorCount">0 người</span>
+                        </div>
+                        <div class="card-body visitor-list-body">
+                            <div class="visitor-table-container">
+                                <table class="custom-table" id="tableVisitors">
+                                    <thead>
+                                        <tr>
+                                            <th>Du khách</th>
+                                            <th>Tọa độ (X, Y)</th>
+                                            <th>Thời gian</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="visitorTableBody">
+                                        <tr>
+                                            <td colspan="3" class="text-center text-muted py-4">
+                                                <i class="fa-solid fa-user-slash mb-2 d-block text-lg"></i>
+                                                Chưa có du khách nào kết nối
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: QUẢN LÝ ĐIỂM THAM QUAN -->
+            <section class="tab-pane" id="tab-spots">
+                <div class="pane-header">
+                    <div>
+                        <h2><i class="fa-solid fa-landmark-flag"></i> Quản lý Điểm tham quan</h2>
+                        <p class="subtitle">Thêm mới, sửa tọa độ, ảnh minh họa, trạng thái hoạt động và tùy chỉnh bán kính kích hoạt.</p>
+                    </div>
+                    <div class="pane-actions">
+                        <button class="btn btn-primary" id="btnOpenAddSpotModal">
+                            <i class="fa-solid fa-plus"></i> Thêm điểm tham quan
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="custom-table table-spots">
+                                <thead>
+                                    <tr>
+                                        <th>Ảnh</th>
+                                        <th>Tên điểm tham quan</th>
+                                        <th>Tọa độ (X, Y)</th>
+                                        <th>Bán kính nhận diện</th>
+                                        <th>Ngôn ngữ</th>
+                                        <th>Trạng thái</th>
+                                        <th class="text-right">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="spotsTableBody">
+                                    <tr>
+                                        <td colspan="7" class="text-center py-5 text-muted">
+                                            <i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i>
+                                            <p>Đang tải danh sách điểm tham quan...</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: THUYẾT MINH ĐA NGÔN NGỮ -->
+            <section class="tab-pane" id="tab-narration">
+                <div class="pane-header">
+                    <div>
+                        <h2><i class="fa-solid fa-language"></i> Thuyết minh Đa ngôn ngữ & Tệp Âm thanh</h2>
+                        <p class="subtitle">Tải lên tệp âm thanh (MP3, WAV...) và văn bản thuyết minh theo từng ngôn ngữ cho mỗi điểm.</p>
+                    </div>
+                </div>
+
+                <div class="narration-layout-grid">
+                    <!-- Left: Spot Selector -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title"><i class="fa-solid fa-list-check"></i> Chọn điểm tham quan</div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="spot-selector-list" id="narrationSpotList">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Multilingual Files & Audio Player -->
+                    <div class="card" id="narrationDetailsCard">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fa-solid fa-folder-open"></i> Nội dung thuyết minh: <span id="narrationSpotTitle" class="text-accent">Chưa chọn điểm</span>
+                            </div>
+                            <button class="btn btn-sm btn-primary" id="btnOpenAddLangModal" disabled>
+                                <i class="fa-solid fa-plus"></i> Thêm ngôn ngữ / Audio
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <!-- Language Cards Grid -->
+                            <div class="language-cards-grid" id="languageCardsContainer">
+                                <div class="empty-placeholder">
+                                    <i class="fa-solid fa-headphones text-4xl mb-3 text-muted"></i>
+                                    <p>Vui lòng chọn một điểm tham quan ở danh sách bên trái để xem và tải lên thuyết minh âm thanh.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: SƠ ĐỒ BẢN ĐỒ KHU VỰC -->
+            <section class="tab-pane" id="tab-map">
+                <div class="pane-header">
+                    <div>
+                        <h2><i class="fa-solid fa-map"></i> Quản lý Sơ đồ Bản đồ Di tích</h2>
+                        <p class="subtitle">Xem và tải lên hình ảnh sơ đồ mặt bằng khu di tích / bảo tàng.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="map-settings-grid">
+                            <div class="map-preview-col">
+                                <h3>Sơ đồ đang kích hoạt</h3>
+                                <div class="map-image-wrapper" id="activeMapImageWrapper">
+                                    <img id="activeMapImage" src="" alt="Sơ đồ bản đồ">
+                                    <div class="map-placeholder" id="activeMapPlaceholder">
+                                        <i class="fa-solid fa-map text-4xl mb-2 text-muted"></i>
+                                        <p>Chưa có hình ảnh bản đồ</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="map-form-col">
+                                <h3>Cập nhật Sơ đồ mới</h3>
+                                <form id="formUploadMap">
+                                    <div class="form-group">
+                                        <label for="inputMapTitle">Tên bản đồ khu vực *</label>
+                                        <input type="text" id="inputMapTitle" class="form-control" placeholder="Ví dụ: Hoàng Thành Thăng Long - Khu Trung Tâm" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="inputMapImageFile">Tệp hình ảnh bản đồ (PNG, JPG, SVG, WebP) *</label>
+                                        <input type="file" id="inputMapImageFile" class="form-control" accept="image/*" required>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group col-6">
+                                            <label for="inputMapWidth">Chiều rộng (Pixel)</label>
+                                            <input type="number" id="inputMapWidth" class="form-control" value="1200" min="100">
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <label for="inputMapHeight">Chiều cao (Pixel)</label>
+                                            <input type="number" id="inputMapHeight" class="form-control" value="800" min="100">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="inputMapScale">Tỉ lệ ước tính (Mét / Pixel)</label>
+                                        <input type="number" step="0.01" id="inputMapScale" class="form-control" value="0.5" min="0.01">
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary btn-block" id="btnSubmitMap">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i> Lưu & Áp dụng Bản đồ
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODAL 1: THÊM / CHỈNH SỬA ĐIỂM THAM QUAN -->
+    <div class="modal-backdrop" id="modalSpot">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalSpotTitle"><i class="fa-solid fa-location-dot"></i> Thêm Điểm tham quan mới</h3>
+                    <button class="btn-close" id="btnCloseSpotModal">&times;</button>
+                </div>
+                <form id="formSpot">
+                    <input type="hidden" id="spotId">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="spotName">Tên điểm tham quan *</label>
+                            <input type="text" id="spotName" class="form-control" placeholder="Ví dụ: Cổng Đoan Môn, Điện Kính Thiên..." required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-6">
+                                <label for="spotCoordX">Tọa độ X (Pixel) *</label>
+                                <input type="number" step="0.1" id="spotCoordX" class="form-control" placeholder="Tọa độ X" required>
+                            </div>
+                            <div class="form-group col-6">
+                                <label for="spotCoordY">Tọa độ Y (Pixel) *</label>
+                                <input type="number" step="0.1" id="spotCoordY" class="form-control" placeholder="Tọa độ Y" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="spotRadius">Bán kính nhận diện tự động (Mét / Pixel) *</label>
+                            <div class="range-with-input">
+                                <input type="range" id="spotRadiusSlider" min="10" max="250" value="50" class="custom-range">
+                                <input type="number" id="spotRadius" class="form-control range-input" value="50" min="5" max="500" required>
+                                <span class="unit-text">m</span>
+                            </div>
+                            <small class="form-hint">Khi du khách di chuyển vào vùng bán kính này ($d \le r$), hệ thống sẽ tự động kích hoạt phát thuyết minh.</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="spotImageFile">Ảnh minh họa điểm tham quan</label>
+                            <input type="file" id="spotImageFile" class="form-control" accept="image/*">
+                            <input type="hidden" id="spotImagePath">
+                            <div class="image-preview-box mt-2" id="spotImagePreviewBox" style="display:none;">
+                                <img id="spotImagePreview" src="" alt="Xem trước ảnh">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="custom-checkbox">
+                                <input type="checkbox" id="spotActive" checked>
+                                <span class="checkmark"></span>
+                                <span>Kích hoạt điểm này trên bản đồ cho du khách</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="btnCancelSpotModal">Hủy</button>
+                        <button type="submit" class="btn btn-primary" id="btnSaveSpot">
+                            <i class="fa-solid fa-floppy-disk"></i> Lưu điểm tham quan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: TÙY CHỈNH NHANH BÁN KÍNH NHẬN DIỆN -->
+    <div class="modal-backdrop" id="modalRadius">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fa-solid fa-circle-notch"></i> Tùy chỉnh Bán kính nhận diện</h3>
+                    <button class="btn-close" id="btnCloseRadiusModal">&times;</button>
+                </div>
+                <form id="formRadius">
+                    <input type="hidden" id="radiusSpotId">
+                    <div class="modal-body">
+                        <p class="mb-3">Điểm: <strong id="radiusSpotName" class="text-accent">-</strong></p>
+                        
+                        <div class="form-group">
+                            <label for="quickRadiusInput">Bán kính kích hoạt (Khoảng cách nhận diện)</label>
+                            <div class="range-with-input">
+                                <input type="range" id="quickRadiusSlider" min="10" max="300" value="50" class="custom-range">
+                                <input type="number" id="quickRadiusInput" class="form-control range-input" value="50" min="5" max="500">
+                                <span class="unit-text">m</span>
+                            </div>
+                            <small class="form-hint">Thay đổi có hiệu lực ngay lập tức cho tất cả du khách trên bản đồ.</small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="btnCancelRadiusModal">Đóng</button>
+                        <button type="submit" class="btn btn-primary" id="btnSaveRadius">
+                            <i class="fa-solid fa-check"></i> Cập nhật bán kính
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: THÊM / CẬP NHẬT NỘI DUNG THUYẾT MINH & AUDIO -->
+    <div class="modal-backdrop" id="modalNarration">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fa-solid fa-file-audio"></i> Tải lên Thuyết minh & Audio Đa ngôn ngữ</h3>
+                    <button class="btn-close" id="btnCloseNarrationModal">&times;</button>
+                </div>
+                <form id="formNarration">
+                    <input type="hidden" id="narrSpotId">
+                    <div class="modal-body">
+                        <div class="form-row">
+                            <div class="form-group col-6">
+                                <label for="narrLangCode">Mã ngôn ngữ *</label>
+                                <select id="narrLangCode" class="form-control" required>
+                                    <option value="vi">Tiếng Việt (vi)</option>
+                                    <option value="en">English (en)</option>
+                                    <option value="fr">Français (fr)</option>
+                                    <option value="ja">日本語 (ja)</option>
+                                    <option value="ko">한국어 (ko)</option>
+                                    <option value="zh">中文 (zh)</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-6">
+                                <label for="narrTitle">Tiêu đề bài thuyết minh *</label>
+                                <input type="text" id="narrTitle" class="form-control" placeholder="Ví dụ: Giới thiệu Điện Kính Thiên" required>
+                            </div>
+                        </div>
+
+                        <!-- Audio File Upload -->
+                        <div class="form-group upload-box-group">
+                            <label for="narrAudioFile"><i class="fa-solid fa-cloud-arrow-up text-accent"></i> Tệp âm thanh thuyết minh (MP3, WAV, AAC, OGG) *</label>
+                            <input type="file" id="narrAudioFile" class="form-control" accept="audio/*">
+                            <small class="form-hint">Tải lên file thu âm chính thức cho ngôn ngữ này. Tự động phát khi du khách đến gần.</small>
+                        </div>
+
+                        <!-- Text File Upload or Textarea -->
+                        <div class="form-group">
+                            <label for="narrTextFile"><i class="fa-regular fa-file-lines"></i> Hoặc tải lên tệp văn bản thuyết minh (.txt)</label>
+                            <input type="file" id="narrTextFile" class="form-control" accept=".txt,text/plain">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="narrContent">Nội dung văn bản thuyết minh (Hiển thị cho khách đọc)</label>
+                            <textarea id="narrContent" class="form-control" rows="5" placeholder="Nhập trực tiếp hoặc tải từ file .txt phía trên..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="btnCancelNarrationModal">Hủy</button>
+                        <button type="submit" class="btn btn-primary" id="btnSaveNarration">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Lưu & Tải lên Thuyết minh
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Scripts: Microsoft SignalR 8.x + Custom Admin JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+    <script src="admin.js?v=20261025_09"></script>
+</body>
+</html>
