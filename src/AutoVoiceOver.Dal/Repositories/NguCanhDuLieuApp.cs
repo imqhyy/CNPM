@@ -12,12 +12,24 @@ public class NguCanhDuLieuApp : DbContext
     public DbSet<BanDoKhuVuc> BanDoKhuVucs => Set<BanDoKhuVuc>();
     public DbSet<DiaDiemThamQuan> DiaDiemThamQuans => Set<DiaDiemThamQuan>();
     public DbSet<NoiDungThuyetMinh> NoiDungThuyetMinhs => Set<NoiDungThuyetMinh>();
+    public DbSet<TaiKhoanAdmin> TaiKhoanAdmins => Set<TaiKhoanAdmin>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        // 1. Cấu hình bảng BanDoKhuVuc
+        // 1. Cấu hình bảng TaiKhoanAdmin
+        modelBuilder.Entity<TaiKhoanAdmin>(entity =>
+        {
+            entity.HasKey(e => e.MaTaiKhoan);
+            entity.Property(e => e.TenDangNhap).IsRequired().HasMaxLength(100);
+            entity.HasIndex(e => e.TenDangNhap).IsUnique();
+            entity.Property(e => e.MatKhauHash).IsRequired().HasMaxLength(256);
+            entity.Property(e => e.HoTen).HasMaxLength(150);
+            entity.Property(e => e.VaiTro).HasMaxLength(50);
+        });
+
+        // 2. Cấu hình bảng BanDoKhuVuc
         modelBuilder.Entity<BanDoKhuVuc>(entity =>
         {
             entity.HasKey(e => e.MaBanDo);

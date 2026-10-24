@@ -11,9 +11,84 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Custom Admin Stylesheet -->
-    <link rel="stylesheet" href="admin.css?v=20261025_04">
+    <link rel="stylesheet" href="admin.css?v=20261025_coords">
+
+    <!-- Ngăn chặn hiện tượng FOUC (chớp form đăng nhập) khi refresh trang nếu đã có token đăng nhập -->
+    <script>
+        (function() {
+            try {
+                var token = localStorage.getItem('autovoiceover_admin_token');
+                if (token) {
+                    document.documentElement.classList.add('has-auth-token');
+                }
+            } catch (e) {
+                console.warn('Lỗi đọc localStorage:', e);
+            }
+        })();
+    </script>
 </head>
 <body>
+    <!-- Dedicated Admin Login Screen Overlay -->
+    <div class="login-screen-overlay" id="loginScreen">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h2>AutoVoiceOver <span>Admin</span></h2>
+                <p>Cổng Quản trị Hệ thống Thuyết minh Di tích Tự động</p>
+            </div>
+
+            <!-- Error Alert -->
+            <div class="login-alert login-alert-error" id="loginAlert">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span id="loginAlertMsg">Tên đăng nhập hoặc mật khẩu không chính xác.</span>
+            </div>
+
+            <!-- Login Form -->
+            <form id="formAdminLogin" autocomplete="off">
+                <div class="form-group mb-3">
+                    <label for="loginUsername">Tên đăng nhập</label>
+                    <div class="input-with-icon">
+                        <i class="fa-solid fa-user input-icon-left"></i>
+                        <input type="text" id="loginUsername" class="form-control" placeholder="Nhập username (ví dụ: admin1)" required autofocus>
+                    </div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="loginPassword">Mật khẩu</label>
+                    <div class="input-with-icon">
+                        <i class="fa-solid fa-lock input-icon-left"></i>
+                        <input type="password" id="loginPassword" class="form-control" placeholder="Nhập mật khẩu quản trị" required>
+                        <button type="button" class="btn-toggle-pwd" id="btnTogglePwd" title="Hiện/Ẩn mật khẩu">
+                            <i class="fa-regular fa-eye" id="iconEye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-login-submit" id="btnLoginSubmit">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    <span id="btnLoginText">Đăng nhập Quản trị</span>
+                </button>
+            </form>
+
+            <!-- Quick Fill Demo Account (Theo ngữ cảnh hệ thống: admin1 / 123456789) -->
+            <div class="demo-account-box" id="btnQuickFillAdmin" title="Bấm để tự động điền tài khoản thử nghiệm">
+                <div class="demo-account-title">
+                    <span><i class="fa-solid fa-key text-accent"></i> Tài khoản quản trị mặc định</span>
+                    <span class="demo-account-click-hint"><i class="fa-solid fa-arrow-pointer"></i> Điền nhanh</span>
+                </div>
+                <div class="demo-account-details">
+                    Username: <strong>admin1</strong> &bull; Password: <strong>123456789</strong>
+                </div>
+            </div>
+
+            <div class="login-footer-info">
+                <span>Hệ thống 3 Lớp .NET 8 &bull; Xác thực CSDL qua ADO.NET</span>
+            </div>
+        </div>
+    </div>
+
     <!-- Top Navigation Header -->
     <header class="admin-header">
         <div class="header-brand">
@@ -45,6 +120,17 @@
             <button class="btn btn-outline" id="btnRefreshData" title="Làm mới dữ liệu">
                 <i class="fa-solid fa-rotate"></i>
             </button>
+
+            <!-- Admin User Profile & Logout -->
+            <div class="header-user-profile" id="headerUserProfile" style="display: none;">
+                <div class="user-avatar-circle">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <span class="user-meta-name" id="headerAdminName">admin1</span>
+                <button class="btn btn-outline btn-logout" id="btnLogout" title="Đăng xuất khỏi hệ thống">
+                    <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
+                </button>
+            </div>
         </div>
     </header>
 
@@ -142,7 +228,7 @@
                             </div>
                         </div>
                         <div class="card-body canvas-container-wrapper" id="canvasWrapper">
-                            <canvas id="liveRadarCanvas" width="900" height="600"></canvas>
+                            <canvas id="liveRadarCanvas" width="1200" height="800"></canvas>
                             <div class="canvas-legend">
                                 <div class="legend-item"><span class="legend-color spot-color"></span> Điểm tham quan</div>
                                 <div class="legend-item"><span class="legend-color radius-color"></span> Phạm vi nhận diện</div>
@@ -338,9 +424,9 @@
         </main>
     </div>
 
-    <!-- MODAL 1: THÊM / CHỈNH SỬA ĐIỂM THAM QUAN -->
+    <!-- MODAL 1: THÊM / CHỈNH SỬA ĐIỂM THAM QUAN (TÍCH HỢP BẢN ĐỒ CHỌN TỌA ĐỘ TRỰC QUAN) -->
     <div class="modal-backdrop" id="modalSpot">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-map-picker">
             <div class="modal-content">
                 <div class="modal-header">
                     <h3 id="modalSpotTitle"><i class="fa-solid fa-location-dot"></i> Thêm Điểm tham quan mới</h3>
@@ -349,47 +435,87 @@
                 <form id="formSpot">
                     <input type="hidden" id="spotId">
                     <div class="modal-body">
-                        <div class="form-group">
-                            <label for="spotName">Tên điểm tham quan *</label>
-                            <input type="text" id="spotName" class="form-control" placeholder="Ví dụ: Cổng Đoan Môn, Điện Kính Thiên..." required>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group col-6">
-                                <label for="spotCoordX">Tọa độ X (Pixel) *</label>
-                                <input type="number" step="0.1" id="spotCoordX" class="form-control" placeholder="Tọa độ X" required>
+                        <div class="spot-modal-layout">
+                            <!-- CỘT 1 (TRÁI): BẢN ĐỒ TƯƠNG TÁC CHỌN TỌA ĐỘ VÀ XEM TRƯỚC BÁN KÍNH -->
+                            <div class="picker-map-column">
+                                <div class="picker-topbar">
+                                    <span class="picker-instruction">
+                                        <i class="fa-solid fa-crosshairs text-accent"></i> 
+                                        <strong>Nhấp chuột vào bản đồ</strong> để tự động điền tọa độ
+                                    </span>
+                                    <span class="badge badge-accent" id="pickerCoordsBadge">
+                                        <i class="fa-solid fa-location-pin"></i> Tọa độ: (600.0, 400.0)
+                                    </span>
+                                </div>
+                                <div class="picker-canvas-box" id="pickerCanvasBox">
+                                    <canvas id="spotPickerCanvas" width="1200" height="800"></canvas>
+                                    <div class="picker-canvas-overlay-guide">
+                                        <i class="fa-solid fa-hand-pointer"></i> Click vào bản đồ để đổi vị trí điểm
+                                    </div>
+                                </div>
+                                <div class="picker-bottom-bar">
+                                    <div class="picker-legend">
+                                        <span class="legend-dot current-pin"></span> Điểm đang chọn
+                                        <span class="legend-dot radius-zone ml-2"></span> Bán kính kích hoạt
+                                        <span class="legend-dot existing-pin ml-2"></span> Điểm đã có
+                                    </div>
+                                    <button type="button" class="btn btn-xs btn-outline" id="btnCenterPickerMap" title="Căn lại góc nhìn bản đồ">
+                                        <i class="fa-solid fa-arrows-to-dot"></i> Về tâm
+                                    </button>
+                                </div>
                             </div>
-                            <div class="form-group col-6">
-                                <label for="spotCoordY">Tọa độ Y (Pixel) *</label>
-                                <input type="number" step="0.1" id="spotCoordY" class="form-control" placeholder="Tọa độ Y" required>
-                            </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label for="spotRadius">Bán kính nhận diện tự động (Mét / Pixel) *</label>
-                            <div class="range-with-input">
-                                <input type="range" id="spotRadiusSlider" min="10" max="250" value="50" class="custom-range">
-                                <input type="number" id="spotRadius" class="form-control range-input" value="50" min="5" max="500" required>
-                                <span class="unit-text">m</span>
-                            </div>
-                            <small class="form-hint">Khi du khách di chuyển vào vùng bán kính này ($d \le r$), hệ thống sẽ tự động kích hoạt phát thuyết minh.</small>
-                        </div>
+                            <!-- CỘT 2 (PHẢI): BIỂU MẪU THÔNG TIN ĐIỂM THAM QUAN -->
+                            <div class="picker-form-column">
+                                <div class="form-group">
+                                    <label for="spotName">Tên điểm tham quan *</label>
+                                    <input type="text" id="spotName" class="form-control" placeholder="Ví dụ: Cổng Đoan Môn, Điện Kính Thiên..." required>
+                                </div>
 
-                        <div class="form-group">
-                            <label for="spotImageFile">Ảnh minh họa điểm tham quan</label>
-                            <input type="file" id="spotImageFile" class="form-control" accept="image/*">
-                            <input type="hidden" id="spotImagePath">
-                            <div class="image-preview-box mt-2" id="spotImagePreviewBox" style="display:none;">
-                                <img id="spotImagePreview" src="" alt="Xem trước ảnh">
-                            </div>
-                        </div>
+                                <div class="form-row">
+                                    <div class="form-group col-6">
+                                        <label for="spotCoordX">
+                                            Tọa độ X (Pixel) * 
+                                            <span class="badge-mini text-accent" title="Tự động điền khi click trên bản đồ"><i class="fa-solid fa-bolt"></i> Auto</span>
+                                        </label>
+                                        <input type="number" step="0.1" id="spotCoordX" class="form-control" placeholder="Tọa độ X" required>
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <label for="spotCoordY">
+                                            Tọa độ Y (Pixel) * 
+                                            <span class="badge-mini text-accent" title="Tự động điền khi click trên bản đồ"><i class="fa-solid fa-bolt"></i> Auto</span>
+                                        </label>
+                                        <input type="number" step="0.1" id="spotCoordY" class="form-control" placeholder="Tọa độ Y" required>
+                                    </div>
+                                </div>
 
-                        <div class="form-group">
-                            <label class="custom-checkbox">
-                                <input type="checkbox" id="spotActive" checked>
-                                <span class="checkmark"></span>
-                                <span>Kích hoạt điểm này trên bản đồ cho du khách</span>
-                            </label>
+                                <div class="form-group">
+                                    <label for="spotRadius">Bán kính nhận diện tự động (Mét / Pixel) *</label>
+                                    <div class="range-with-input">
+                                        <input type="range" id="spotRadiusSlider" min="10" max="250" value="50" class="custom-range">
+                                        <input type="number" id="spotRadius" class="form-control range-input" value="50" min="5" max="500" required>
+                                        <span class="unit-text">m</span>
+                                    </div>
+                                    <small class="form-hint">Vòng tròn màu xanh trên bản đồ sẽ tự động co giãn theo giá trị này ($d \le r$).</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="spotImageFile">Ảnh minh họa điểm tham quan</label>
+                                    <input type="file" id="spotImageFile" class="form-control" accept="image/*">
+                                    <input type="hidden" id="spotImagePath">
+                                    <div class="image-preview-box mt-2" id="spotImagePreviewBox" style="display:none;">
+                                        <img id="spotImagePreview" src="" alt="Xem trước ảnh">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" id="spotActive" checked>
+                                        <span class="checkmark"></span>
+                                        <span>Kích hoạt điểm này trên bản đồ cho du khách</span>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -500,6 +626,6 @@
 
     <!-- Scripts: Microsoft SignalR 8.x + Custom Admin JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
-    <script src="admin.js?v=20261025_09"></script>
+    <script src="admin.js?v=20261025_coords"></script>
 </body>
 </html>

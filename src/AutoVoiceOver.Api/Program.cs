@@ -6,32 +6,27 @@ using AutoVoiceOver.Api.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Cấu hình Cơ sở dữ liệu (Hỗ trợ SQLite linh hoạt hoặc SQL Server)
+// 1. Cấu hình Cơ sở dữ liệu (Microsoft SQL Server ADO.NET)
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
-    ?? "Data Source=autovoiceover.db";
+    ?? KhoiTaoCoSoDuLieuAdoNet.ChuoiKetNoiMacDinh;
 
 builder.Services.AddDbContext<NguCanhDuLieuApp>(options =>
 {
-    if (connectionString.Contains(".db", StringComparison.OrdinalIgnoreCase) || connectionString.StartsWith("Data Source=", StringComparison.OrdinalIgnoreCase))
-    {
-        options.UseSqlite(connectionString);
-    }
-    else
-    {
-        options.UseSqlServer(connectionString);
-    }
+    options.UseSqlServer(connectionString);
 });
 
-// 2. Đăng ký các Repository (Data Access Layer)
-builder.Services.AddScoped<IKhoDiaDiem, KhoDiaDiem>();
-builder.Services.AddScoped<IKhoNoiDung, KhoNoiDung>();
-builder.Services.AddScoped<IKhoBanDo, KhoBanDo>();
+// 2. Đăng ký các Repository thuần túy ADO.NET (Data Access Layer - ADO.NET Repositories)
+builder.Services.AddScoped<IKhoDiaDiem, KhoDiaDiemAdoNet>();       // Điểm tham quan qua ADO.NET
+builder.Services.AddScoped<IKhoNoiDung, KhoNoiDungAdoNet>();       // Nội dung thuyết minh qua ADO.NET
+builder.Services.AddScoped<IKhoBanDo, KhoBanDoAdoNet>();           // Bản đồ khu vực qua ADO.NET
+builder.Services.AddScoped<IKhoTaiKhoanAdmin, KhoTaiKhoanAdminAdoNet>(); // Tài khoản Admin qua ADO.NET
 
 // 3. Đăng ký các Service (Business Logic Layer)
 builder.Services.AddScoped<IDichVuQuanLyDiaDiem, DichVuQuanLyDiaDiem>();
 builder.Services.AddScoped<IDichVuDuKhach, DichVuDuKhach>();
 builder.Services.AddSingleton<IDichVuThongKe, DichVuThongKe>(); // Singleton để lưu trữ session người dùng online
 builder.Services.AddScoped<IDichVuLuuTruTep, DichVuLuuTruTep>();
+builder.Services.AddScoped<IDichVuXacThucAdmin, DichVuXacThucAdmin>();
 
 // 4. Đăng ký Controllers & SignalR
 builder.Services.AddControllers();
@@ -57,17 +52,17 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "AutoVoiceOver API",
         Version = "v1",
-        Description = "API Hệ thống thuyết minh điểm tham quan tự động theo tọa độ và phạm vi nhận diện (Kiến trúc 3 lớp .NET)"
+        Description = "API Hệ thống thuyết minh điểm tham quan tự động theo tọa độ và phạm vi nhận diện (Kiến trúc 3 lớp .NET - 100% ADO.NET DAL)"
     });
 });
 
 var app = builder.Build();
 
-// 7. Tự động kiểm tra và khởi tạo Database + Dữ liệu mẫu (Data Seeding) khi khởi động
+// 7. Tự động kiểm tra và khởi tạo Database + Dữ liệu mẫu hoàn toàn bằng ADO.NET khi khởi động
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<NguCanhDuLieuApp>();
-    db.Database.EnsureCreated();
+    var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+    await KhoiTaoCoSoDuLieuAdoNet.KhoiTaoDatabaseAsync(config);
 }
 
 // 8. Đảm bảo các thư mục upload tĩnh tồn tại trong wwwroot
