@@ -6,9 +6,9 @@ echo ======================================================================
 echo.
 echo May chu dang duoc khoi dong...
 echo.
-echo - Web Admin : http://localhost:5256/admin/
-echo - Swagger API: http://localhost:5256/swagger
-echo - Mang LAN    : http://192.168.1.73:5256/admin/ (Mo tu dien thoai cung Wi-Fi)
+echo - Web Du Khach: http://localhost:5256/user/
+echo - Web Admin   : http://localhost:5256/admin/
+echo - Swagger API : http://localhost:5256/swagger
 echo.
 echo Nhan Ctrl + C de dung may chu.
 echo ======================================================================
