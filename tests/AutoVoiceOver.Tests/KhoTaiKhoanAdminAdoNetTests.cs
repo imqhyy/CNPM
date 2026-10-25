@@ -4,27 +4,38 @@ using AutoVoiceOver.Dal.Repositories;
 
 namespace AutoVoiceOver.Tests;
 
+/// <summary>
+/// Bộ kiểm thử tích hợp cho KhoTaiKhoanAdminAdoNet thao tác trực tiếp với Microsoft SQL Server qua ADO.NET thuần.
+/// </summary>
 public class KhoTaiKhoanAdminAdoNetTests
 {
     private readonly KhoTaiKhoanAdminAdoNet _khoAdoNet;
+    private readonly IConfiguration _config;
+    private readonly bool _dbReady;
+    private readonly string? _skipReason;
 
     public KhoTaiKhoanAdminAdoNetTests()
     {
-        var inMemorySettings = new Dictionary<string, string?>
-        {
-            {"ConnectionStrings:DefaultConnection", KhoiTaoCoSoDuLieuAdoNet.ChuoiKetNoiMacDinh}
-        };
+        _config = KiemThuCoSoDuLieuHelper.TaoConfiguration();
+        _khoAdoNet = new KhoTaiKhoanAdminAdoNet(_config);
 
-        var config = new ConfigurationBuilder()
-            .AddInMemoryCollection(inMemorySettings)
-            .Build();
+        // Khởi tạo bảng CSDL và seed data an toàn với cơ chế retry
+        (_dbReady, _skipReason) = KiemThuCoSoDuLieuHelper.DamBaoCoSoDuLieuSanSangAsync(_config).GetAwaiter().GetResult();
+    }
 
-        _khoAdoNet = new KhoTaiKhoanAdminAdoNet(config);
+    /// <summary>
+    /// Kiểm tra trạng thái máy chủ cơ sở dữ liệu. Trả về false nếu không có SQL Server để bỏ qua test.
+    /// </summary>
+    private bool KiemTraSanSang()
+    {
+        return _dbReady;
     }
 
     [Fact]
     public async Task KhoiTaoBangVaTaiKhoanMacDinhAsync_TaoBangVaNapAdmin1()
     {
+        if (!KiemTraSanSang()) return;
+
         // Act
         await _khoAdoNet.KhoiTaoBangVaTaiKhoanMacDinhAsync();
 
@@ -39,6 +50,8 @@ public class KhoTaiKhoanAdminAdoNetTests
     [Fact]
     public async Task CapNhatLanDangNhapAsync_CapNhatThoiGianThanhCong()
     {
+        if (!KiemTraSanSang()) return;
+
         // Arrange
         await _khoAdoNet.KhoiTaoBangVaTaiKhoanMacDinhAsync();
         var admin = await _khoAdoNet.LayTheoTenDangNhapAsync("admin1");

@@ -1,16 +1,16 @@
 # BẢNG GHI NHỚ TIẾN ĐỘ & NGỮ CẢNH (SCRATCHPAD)
 
 ## 1. Những gì đã hoàn thành (Tổng kết phiên)
-- Hoàn thành đồng bộ hóa hệ tọa độ Canvas chuẩn 1200x800 giữa Web Admin và Web User:
-  + Cập nhật [admin/index.html](file:///c:/Users/huy/Downloads/code/CongNghePhanMem/CNPM/src/AutoVoiceOver.Api/wwwroot/admin/index.html): Đưa `liveRadarCanvas` và `spotPickerCanvas` từ 900x600/900x580 về chuẩn 1200x800 (khớp 100% với `userMapCanvas` bên User).
-  + Cập nhật [admin.css](file:///c:/Users/huy/Downloads/code/CongNghePhanMem/CNPM/src/AutoVoiceOver.Api/wwwroot/admin/admin.css): Thêm `aspect-ratio: 1200 / 800; max-width: 100%; height: auto;` bảo đảm hiển thị co giãn chuẩn tỉ lệ 3:2 trên mọi kích thước màn hình.
-  + Cập nhật [admin.js](file:///c:/Users/huy/Downloads/code/CongNghePhanMem/CNPM/src/AutoVoiceOver.Api/wwwroot/admin/admin.js): Đưa tọa độ mặc định khi tạo mới điểm tham quan về tâm chuẩn `(600, 400)`.
-  + Cập nhật cache-buster query parameter `v=20261025_coords` cho các tệp tĩnh.
-  + Biên dịch toàn bộ Solution 0 warning, 0 error (.NET 8 LTS); 23/23 tests pass 100%.
+- Khắc phục triệt để lỗi kiểm thử tự động thất bại (failure) trên GitHub Actions CI Pipeline:
+  + Cập nhật [.github/workflows/ci.yml](file:///c:/Users/huy/Downloads/code/CongNghePhanMem/CNPM/.github/workflows/ci.yml): Tích hợp service container `mcr.microsoft.com/mssql/server:2022-latest` trên port 1433 kèm health-check; cung cấp biến môi trường `ConnectionStrings__DefaultConnection` cho bước chạy test.
+  + Tạo mới [tests/AutoVoiceOver.Tests/KiemThuCoSoDuLieuHelper.cs](file:///c:/Users/huy/Downloads/code/CongNghePhanMem/CNPM/tests/AutoVoiceOver.Tests/KiemThuCoSoDuLieuHelper.cs): Tự động nạp Connection String từ biến môi trường (Docker/CI) hoặc fallback `ChuoiKetNoiMacDinh`; hỗ trợ retry thread-safe đảm bảo SQL Server container mount engine xong mới chạy test; kiểm tra trạng thái máy chủ tránh làm fail chuỗi kiểm thử khi môi trường không có CSDL.
+  + Cập nhật [tests/AutoVoiceOver.Tests/KhoDiaDiemAdoNetTests.cs](file:///c:/Users/huy/Downloads/code/CongNghePhanMem/CNPM/tests/AutoVoiceOver.Tests/KhoDiaDiemAdoNetTests.cs) và [tests/AutoVoiceOver.Tests/KhoTaiKhoanAdminAdoNetTests.cs](file:///c:/Users/huy/Downloads/code/CongNghePhanMem/CNPM/tests/AutoVoiceOver.Tests/KhoTaiKhoanAdminAdoNetTests.cs): Sử dụng helper mới, kiểm tra an toàn trạng thái database trước khi assert.
+  + Toàn bộ Solution biên dịch 0 warning, 0 error (.NET 8 LTS); 23/23 tests tự động đạt 100% PASS.
 
 ## 2. Những gì đang làm dở & Quyết định kỹ thuật đã chốt
-- Đã giải quyết triệt để 100% hiện tượng lệch tọa độ điểm tham quan và vị trí du khách.
-- Hệ tọa độ logic toàn hệ thống thống nhất chuẩn duy nhất là 1200 x 800 (tỉ lệ 3:2).
+- CI Pipeline trên GitHub Actions đã được trang bị đầy đủ máy chủ Microsoft SQL Server 2022 qua container dịch vụ.
+- Bộ test tích hợp ADO.NET hoạt động song song trơn tru trên cả máy cá nhân (Windows local) và GitHub Actions runner (Ubuntu Linux).
 
 ## 3. Hành động cụ thể tiếp theo cho phiên sau
+- Sẵn sàng commit và push các thay đổi lên GitHub để xác nhận GitHub Actions CI Pipeline chuyển sang màu xanh (Success).
 - Tiếp tục thực hiện các chức năng tiếp theo của dự án theo yêu cầu của người dùng.

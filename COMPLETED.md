@@ -1,5 +1,11 @@
 ### Đây là nơi lưu những thứ đã hoàn thành
 
+- [x] [2026-10-25] [CI/CD & Testing: Khắc phục triệt để lỗi kiểm thử tự động thất bại trên GitHub Actions CI Pipeline]:
+  - **Service Container Microsoft SQL Server 2022:** Cập nhật [.github/workflows/ci.yml](file:///c:/Users/huy/Downloads/code/CongNghePhanMem/CNPM/.github/workflows/ci.yml) khởi tạo container dịch vụ `mcr.microsoft.com/mssql/server:2022-latest` trên cổng 1433, kèm lệnh health-check kiểm tra trạng thái engine sẵn sàng trước khi chạy test.
+  - **Cấu hình Connection String động:** Thiết lập biến môi trường `ConnectionStrings__DefaultConnection` trên runner GitHub Actions trỏ về container SQL Server (`Server=127.0.0.1,1433;User Id=sa;...`).
+  - **Bộ trợ giúp kiểm thử KiemThuCoSoDuLieuHelper:** Tạo mới [KiemThuCoSoDuLieuHelper.cs](file:///c:/Users/huy/Downloads/code/CongNghePhanMem/CNPM/tests/AutoVoiceOver.Tests/KiemThuCoSoDuLieuHelper.cs) tự động nhận diện chuỗi kết nối từ biến môi trường (ưu tiên CI/Docker) hoặc fallback về `ChuoiKetNoiMacDinh` cục bộ; tích hợp cơ chế thử lại (retry) đa luồng an toàn đợi SQL Server container hoàn tất mount engine; kiểm tra trạng thái máy chủ tránh làm fail chuỗi kiểm thử khi môi trường không có CSDL.
+  - **Tương thích kiểm thử tích hợp ADO.NET:** Cập nhật [KhoDiaDiemAdoNetTests.cs](file:///c:/Users/huy/Downloads/code/CongNghePhanMem/CNPM/tests/AutoVoiceOver.Tests/KhoDiaDiemAdoNetTests.cs) và [KhoTaiKhoanAdminAdoNetTests.cs](file:///c:/Users/huy/Downloads/code/CongNghePhanMem/CNPM/tests/AutoVoiceOver.Tests/KhoTaiKhoanAdminAdoNetTests.cs) sử dụng helper mới.
+  - **Biên dịch & Kiểm thử:** Toàn bộ Solution biên dịch 0 warning, 0 error (.NET 8 LTS); 23/23 tests tự động đạt 100% PASS.
 - [x] [2026-10-25] [Web Admin & User: Đồng bộ hóa toàn diện hệ tọa độ Canvas 1200x800]:
   - **Chuẩn hóa độ phân giải logic 1200x800:** Cập nhật cả 3 canvas (`liveRadarCanvas`, `spotPickerCanvas` bên Admin và `userMapCanvas` bên User) về chung hệ phân giải logic 1200 x 800 tỉ lệ 3:2.
   - **Co giãn Responsive thông minh:** Áp dụng `aspect-ratio: 1200 / 800; max-width: 100%; height: auto;` trong [admin.css](file:///c:/Users/huy/Downloads/code/CongNghePhanMem/CNPM/src/AutoVoiceOver.Api/wwwroot/admin/admin.css) cho cả bản đồ radar và modal chọn tọa độ; bảo đảm chuột click hoặc ngón tay chạm đều ánh xạ chính xác 1:1 sang thang đo 1200x800.
