@@ -1219,11 +1219,11 @@ html.has-auth-token .login-screen-overlay {
 
 .login-card {
     width: 100%;
-    max-width: 440px;
+    max-width: 420px;
     background: rgba(17, 24, 39, 0.92);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: var(--radius-xl);
-    padding: 2.5rem 2rem;
+    padding: 2.25rem 2rem 1.6rem;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 30px rgba(59, 130, 246, 0.2);
     position: relative;
     overflow: hidden;
@@ -1253,13 +1253,13 @@ html.has-auth-token .login-screen-overlay {
 
 .login-header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .login-logo {
     width: 58px;
     height: 58px;
-    margin: 0 auto 1.25rem;
+    margin: 0 auto 1rem;
     background: linear-gradient(135deg, var(--primary) 0%, var(--accent-cyan) 100%);
     border-radius: var(--radius-lg);
     display: flex;
@@ -1308,6 +1308,10 @@ html.has-auth-token .login-screen-overlay {
     color: #fda4af;
 }
 
+.login-card .form-group {
+    margin-bottom: 1.15rem;
+}
+
 .input-with-icon {
     position: relative;
     display: flex;
@@ -1347,15 +1351,17 @@ html.has-auth-token .login-screen-overlay {
     padding: 12px;
     font-size: 0.98rem;
     font-weight: 600;
-    margin-top: 1rem;
+    margin-top: 1.25rem;
     justify-content: center;
     box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
 }
 
 .login-footer-info {
-    margin-top: 1.75rem;
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
     text-align: center;
-    font-size: 0.75rem;
+    font-size: 0.76rem;
     color: var(--text-dim);
 }
 
