@@ -28,9 +28,18 @@ builder.Services.AddSingleton<IDichVuThongKe, DichVuThongKe>(); // Singleton đ�
 builder.Services.AddScoped<IDichVuLuuTruTep, DichVuLuuTruTep>();
 builder.Services.AddScoped<IDichVuXacThucAdmin, DichVuXacThucAdmin>();
 
-// 4. Đăng ký Controllers & SignalR
+// 4. Đăng ký Controllers & SignalR (Cấu hình nhịp tim KeepAlive và Timeout chống rớt mạng)
 builder.Services.AddControllers();
-builder.Services.AddSignalR();
+builder.Services.AddSignalR(options =>
+{
+    // Chu kỳ gửi nhịp tim từ máy chủ đến các máy khách (mặc định 15s -> tối ưu 10s để chống timeout khi đi qua Ngrok)
+    options.KeepAliveInterval = TimeSpan.FromSeconds(10);
+    // Thời gian chờ phản hồi tối đa trước khi xem kết nối đã mất (mặc định 30s)
+    options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
+    // Thời gian tối đa để hoàn tất bắt tay giao thức SignalR
+    options.HandshakeTimeout = TimeSpan.FromSeconds(15);
+    options.EnableDetailedErrors = true;
+});
 
 // 5. Cấu hình CORS để Web Admin và Web User (Frontend) gọi API & WebSocket thông suốt
 builder.Services.AddCors(options =>

@@ -341,10 +341,10 @@ function initSignalR() {
             await signalrConnection.invoke('CapNhatToaDo', state.userPos.x, state.userPos.y).catch(console.error);
         });
 
-        // Nhịp tim định kỳ duy trì tọa độ trên Radar Admin khi du khách đứng im
+        // Nhịp tim định kỳ duy trì tọa độ trên Radar Admin khi du khách đứng yên (không gửi khi đang di chuyển)
         if (!window.__signalrHeartbeatInterval) {
             window.__signalrHeartbeatInterval = setInterval(() => {
-                if (signalrConnection && signalrConnection.state === signalR.HubConnectionState.Connected) {
+                if (!state.isMoving && signalrConnection && signalrConnection.state === signalR.HubConnectionState.Connected) {
                     signalrConnection.invoke('CapNhatToaDo', state.userPos.x, state.userPos.y).catch(() => {});
                 }
             }, 5000);
@@ -474,6 +474,8 @@ function startCanvasLoop() {
     animate();
 }
 
+let lastServerCoordUpdateTime = 0;
+
 function updateMovement() {
     const dx = state.targetPos.x - state.userPos.x;
     const dy = state.targetPos.y - state.userPos.y;
@@ -485,9 +487,20 @@ function updateMovement() {
         state.userPos.x += (dx / distance) * speed;
         state.userPos.y += (dy / distance) * speed;
 
-        // Cập nhật tọa độ hiển thị
-        document.getElementById('currentCoords').innerText = 
-            `(${state.userPos.x.toFixed(0)}, ${state.userPos.y.toFixed(0)})`;
+        // Cập nhật tọa độ hiển thị trên giao diện người dùng
+        const coordsEl = document.getElementById('currentCoords');
+        if (coordsEl) {
+            coordsEl.innerText = `(${state.userPos.x.toFixed(0)}, ${state.userPos.y.toFixed(0)})`;
+        }
+
+        // Tiết lưu (Throttle) gửi tọa độ lên máy chủ: tối đa 1 lần mỗi 150ms để tối ưu băng thông và chống nghẽn SignalR
+        const now = Date.now();
+        if (now - lastServerCoordUpdateTime > 150) {
+            lastServerCoordUpdateTime = now;
+            if (signalrConnection && signalrConnection.state === signalR.HubConnectionState.Connected) {
+                signalrConnection.invoke('CapNhatToaDo', state.userPos.x, state.userPos.y).catch(() => {});
+            }
+        }
 
         // Kiểm tra xem vị trí mới có nằm trong bán kính điểm tham quan nào không
         checkProximity(state.userPos.x, state.userPos.y);
@@ -496,10 +509,11 @@ function updateMovement() {
         state.isMoving = false;
         state.userPos.x = state.targetPos.x;
         state.userPos.y = state.targetPos.y;
+        lastServerCoordUpdateTime = Date.now();
 
-        // Báo tọa độ dừng cho Server qua SignalR
+        // Chốt tọa độ điểm dừng chân cuối cùng lên Server
         if (signalrConnection && signalrConnection.state === signalR.HubConnectionState.Connected) {
-            signalrConnection.invoke('CapNhatToaDo', state.userPos.x, state.userPos.y).catch(console.error);
+            signalrConnection.invoke('CapNhatToaDo', state.userPos.x, state.userPos.y).catch(() => {});
         }
 
         checkProximity(state.userPos.x, state.userPos.y);
@@ -760,7 +774,16 @@ function renderMap() {
 function initCanvasTouchEvents() {
     if (!canvas) return;
 
+    let lastTouchInteractionTime = 0;
+
     function handleInteraction(e) {
+        const now = Date.now();
+        // Khử sự kiện click ảo được trình duyệt tự sinh sau cử chỉ touchstart
+        if (e.type === 'click' && now - lastTouchInteractionTime < 400) {
+            return;
+        }
+        lastTouchInteractionTime = now;
+
         const rect = canvas.getBoundingClientRect();
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
         const clientY = e.touches ? e.touches[0].clientY : e.clientY;
@@ -777,11 +800,6 @@ function initCanvasTouchEvents() {
 
         // Kích hoạt âm thanh Web Audio ngay khi người dùng chạm bản đồ
         SoundEngine.init();
-
-        // Báo tọa độ tức thời cho Server qua SignalR
-        if (signalrConnection && signalrConnection.state === signalR.HubConnectionState.Connected) {
-            signalrConnection.invoke('CapNhatToaDo', state.targetPos.x, state.targetPos.y).catch(console.error);
-        }
 
         // Ẩn hướng dẫn sau lần chạm đầu
         const bubble = document.getElementById('instructionBubble');

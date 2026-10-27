@@ -334,36 +334,54 @@ function initSignalR() {
             }
         });
 
-        // 3. Nhận sự kiện du khách di chuyển tọa độ
+        // 3. Nhận sự kiện du khách di chuyển tọa độ (Bọc an toàn chống lỗi gián đoạn SignalR)
         connection.on('DuKhachDiChuyen', (visitor) => {
-            const existing = state.visitors.get(visitor.connectionId);
-            const x = Number(visitor.toaDoX ?? visitor.toadoX ?? existing?.toaDoX ?? existing?.toadoX ?? 600);
-            const y = Number(visitor.toaDoY ?? visitor.toadoY ?? existing?.toaDoY ?? existing?.toadoY ?? 400);
-            const name = visitor.tenDuKhach || existing?.tenDuKhach || 'Du khách';
+            try {
+                if (!visitor || !visitor.connectionId) return;
+                const existing = state.visitors.get(visitor.connectionId);
+                const x = Number(visitor.toaDoX ?? visitor.toadoX ?? existing?.toaDoX ?? existing?.toadoX ?? 600);
+                const y = Number(visitor.toaDoY ?? visitor.toadoY ?? existing?.toaDoY ?? existing?.toadoY ?? 400);
+                const name = visitor.tenDuKhach || existing?.tenDuKhach || 'Du khách';
 
-            state.visitors.set(visitor.connectionId, {
-                connectionId: visitor.connectionId,
-                tenDuKhach: name,
-                toaDoX: x,
-                toaDoY: y,
-                toadoX: x,
-                toadoY: y,
-                lanHoatDongCuoi: new Date()
-            });
-            renderVisitorTable();
-            renderRadarCanvas();
+                state.visitors.set(visitor.connectionId, {
+                    connectionId: visitor.connectionId,
+                    tenDuKhach: name,
+                    toaDoX: x,
+                    toaDoY: y,
+                    toadoX: x,
+                    toadoY: y,
+                    lanHoatDongCuoi: new Date()
+                });
+                renderVisitorTable();
+                renderRadarCanvas();
+            } catch (err) {
+                console.warn('Lỗi xử lý sự kiện DuKhachDiChuyen:', err);
+            }
         });
+
+        let reconnectNoticeTimer = null;
 
         connection.onreconnecting(() => {
             if (statusText) statusText.innerText = 'Đang kết nối lại...';
             if (statusBadge) statusBadge.style.borderColor = 'var(--accent-amber)';
+
+            // Chỉ cảnh báo nếu gián đoạn mạng kéo dài hơn 4 giây (chống nhấp nháy toast khi đổi tab)
+            if (!reconnectNoticeTimer) {
+                reconnectNoticeTimer = setTimeout(() => {
+                    showToast('Đang kết nối lại kênh thời gian thực...', 'warning');
+                }, 4000);
+            }
         });
 
         connection.onreconnected(() => {
             if (statusText) statusText.innerText = 'Trực tuyến';
             if (statusBadge) statusBadge.style.borderColor = 'var(--border-color)';
+            if (reconnectNoticeTimer) {
+                clearTimeout(reconnectNoticeTimer);
+                reconnectNoticeTimer = null;
+            }
+            // Đăng ký lại nhóm AdminDashboard và đồng bộ lại danh sách
             connection.invoke('DangKyAdmin').catch(err => console.error(err));
-            showToast('Kết nối thời gian thực đã khôi phục', 'success');
         });
 
         connection.onclose(() => {
