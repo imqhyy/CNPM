@@ -83,6 +83,9 @@
     <!-- Top Navigation Header -->
     <header class="admin-header">
         <div class="header-brand">
+            <button class="btn-toggle-sidebar" id="btnToggleSidebar" title="Ẩn/Hiện thanh điều hướng bên" aria-label="Toggle Sidebar">
+                <i class="fa-solid fa-bars"></i>
+            </button>
             <div class="brand-logo-icon">
                 <i class="fa-solid fa-headphones-simple"></i>
             </div>
@@ -93,25 +96,6 @@
         </div>
 
         <div class="header-status-area">
-            <!-- Real-time Online Indicator -->
-            <div class="live-pill" id="liveStatusBadge">
-                <span class="live-indicator-dot"></span>
-                <span class="live-text">SignalR: <strong id="signalrStatus">Đang kết nối...</strong></span>
-            </div>
-
-            <!-- Active Visitors Counter Widget -->
-            <div class="visitor-counter-card" title="Số du khách đang mở web tham quan">
-                <i class="fa-solid fa-users-viewfinder"></i>
-                <div class="visitor-counter-info">
-                    <span class="label">Du khách online</span>
-                    <span class="counter-number" id="onlineVisitorCount">0</span>
-                </div>
-            </div>
-
-            <button class="btn btn-outline" id="btnOpenQrModal" title="Mã QR mở trên điện thoại" style="color:var(--accent-teal); border-color:var(--accent-teal);">
-                <i class="fa-solid fa-qrcode"></i> <span>Mã QR Du Khách</span>
-            </button>
-
             <button class="btn btn-outline" id="btnRefreshData" title="Làm mới dữ liệu">
                 <i class="fa-solid fa-rotate"></i>
             </button>
@@ -132,7 +116,7 @@
     <!-- Main Admin Container -->
     <div class="admin-layout">
         <!-- Sidebar Navigation -->
-        <aside class="admin-sidebar">
+        <aside class="admin-sidebar" id="adminSidebar">
             <nav class="nav-menu">
                 <button class="nav-item active" data-tab="tab-live" id="navTabLive">
                     <i class="fa-solid fa-radar"></i>
@@ -153,6 +137,13 @@
             </nav>
 
             <div class="sidebar-footer">
+                <button class="btn btn-outline btn-sidebar-qr" id="btnOpenQrModal" title="Mã QR mở trên điện thoại">
+                    <i class="fa-solid fa-qrcode"></i> <span>Mã QR Du Khách</span>
+                </button>
+                <div class="sidebar-live-status" id="liveStatusBadge" title="Trạng thái kênh kết nối máy chủ">
+                    <span class="live-indicator-dot"></span>
+                    <span class="live-text">SignalR: <strong id="signalrStatus">Trực tuyến</strong></span>
+                </div>
                 <div class="system-tag">
                     <i class="fa-solid fa-shield-halved"></i>
                     <span>AutoVoiceOver v2.0 - Kiến trúc 3 Lớp</span>

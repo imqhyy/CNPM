@@ -96,12 +96,39 @@ document.addEventListener('DOMContentLoaded', () => {
     initAuth();
 });
 
+
+// ==========================================
+// 2.0. Quản lý Ẩn/Hiện thanh điều hướng bên (Sidebar Toggle)
+// ==========================================
+function initSidebarToggle() {
+    const btnToggle = document.getElementById('btnToggleSidebar');
+    const layout = document.querySelector('.admin-layout');
+    if (!btnToggle || !layout) return;
+
+    // Khôi phục trạng thái thu gọn đã lưu từ localStorage
+    const savedState = localStorage.getItem('admin_sidebar_collapsed');
+    if (savedState === 'true') {
+        layout.classList.add('sidebar-collapsed');
+    }
+
+    btnToggle.addEventListener('click', () => {
+        const isCollapsed = layout.classList.toggle('sidebar-collapsed');
+        localStorage.setItem('admin_sidebar_collapsed', isCollapsed ? 'true' : 'false');
+
+        // Kích hoạt vẽ lại Canvas Radar để tự động khớp theo không gian mới
+        setTimeout(() => {
+            renderRadarCanvas();
+        }, 320);
+    });
+}
+
 function startAdminApp() {
     if (isAppInitialized) {
         fetchInitialData();
         return;
     }
     isAppInitialized = true;
+    initSidebarToggle();
     initTabs();
     initSignalR();
     initCanvasEvents();
