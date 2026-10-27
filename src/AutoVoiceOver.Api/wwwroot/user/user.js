@@ -303,8 +303,10 @@ function unlockMobileAudio() {
 function updateHeaderUI() {
     const nameEl = document.getElementById('displayNickname');
     const langLabel = document.getElementById('currentLangLabel');
+    const dockLangLabel = document.getElementById('dockCurrentLangLabel');
     if (nameEl) nameEl.innerText = state.nickname;
     if (langLabel) langLabel.innerText = state.currentLang.toUpperCase();
+    if (dockLangLabel) dockLangLabel.innerText = state.currentLang.toUpperCase();
 }
 
 // ==========================================
@@ -964,6 +966,22 @@ async function updatePlayerDockUI(narration) {
     document.getElementById('btnForward5s').disabled = false;
     document.getElementById('btnOpenNarrationText').disabled = false;
 
+    // Đồng bộ nhãn ngôn ngữ trên dock
+    const dockLangLabel = document.getElementById('dockCurrentLangLabel');
+    if (dockLangLabel) {
+        dockLangLabel.innerText = (narration.maNgonNgu || state.currentLang).toUpperCase();
+    }
+
+    // Làm nổi bật các ngôn ngữ có sẵn audio thực sự của điểm tham quan này
+    if (narration.danhSachNgonNguCoSan && Array.isArray(narration.danhSachNgonNguCoSan)) {
+        const dockOptions = document.querySelectorAll('.dock-lang-option');
+        dockOptions.forEach(opt => {
+            const langCode = opt.getAttribute('data-lang');
+            const isAvailable = narration.danhSachNgonNguCoSan.includes(langCode);
+            opt.classList.toggle('has-audio', isAvailable);
+        });
+    }
+
     // Cập nhật sheet văn bản
     updateNarrationSheetUI(narration);
 }
@@ -1136,38 +1154,80 @@ function updateNarrationSheetUI(narration) {
 // 12. Chuyển đổi Ngôn ngữ (Language Switcher)
 // ==========================================
 function initLanguageSelector() {
-    const langBtn = document.getElementById('langSelectorBtn');
-    const dropdown = document.getElementById('langDropdown');
-    const options = document.querySelectorAll('.lang-option');
+    const headerLangBtn = document.getElementById('langSelectorBtn');
+    const headerDropdown = document.getElementById('langDropdown');
+    const headerOptions = document.querySelectorAll('.lang-option');
 
-    langBtn?.addEventListener('click', (e) => {
+    const dockLangBtn = document.getElementById('btnDockLang');
+    const dockDropdown = document.getElementById('dockLangDropdown');
+    const dockOptions = document.querySelectorAll('.dock-lang-option');
+
+    // 1. Bật/tắt dropdown Header
+    headerLangBtn?.addEventListener('click', (e) => {
         e.stopPropagation();
-        dropdown?.classList.toggle('show');
+        dockDropdown?.classList.remove('show');
+        headerDropdown?.classList.toggle('show');
     });
 
-    document.addEventListener('click', () => {
-        dropdown?.classList.remove('show');
+    // 2. Bật/tắt dropdown trên thanh Audio Dock Player
+    dockLangBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        headerDropdown?.classList.remove('show');
+        dockDropdown?.classList.toggle('show');
     });
 
-    options.forEach(opt => {
-        opt.addEventListener('click', async () => {
-            const lang = opt.getAttribute('data-lang');
-            options.forEach(o => o.classList.remove('active'));
-            opt.classList.add('active');
+    // 3. Đóng tất cả dropdown khi nhấn ra ngoài
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#langSelectorBtn') && !e.target.closest('#langDropdown')) {
+            headerDropdown?.classList.remove('show');
+        }
+        if (!e.target.closest('#btnDockLang') && !e.target.closest('#dockLangDropdown')) {
+            dockDropdown?.classList.remove('show');
+        }
+    });
 
-            state.currentLang = lang;
-            sessionStorage.setItem('visitor_lang', lang);
-            updateHeaderUI();
-            dropdown?.classList.remove('show');
+    // 4. Hàm xử lý chuyển đổi ngôn ngữ dùng chung cho cả 2 vị trí
+    async function switchLanguage(lang) {
+        if (!lang) return;
 
-            // Nếu đang trong điểm tham quan -> nạp lại audio và văn bản theo ngôn ngữ mới
-            if (state.activeSpotId) {
-                const savedTime = SoundEngine.getCurrentTime();
-                await playNarrationForSpot(state.activeSpotId, lang);
-                if (savedTime > 0) {
-                    SoundEngine.seek(savedTime);
-                }
+        state.currentLang = lang;
+        sessionStorage.setItem('visitor_lang', lang);
+
+        // Đồng bộ trạng thái active trên cả 2 menu
+        headerOptions.forEach(o => o.classList.toggle('active', o.getAttribute('data-lang') === lang));
+        dockOptions.forEach(o => o.classList.toggle('active', o.getAttribute('data-lang') === lang));
+
+        // Cập nhật nhãn hiển thị trên cả Header và Dock
+        updateHeaderUI();
+
+        // Đóng cả 2 menu
+        headerDropdown?.classList.remove('show');
+        dockDropdown?.classList.remove('show');
+
+        // Nếu du khách đang nghe điểm tham quan -> nạp và phát tiếp ngay tại mốc thời gian hiện tại
+        if (state.activeSpotId) {
+            const savedTime = SoundEngine.getCurrentTime();
+            await playNarrationForSpot(state.activeSpotId, lang);
+            if (savedTime > 0) {
+                // Tiếp tục phát mốc thời gian cũ để trải nghiệm nghe không bị đứt đoạn
+                SoundEngine.seek(savedTime);
             }
+        }
+    }
+
+    // 5. Gắn sự kiện cho các lựa chọn trên Header
+    headerOptions.forEach(opt => {
+        opt.addEventListener('click', () => {
+            const lang = opt.getAttribute('data-lang');
+            switchLanguage(lang);
+        });
+    });
+
+    // 6. Gắn sự kiện cho các lựa chọn trên Audio Dock Player
+    dockOptions.forEach(opt => {
+        opt.addEventListener('click', () => {
+            const lang = opt.getAttribute('data-lang');
+            switchLanguage(lang);
         });
     });
 }

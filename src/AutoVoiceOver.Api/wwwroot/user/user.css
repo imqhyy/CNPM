@@ -1047,3 +1047,166 @@ label i {
 
 .text-accent { color: var(--accent-cyan); }
 .text-xs { font-size: 0.65rem; }
+
+/* ==========================================================================
+   Language Switcher trên Audio Dock Player
+   ========================================================================== */
+.dock-lang-wrapper {
+    position: relative;
+    display: inline-flex;
+}
+
+.btn-dock-lang {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--accent-gold);
+    border-color: rgba(245, 158, 11, 0.35);
+    position: relative;
+}
+
+.btn-dock-lang:hover:not(:disabled) {
+    background: var(--accent-gold);
+    color: #000;
+    border-color: var(--accent-gold);
+}
+
+.dock-lang-code {
+    font-size: 0.55rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-top: 1px;
+    letter-spacing: 0.5px;
+}
+
+/* Dropdown popover mở ngược lên phía trên thanh Dock */
+.dock-lang-dropdown {
+    position: absolute;
+    bottom: calc(100% + 12px);
+    right: 0;
+    width: 210px;
+    background: rgba(15, 23, 42, 0.96);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    padding: 0.5rem;
+    display: none;
+    flex-direction: column;
+    z-index: 250;
+    animation: slideUpFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dock-lang-dropdown.show {
+    display: flex;
+}
+
+.dock-lang-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 6px 10px 8px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 4px;
+}
+
+.dock-lang-options {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    max-height: 230px;
+    overflow-y: auto;
+}
+
+.dock-lang-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: var(--radius-md);
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.84rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: left;
+    width: 100%;
+}
+
+.dock-lang-option:hover {
+    background: var(--bg-surface-elevated);
+    color: #fff;
+}
+
+.dock-lang-option.active {
+    background: rgba(245, 158, 11, 0.18);
+    color: var(--accent-gold);
+    font-weight: 700;
+}
+
+.dock-lang-option .lang-flag {
+    font-size: 1.05rem;
+}
+
+.dock-lang-option .lang-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dock-lang-option .lang-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 5px;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-muted);
+}
+
+.dock-lang-option.active .lang-badge {
+    background: var(--accent-gold);
+    color: #000;
+}
+
+.dock-lang-option.has-audio .lang-name::after {
+    content: ' •';
+    color: var(--accent-emerald);
+}
+
+@keyframes slideUpFade {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Tối ưu không gian các nút Dock trên màn hình điện thoại hẹp */
+@media (max-width: 420px) {
+    .dock-controls {
+        gap: 5px;
+    }
+    .btn-audio-circle {
+        width: 35px;
+        height: 35px;
+    }
+    .btn-play-main {
+        width: 42px;
+        height: 42px;
+    }
+    .dock-thumb-wrapper {
+        width: 42px;
+        height: 42px;
+    }
+}
