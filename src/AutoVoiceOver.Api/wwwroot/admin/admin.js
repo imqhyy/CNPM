@@ -131,7 +131,6 @@ async function initAuth() {
     const iconEye = document.getElementById('iconEye');
     const loginAlert = document.getElementById('loginAlert');
     const loginAlertMsg = document.getElementById('loginAlertMsg');
-    const btnQuickFill = document.getElementById('btnQuickFillAdmin');
     const headerProfile = document.getElementById('headerUserProfile');
     const headerAdminName = document.getElementById('headerAdminName');
     const btnLogout = document.getElementById('btnLogout');
@@ -148,14 +147,6 @@ async function initAuth() {
     function hideLoginError() {
         if (loginAlert) loginAlert.classList.remove('show');
     }
-
-    // Nút điền nhanh tài khoản mẫu (admin1 / 123456789)
-    btnQuickFill?.addEventListener('click', () => {
-        if (inputUsername) inputUsername.value = 'admin1';
-        if (inputPassword) inputPassword.value = '123456789';
-        hideLoginError();
-        inputPassword?.focus();
-    });
 
     // Nút bật/tắt hiển thị mật khẩu
     btnTogglePwd?.addEventListener('click', () => {

@@ -1352,45 +1352,6 @@ html.has-auth-token .login-screen-overlay {
     box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
 }
 
-.demo-account-box {
-    margin-top: 1.5rem;
-    padding: 12px 14px;
-    background: rgba(31, 41, 55, 0.6);
-    border: 1px dashed rgba(255, 255, 255, 0.15);
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-}
-
-.demo-account-box:hover {
-    background: rgba(59, 130, 246, 0.12);
-    border-color: var(--primary);
-}
-
-.demo-account-title {
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 4px;
-}
-
-.demo-account-details {
-    font-size: 0.84rem;
-    color: var(--accent-cyan);
-    font-family: monospace;
-}
-
-.demo-account-click-hint {
-    font-size: 0.74rem;
-    color: var(--accent-emerald);
-    float: right;
-    font-family: var(--font-sans);
-}
-
 .login-footer-info {
     margin-top: 1.75rem;
     text-align: center;
