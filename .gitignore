@@ -486,3 +486,21 @@ $RECYCLE.BIN/
 *.db-wal
 *.db-shm
 
+# Agent skills & customizations
+.agents/
+.archify/
+
+# Ngrok custom domain config
+ngrok_domain.txt
+
+# Tài liệu môn học
+Công nghệ phần mềm.docx
+Công nghệ phần mềm.xml
+
+# Local dev scripts & Agent workflow tracking
+run_server.bat
+scratch/
+SCRATCHPAD.md
+TODO.md
+GEMINI.md
+COMPLETED.md

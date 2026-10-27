@@ -233,28 +233,49 @@
         </a>
     </div>
 
-    <!-- QR Code Scan Box for Mobile LAN test -->
+    <!-- Khung quét mã QR thông minh cho điện thoại -->
     <div class="qr-section">
         <div class="qr-box" id="qrcode"></div>
         <div class="qr-desc">
             <h3><i class="fa-solid fa-qrcode text-accent"></i> Quét mã QR để mở trên Điện thoại</h3>
-            <p>Mở camera điện thoại (cùng kết nối Wi-Fi) quét mã để trải nghiệm Web User tự động thuyết minh như khách tham quan thực tế.</p>
+            <p id="qrDescText">Đang tự động phát hiện đường dẫn tối ưu (Ngrok / Wi-Fi)...</p>
             <span class="qr-link-pill" id="qrLinkText">Đang tạo liên kết QR...</span>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const currentHost = window.location.host;
-            const userUrl = window.location.protocol + '//' + currentHost + '/user/';
+        document.addEventListener('DOMContentLoaded', async () => {
+            const qrBox = document.getElementById("qrcode");
+            const linkText = document.getElementById('qrLinkText');
+            const descText = document.getElementById('qrDescText');
             
-            document.getElementById('qrLinkText').innerText = userUrl;
+            let finalUserUrl = window.location.protocol + '//' + window.location.host + '/user/';
+
+            try {
+                const res = await fetch('/api/HeThong/qr-link');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.userUrl) {
+                        finalUserUrl = data.userUrl;
+                        if (data.loaiKetNoi === 'Ngrok') {
+                            descText.innerHTML = '<span style="color:#10b981;font-weight:600;"><i class="fa-solid fa-cloud"></i> Đường hầm Ngrok:</span> Dùng được cho mọi mạng (4G, 5G hoặc khác Wi-Fi). Mở camera điện thoại quét để vào ngay!';
+                        } else {
+                            descText.innerHTML = '<span style="color:#f59e0b;font-weight:600;"><i class="fa-solid fa-wifi"></i> Mạng nội bộ:</span> Điện thoại cần kết nối cùng Wi-Fi với máy tính để truy cập.';
+                        }
+                    }
+                }
+            } catch (e) {
+                console.warn('Không thể lấy liên kết Ngrok tự động, dùng địa chỉ hiện tại:', e);
+            }
+
+            linkText.innerText = finalUserUrl;
+            qrBox.innerHTML = '';
 
             // Sinh mã QR tự động bằng qrcodejs
-            new QRCode(document.getElementById("qrcode"), {
-                text: userUrl,
-                width: 100,
-                height: 100,
+            new QRCode(qrBox, {
+                text: finalUserUrl,
+                width: 110,
+                height: 110,
                 colorDark : "#000000",
                 colorLight : "#ffffff",
                 correctLevel : QRCode.CorrectLevel.M

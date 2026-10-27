@@ -124,9 +124,15 @@ public class QuanLyDiaDiemController : ControllerBase
     [HttpPost("thuyet-minh")]
     public async Task<IActionResult> ThemHoacCapNhatThuyetMinh([FromBody] NoiDungThuyetMinhDto dto)
     {
-        if (dto.MaDiaDiem == Guid.Empty || string.IsNullOrWhiteSpace(dto.VanBanThuyetMinh) || string.IsNullOrWhiteSpace(dto.DuongDanAmThanh))
+        if (dto.MaDiaDiem == Guid.Empty || string.IsNullOrWhiteSpace(dto.DuongDanAmThanh))
         {
-            return BadRequest(new { message = "Thiếu thông tin thuyết minh (mã điểm, văn bản, đường dẫn âm thanh)." });
+            return BadRequest(new { message = "Thiếu thông tin điểm tham quan hoặc đường dẫn tệp âm thanh." });
+        }
+
+        // Nếu người quản trị không nhập văn bản, tự động lấy tiêu đề làm nội dung hiển thị
+        if (string.IsNullOrWhiteSpace(dto.VanBanThuyetMinh))
+        {
+            dto.VanBanThuyetMinh = string.IsNullOrWhiteSpace(dto.TieuDe) ? "Nội dung bài thuyết minh âm thanh." : dto.TieuDe;
         }
 
         var id = await _dichVuQuanLy.ThemHoacCapNhatNoiDungAsync(dto);
@@ -134,10 +140,11 @@ public class QuanLyDiaDiemController : ControllerBase
     }
 
     /// <summary>
-    /// Tải lên file âm thanh thuyết minh (MP3, WAV, M4A)
+    /// Tải lên file âm thanh thuyết minh (MP3, WAV, M4A, OGG) - Hạn mức tối đa 100MB
     /// </summary>
     [HttpPost("upload-audio")]
     [Consumes("multipart/form-data")]
+    [RequestSizeLimit(104857600)]
     public async Task<IActionResult> TaiLenFileAmThanh(IFormFile file)
     {
         if (file == null || file.Length == 0)

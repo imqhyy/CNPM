@@ -106,25 +106,34 @@ public class DichVuDuKhach : IDichVuDuKhach
         return danhSach.Select(n => n.MaNgonNgu).Distinct().ToList();
     }
 
+    /// <summary>
+    /// Kiểm tra vị trí của du khách (x, y) và giải quyết tranh chấp vùng lồng nhau (Geofence Contention).
+    /// Quy tắc giải quyết:
+    /// 1. Lọc tất cả các điểm mà khoảng cách d <= bán kính nhận diện r.
+    /// 2. Ưu tiên điểm có bán kính nhỏ hơn (vùng đặc thù, chi tiết bên trong).
+    /// 3. Nếu cùng bán kính, ưu tiên điểm có khoảng cách tới tâm gần hơn.
+    /// </summary>
+    /// <param name="x">Tọa độ trục ngang của du khách</param>
+    /// <param name="y">Tọa độ trục dọc của du khách</param>
+    /// <param name="maBanDo">Mã bản đồ khu vực (nếu có)</param>
+    /// <returns>Điểm tham quan được ưu tiên kích hoạt, hoặc null nếu ngoài mọi phạm vi</returns>
     public async Task<DiaDiemDto?> KiemTraDiemTrongPhamViAsync(double x, double y, Guid? maBanDo = null)
     {
         var dsDiaDiem = await LayDanhSachDiaDiemAsync(maBanDo);
 
-        // Tìm điểm gần nhất mà khoảng cách <= bán kính nhận diện của điểm đó
-        DiaDiemDto? diemGanNhat = null;
-        double minDistance = double.MaxValue;
-
-        foreach (var diem in dsDiaDiem)
-        {
-            var distance = TinhKhoangCachEuclid(x, y, diem.ToaDoX, diem.ToaDoY);
-            if (distance <= diem.PhamViNhanDienMet && distance < minDistance)
+        // Lọc tất cả các điểm thỏa mãn điều kiện nằm trong bán kính nhận diện
+        // Sắp xếp ưu tiên: Bán kính nhỏ nhất (vùng chi tiết lõi) -> Khoảng cách tới tâm gần nhất
+        return dsDiaDiem
+            .Select(diem => new
             {
-                minDistance = distance;
-                diemGanNhat = diem;
-            }
-        }
-
-        return diemGanNhat;
+                Diem = diem,
+                KhoangCach = TinhKhoangCachEuclid(x, y, diem.ToaDoX, diem.ToaDoY)
+            })
+            .Where(item => item.KhoangCach <= item.Diem.PhamViNhanDienMet)
+            .OrderBy(item => item.Diem.PhamViNhanDienMet)
+            .ThenBy(item => item.KhoangCach)
+            .Select(item => item.Diem)
+            .FirstOrDefault();
     }
 
     private static double TinhKhoangCachEuclid(double x1, double y1, double x2, double y2)

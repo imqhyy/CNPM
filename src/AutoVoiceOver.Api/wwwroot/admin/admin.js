@@ -808,6 +808,12 @@ function initModalsAndForms() {
     document.getElementById('btnCloseNarrationModal')?.addEventListener('click', () => closeModal('modalNarration'));
     document.getElementById('btnCancelNarrationModal')?.addEventListener('click', () => closeModal('modalNarration'));
 
+    // Modal Mã QR Du Khách
+    document.getElementById('btnOpenQrModal')?.addEventListener('click', openAdminQrModal);
+    document.getElementById('btnCloseAdminQrModal')?.addEventListener('click', () => closeModal('modalAdminQr'));
+    document.getElementById('btnCancelAdminQrModal')?.addEventListener('click', () => closeModal('modalAdminQr'));
+    document.getElementById('btnCopyAdminQrUrl')?.addEventListener('click', copyAdminQrUrl);
+
     // Submit Thêm / Sửa Điểm
     document.getElementById('formSpot')?.addEventListener('submit', handleSpotSubmit);
 
@@ -1423,6 +1429,10 @@ async function handleNarrationSubmit(e) {
             if (uploadRes.ok) {
                 const data = await uploadRes.json();
                 audioUrl = data.url;
+            } else {
+                const errData = await uploadRes.json().catch(() => null);
+                showToast(errData?.message || 'Không thể tải file âm thanh (kiểm tra dung lượng file)', 'error');
+                return;
             }
         } catch (err) {
             console.error('Audio upload failed:', err);
@@ -1440,7 +1450,7 @@ async function handleNarrationSubmit(e) {
         maNgonNgu: langCode,
         tenNgonNgu: langName,
         tieuDe: title,
-        vanBanThuyetMinh: content,
+        vanBanThuyetMinh: content || title,
         duongDanAmThanh: audioUrl,
         thoiLuongGiay: 60
     };
@@ -1452,13 +1462,15 @@ async function handleNarrationSubmit(e) {
             body: JSON.stringify(payload)
         });
 
+        const data = await res.json().catch(() => null);
+
         if (res.ok) {
             closeModal('modalNarration');
             showToast('Đã lưu nội dung thuyết minh và audio thành công!', 'success');
             await selectSpotForNarration(spotId);
             await loadSpots();
         } else {
-            showToast('Lỗi khi lưu thuyết minh', 'error');
+            showToast(data?.message || 'Lỗi khi lưu thuyết minh', 'error');
         }
     } catch (err) {
         console.error(err);
@@ -1593,4 +1605,69 @@ function escapeHtml(str) {
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
+}
+
+// ==========================================
+// 13. Tiện ích: Quản lý & Hiển thị Mã QR Du Khách
+// ==========================================
+let currentAdminQrUrl = '';
+
+async function openAdminQrModal() {
+    const qrBox = document.getElementById('adminQrBox');
+    const badge = document.getElementById('adminQrTypeBadge');
+    const urlText = document.getElementById('adminQrUrlText');
+    if (!qrBox) return;
+
+    openModal('modalAdminQr');
+    qrBox.innerHTML = '<div style="padding: 30px 10px; color: var(--accent-teal);"><i class="fa-solid fa-spinner fa-spin fa-2x"></i></div>';
+    if (badge) badge.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tự động kiểm tra liên kết...';
+    if (urlText) urlText.innerText = 'Đang tải thông tin...';
+
+    let finalUrl = window.location.protocol + '//' + window.location.host + '/user/';
+
+    try {
+        const res = await fetch('/api/HeThong/qr-link');
+        if (res.ok) {
+            const data = await res.json();
+            if (data && data.userUrl) {
+                finalUrl = data.userUrl;
+                if (badge) {
+                    if (data.loaiKetNoi === 'Ngrok') {
+                        badge.style.color = '#10b981';
+                        badge.style.background = 'rgba(16, 185, 129, 0.15)';
+                        badge.innerHTML = '<i class="fa-solid fa-cloud"></i> Đường hầm Ngrok (Mạng ngoài / 4G / 5G)';
+                    } else {
+                        badge.style.color = '#f59e0b';
+                        badge.style.background = 'rgba(245, 158, 11, 0.15)';
+                        badge.innerHTML = '<i class="fa-solid fa-wifi"></i> Mạng nội bộ (Điện thoại cùng Wi-Fi)';
+                    }
+                }
+            }
+        }
+    } catch (e) {
+        console.warn('Lỗi tải qr-link:', e);
+        if (badge) badge.innerText = 'Địa chỉ cục bộ';
+    }
+
+    currentAdminQrUrl = finalUrl;
+    if (urlText) urlText.innerText = finalUrl;
+    qrBox.innerHTML = '';
+
+    new QRCode(qrBox, {
+        text: finalUrl,
+        width: 170,
+        height: 170,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.M
+    });
+}
+
+function copyAdminQrUrl() {
+    if (!currentAdminQrUrl) return;
+    navigator.clipboard.writeText(currentAdminQrUrl).then(() => {
+        showToast('Đã sao chép liên kết vào bộ nhớ tạm!', 'success');
+    }).catch(() => {
+        showToast('Không thể sao chép tự động, vui lòng copy thủ công', 'error');
+    });
 }

@@ -792,43 +792,52 @@ let lastTriggerTime = 0;
 async function checkProximity(ux, uy) {
     if (state.spots.length === 0) return;
 
-    // Tìm điểm tham quan gần nhất mà khoảng cách d <= r
-    let matchedSpot = null;
-
+    // Giải quyết ngoại lệ tranh chấp vùng lồng nhau (Geofence Contention):
+    // 1. Quét tìm tất cả các điểm mà du khách đang đứng bên trong (dist <= radius)
+    const candidates = [];
     for (const spot of state.spots) {
         const dist = Math.hypot(ux - spot.toaDoX, uy - spot.toaDoY);
         const radius = spot.phamViNhanDienMet || 50;
         if (dist <= radius) {
-            matchedSpot = spot;
-            break;
+            candidates.push({ spot, dist, radius });
         }
     }
 
-    if (matchedSpot) {
-        // Nếu đã ở trong điểm này và đang phát thì không kích hoạt lại
-        if (state.activeSpotId === matchedSpot.maDiaDiem) return;
-
-        // Chống spam trigger liên tục
-        const now = Date.now();
-        if (now - lastTriggerTime < 1500) return;
-        lastTriggerTime = now;
-
-        state.activeSpotId = matchedSpot.maDiaDiem;
-        console.log(`Đã vào phạm vi điểm: ${matchedSpot.tenDiaDiem}`);
-
-        // Hiện banner thông báo đã đến gần
-        showProximityBanner(matchedSpot.tenDiaDiem);
-
-        // Nạp và phát thuyết minh theo ngôn ngữ
-        await playNarrationForSpot(matchedSpot.maDiaDiem, state.currentLang);
-
-    } else {
-        // Ra khỏi mọi điểm tham quan
+    // Nếu không nằm trong bất kỳ điểm nào
+    if (candidates.length === 0) {
         if (state.activeSpotId !== null) {
             state.activeSpotId = null;
             hideProximityBanner();
         }
+        return;
     }
+
+    // 2. Sắp xếp ưu tiên:
+    // - Ưu tiên 1: Điểm có bán kính nhỏ nhất (vùng chi tiết lõi bên trong như Thềm Rồng 50m thay vì Toàn khu 250m)
+    // - Ưu tiên 2: Khoảng cách tới tâm gần nhất nếu cùng bán kính
+    candidates.sort((a, b) => {
+        if (a.radius !== b.radius) return a.radius - b.radius;
+        return a.dist - b.dist;
+    });
+
+    const matchedSpot = candidates[0].spot;
+
+    // Nếu vẫn ở trong điểm này và đang phát thì không kích hoạt lại
+    if (state.activeSpotId === matchedSpot.maDiaDiem) return;
+
+    // Chống kích hoạt lặp liên tục trong thời gian ngắn
+    const now = Date.now();
+    if (now - lastTriggerTime < 1500) return;
+    lastTriggerTime = now;
+
+    state.activeSpotId = matchedSpot.maDiaDiem;
+    console.log(`Đã vào phạm vi điểm ưu tiên: ${matchedSpot.tenDiaDiem} (Bán kính: ${matchedSpot.phamViNhanDienMet}m)`);
+
+    // Hiện banner thông báo đã đến gần
+    showProximityBanner(matchedSpot.tenDiaDiem);
+
+    // Nạp và phát thuyết minh theo ngôn ngữ
+    await playNarrationForSpot(matchedSpot.maDiaDiem, state.currentLang);
 }
 
 function showProximityBanner(spotName, isPlaying = true) {
