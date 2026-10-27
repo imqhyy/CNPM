@@ -148,6 +148,10 @@ async function initAuth() {
         if (loginAlert) loginAlert.classList.remove('show');
     }
 
+    // Tự động ẩn thông báo lỗi khi người dùng bắt đầu gõ lại thông tin
+    inputUsername?.addEventListener('input', hideLoginError);
+    inputPassword?.addEventListener('input', hideLoginError);
+
     // Nút bật/tắt hiển thị mật khẩu
     btnTogglePwd?.addEventListener('click', () => {
         if (!inputPassword) return;
@@ -172,6 +176,7 @@ async function initAuth() {
         }
         if (headerProfile) headerProfile.style.display = 'none';
         if (loginScreen) loginScreen.classList.remove('hidden');
+        if (inputUsername) inputUsername.value = '';
         if (inputPassword) inputPassword.value = '';
         hideLoginError();
         showToast('Đã đăng xuất khỏi cổng Quản trị.', 'info');
