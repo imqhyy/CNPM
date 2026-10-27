@@ -115,7 +115,15 @@ public static class KhoiTaoCoSoDuLieuAdoNet
         }
 
         // 3. Nạp dữ liệu mẫu ban đầu bằng ADO.NET nếu chưa có (DML Seed Data)
-        await NapDuLieuMauAsync(connection);
+        try
+        {
+            await NapDuLieuMauAsync(connection);
+        }
+        catch (Exception ex)
+        {
+            // Bọc an toàn: Nếu dữ liệu mẫu đã tồn tại từ trước hoặc có ràng buộc khóa ngoại, ghi nhận cảnh báo và tiếp tục khởi động
+            Console.WriteLine($"[Cảnh báo nạp dữ liệu mẫu CSDL ADO.NET]: {ex.Message}");
+        }
     }
 
     private static async Task NapDuLieuMauAsync(SqlConnection connection)
@@ -208,8 +216,13 @@ public static class KhoiTaoCoSoDuLieuAdoNet
         var maNd1En = "44444444-4444-4444-4444-444444444442";
         var maNd2Vi = "55555555-5555-5555-5555-555555555551";
 
+        // Kiểm tra an toàn cả MaNoiDung và cặp ràng buộc duy nhất (MaDiaDiem, MaNgonNgu) để chống lỗi 2627
         var sqlInsertNd = @"
-            IF NOT EXISTS (SELECT 1 FROM dbo.NoiDungThuyetMinhs WHERE MaNoiDung = @MaNoiDung)
+            IF NOT EXISTS (
+                SELECT 1 FROM dbo.NoiDungThuyetMinhs 
+                WHERE MaNoiDung = @MaNoiDung 
+                   OR (MaDiaDiem = @MaDiaDiem AND MaNgonNgu = @MaNgonNgu)
+            )
             BEGIN
                 INSERT INTO dbo.NoiDungThuyetMinhs (
                     MaNoiDung, MaDiaDiem, MaNgonNgu, TenNgonNgu, TieuDe, VanBanThuyetMinh, DuongDanAmThanh, ThoiLuongGiay, NgayCapNhat

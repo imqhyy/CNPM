@@ -67,11 +67,18 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// 7. Tự động kiểm tra và khởi tạo Database + Dữ liệu mẫu hoàn toàn bằng ADO.NET khi khởi động
-using (var scope = app.Services.CreateScope())
+// 7. Tự động kiểm tra và khởi tạo Database + Dữ liệu mẫu hoàn toàn bằng ADO.NET khi khởi động (Bọc an toàn chống sập Kestrel)
+try
 {
-    var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
-    await KhoiTaoCoSoDuLieuAdoNet.KhoiTaoDatabaseAsync(config);
+    using (var scope = app.Services.CreateScope())
+    {
+        var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+        await KhoiTaoCoSoDuLieuAdoNet.KhoiTaoDatabaseAsync(config);
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"[Cảnh báo khởi tạo CSDL]: {ex.Message}");
 }
 
 // 8. Đảm bảo các thư mục upload tĩnh tồn tại trong wwwroot
