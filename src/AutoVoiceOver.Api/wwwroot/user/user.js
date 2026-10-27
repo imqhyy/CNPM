@@ -311,6 +311,15 @@ function updateHeaderUI() {
 // 4. Kết nối SignalR Hub (Du khách tham gia)
 // ==========================================
 function initSignalR() {
+    if (signalrConnection) {
+        if (signalrConnection.state === signalR.HubConnectionState.Connected) {
+            signalrConnection.invoke('ThamGiaPhien', state.nickname)
+                .then(() => signalrConnection.invoke('CapNhatToaDo', state.userPos.x, state.userPos.y))
+                .catch(console.error);
+        }
+        return;
+    }
+
     try {
         signalrConnection = new signalR.HubConnectionBuilder()
             .withUrl('/hub/theodoi')
@@ -318,19 +327,28 @@ function initSignalR() {
             .build();
 
         signalrConnection.start()
-            .then(() => {
+            .then(async () => {
                 console.log('SignalR connected as Visitor');
-                // Gửi nickname lên máy chủ
-                signalrConnection.invoke('ThamGiaPhien', state.nickname).catch(console.error);
-                // Gửi tọa độ ban đầu
-                signalrConnection.invoke('CapNhatToaDo', state.userPos.x, state.userPos.y).catch(console.error);
+                // 1. Gửi nickname lên máy chủ trước
+                await signalrConnection.invoke('ThamGiaPhien', state.nickname);
+                // 2. Gửi tọa độ ban đầu
+                await signalrConnection.invoke('CapNhatToaDo', state.userPos.x, state.userPos.y);
             })
             .catch(err => console.warn('SignalR connection failed:', err));
 
-        signalrConnection.onreconnected(() => {
-            signalrConnection.invoke('ThamGiaPhien', state.nickname).catch(console.error);
-            signalrConnection.invoke('CapNhatToaDo', state.userPos.x, state.userPos.y).catch(console.error);
+        signalrConnection.onreconnected(async () => {
+            await signalrConnection.invoke('ThamGiaPhien', state.nickname).catch(console.error);
+            await signalrConnection.invoke('CapNhatToaDo', state.userPos.x, state.userPos.y).catch(console.error);
         });
+
+        // Nhịp tim định kỳ duy trì tọa độ trên Radar Admin khi du khách đứng im
+        if (!window.__signalrHeartbeatInterval) {
+            window.__signalrHeartbeatInterval = setInterval(() => {
+                if (signalrConnection && signalrConnection.state === signalR.HubConnectionState.Connected) {
+                    signalrConnection.invoke('CapNhatToaDo', state.userPos.x, state.userPos.y).catch(() => {});
+                }
+            }, 5000);
+        }
 
     } catch (e) {
         console.error('SignalR init error:', e);

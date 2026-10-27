@@ -14,6 +14,8 @@ public class DichVuThongKe : IDichVuThongKe
         {
             ConnectionId = connectionId,
             TenDuKhach = string.IsNullOrWhiteSpace(tenDuKhach) ? "Khách tham quan" : tenDuKhach,
+            ToaDoX = 600, // Tọa độ tâm mặc định trên bản đồ canvas 1200x800
+            ToaDoY = 400, // Tọa độ tâm mặc định trên bản đồ canvas 1200x800
             ThoiDiemKetNoi = DateTime.UtcNow,
             LanHoatDongCuoi = DateTime.UtcNow
         };
@@ -49,5 +51,11 @@ public class DichVuThongKe : IDichVuThongKe
     public List<NguoiDungOnlineDto> LayDanhSachOnline()
     {
         return _danhSachOnline.Values.OrderByDescending(u => u.LanHoatDongCuoi).ToList();
+    }
+
+    public NguoiDungOnlineDto? LayNguoiDung(string connectionId)
+    {
+        _danhSachOnline.TryGetValue(connectionId, out var user);
+        return user;
     }
 }

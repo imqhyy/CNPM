@@ -9,4 +9,5 @@ public interface IDichVuThongKe
     void CapNhatViTri(string connectionId, double x, double y);
     int LaySoLuongOnline();
     List<NguoiDungOnlineDto> LayDanhSachOnline();
+    NguoiDungOnlineDto? LayNguoiDung(string connectionId);
 }

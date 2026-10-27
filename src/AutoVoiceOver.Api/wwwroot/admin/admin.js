@@ -317,12 +317,16 @@ function initSignalR() {
             if (Array.isArray(list)) {
                 state.visitors.clear();
                 list.forEach(u => {
+                    const x = Number(u.toaDoX ?? u.toadoX ?? 600);
+                    const y = Number(u.toaDoY ?? u.toadoY ?? 400);
                     state.visitors.set(u.connectionId, {
                         connectionId: u.connectionId,
-                        tenDuKhach: u.tenDuKhach,
-                        toadoX: u.toadoX,
-                        toadoY: u.toadoY,
-                        lanHoatDongCuoi: new Date(u.lanHoatDongCuoi)
+                        tenDuKhach: u.tenDuKhach || 'Du khách',
+                        toaDoX: x,
+                        toaDoY: y,
+                        toadoX: x,
+                        toadoY: y,
+                        lanHoatDongCuoi: new Date(u.lanHoatDongCuoi || Date.now())
                     });
                 });
                 renderVisitorTable();
@@ -332,11 +336,18 @@ function initSignalR() {
 
         // 3. Nhận sự kiện du khách di chuyển tọa độ
         connection.on('DuKhachDiChuyen', (visitor) => {
+            const existing = state.visitors.get(visitor.connectionId);
+            const x = Number(visitor.toaDoX ?? visitor.toadoX ?? existing?.toaDoX ?? existing?.toadoX ?? 600);
+            const y = Number(visitor.toaDoY ?? visitor.toadoY ?? existing?.toaDoY ?? existing?.toadoY ?? 400);
+            const name = visitor.tenDuKhach || existing?.tenDuKhach || 'Du khách';
+
             state.visitors.set(visitor.connectionId, {
                 connectionId: visitor.connectionId,
-                tenDuKhach: visitor.tenDuKhach || 'Du khách',
-                toadoX: visitor.toadoX,
-                toadoY: visitor.toadoY,
+                tenDuKhach: name,
+                toaDoX: x,
+                toaDoY: y,
+                toadoX: x,
+                toadoY: y,
                 lanHoatDongCuoi: new Date()
             });
             renderVisitorTable();
@@ -408,12 +419,16 @@ async function loadDashboardStats() {
             if (data.danhSachOnline && Array.isArray(data.danhSachOnline)) {
                 state.visitors.clear();
                 data.danhSachOnline.forEach(u => {
+                    const x = Number(u.toaDoX ?? u.toadoX ?? 600);
+                    const y = Number(u.toaDoY ?? u.toadoY ?? 400);
                     state.visitors.set(u.connectionId, {
                         connectionId: u.connectionId,
-                        tenDuKhach: u.tenDuKhach,
-                        toadoX: u.toadoX,
-                        toadoY: u.toadoY,
-                        lanHoatDongCuoi: new Date(u.lanHoatDongCuoi)
+                        tenDuKhach: u.tenDuKhach || 'Du khách',
+                        toaDoX: x,
+                        toaDoY: y,
+                        toadoX: x,
+                        toadoY: y,
+                        lanHoatDongCuoi: new Date(u.lanHoatDongCuoi || Date.now())
                     });
                 });
                 renderVisitorTable();
@@ -589,20 +604,24 @@ function renderVisitorTable() {
         return;
     }
 
-    tbody.innerHTML = list.map(v => `
+    tbody.innerHTML = list.map(v => {
+        const x = Number(v.toaDoX ?? v.toadoX ?? 600);
+        const y = Number(v.toaDoY ?? v.toadoY ?? 400);
+        return `
         <tr>
             <td>
                 <span class="live-indicator-dot" style="display:inline-block; vertical-align:middle; margin-right:6px;"></span>
-                <strong>${escapeHtml(v.tenDuKhach)}</strong>
+                <strong>${escapeHtml(v.tenDuKhach || 'Du khách')}</strong>
             </td>
             <td>
-                <span class="badge badge-secondary">(${v.toadoX.toFixed(1)}, ${v.toadoY.toFixed(1)})</span>
+                <span class="badge badge-secondary">(${x.toFixed(1)}, ${y.toFixed(1)})</span>
             </td>
             <td class="text-muted" style="font-size:0.8rem;">
-                ${new Date(v.lanHoatDongCuoi).toLocaleTimeString()}
+                ${new Date(v.lanHoatDongCuoi || Date.now()).toLocaleTimeString()}
             </td>
         </tr>
-    `).join('');
+    `;
+    }).join('');
 }
 
 // ==========================================
@@ -694,8 +713,9 @@ function renderRadarCanvas() {
 
     // 3. Vẽ Du khách đang Online và Vị trí tức thời
     state.visitors.forEach(v => {
-        const vx = v.toadoX;
-        const vy = v.toadoY;
+        const vx = Number(v.toaDoX ?? v.toadoX ?? 600);
+        const vy = Number(v.toaDoY ?? v.toadoY ?? 400);
+        const name = v.tenDuKhach || 'Du khách';
 
         // Vòng sóng lan tỏa radar xanh lá
         ctx.save();
@@ -719,7 +739,7 @@ function renderRadarCanvas() {
         // Tag hiển thị Biệt danh của du khách
         ctx.save();
         ctx.font = 'bold 11px "Plus Jakarta Sans", sans-serif';
-        const textWidth = ctx.measureText(v.tenDuKhach).width;
+        const textWidth = ctx.measureText(name).width;
         
         ctx.fillStyle = 'rgba(17, 24, 39, 0.85)';
         ctx.fillRect(vx - textWidth / 2 - 6, vy - 28, textWidth + 12, 18);
@@ -728,7 +748,7 @@ function renderRadarCanvas() {
 
         ctx.fillStyle = '#A7F3D0';
         ctx.textAlign = 'center';
-        ctx.fillText(v.tenDuKhach, vx, vy - 15);
+        ctx.fillText(name, vx, vy - 15);
         ctx.restore();
     });
 }

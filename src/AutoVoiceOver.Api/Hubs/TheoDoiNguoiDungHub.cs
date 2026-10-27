@@ -37,7 +37,22 @@ public class TheoDoiNguoiDungHub : Hub
     public async Task ThamGiaPhien(string tenDuKhach)
     {
         _dichVuThongKe.ThemNguoiOnline(Context.ConnectionId, tenDuKhach);
+        var user = _dichVuThongKe.LayNguoiDung(Context.ConnectionId);
         await ThongBaoCapNhatSoLuong();
+
+        // Gửi ngay vị trí khởi tạo của du khách mới cho Admin Dashboard
+        if (user != null)
+        {
+            await Clients.Group("AdminDashboard").SendAsync("DuKhachDiChuyen", new
+            {
+                connectionId = Context.ConnectionId,
+                tenDuKhach = user.TenDuKhach,
+                toaDoX = user.ToaDoX,
+                toaDoY = user.ToaDoY,
+                toadoX = user.ToaDoX,
+                toadoY = user.ToaDoY
+            });
+        }
     }
 
     /// <summary>
@@ -46,11 +61,15 @@ public class TheoDoiNguoiDungHub : Hub
     public async Task CapNhatToaDo(double x, double y)
     {
         _dichVuThongKe.CapNhatViTri(Context.ConnectionId, x, y);
+        var user = _dichVuThongKe.LayNguoiDung(Context.ConnectionId);
 
-        // Gửi tọa độ cập nhật cho Admin Dashboard đang mở
+        // Gửi tọa độ và tên cập nhật cho Admin Dashboard đang mở (gửi cả toaDoX và toadoX để tương thích 100%)
         await Clients.Group("AdminDashboard").SendAsync("DuKhachDiChuyen", new
         {
             connectionId = Context.ConnectionId,
+            tenDuKhach = user?.TenDuKhach ?? "Khách tham quan",
+            toaDoX = x,
+            toaDoY = y,
             toadoX = x,
             toadoY = y
         });
