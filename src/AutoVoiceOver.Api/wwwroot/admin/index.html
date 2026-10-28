@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,8 @@
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- QRCode.js Library -->
@@ -17,7 +19,7 @@
 
     <!-- Ngăn chặn hiện tượng FOUC (chớp form đăng nhập) khi refresh trang nếu đã có token đăng nhập -->
     <script>
-        (function() {
+        (function () {
             try {
                 var token = localStorage.getItem('autovoiceover_admin_token');
                 if (token) {
@@ -29,6 +31,7 @@
         })();
     </script>
 </head>
+
 <body>
     <!-- Dedicated Admin Login Screen Overlay -->
     <div class="login-screen-overlay" id="loginScreen">
@@ -53,7 +56,8 @@
                     <label for="loginUsername">Tên đăng nhập</label>
                     <div class="input-with-icon">
                         <i class="fa-solid fa-user input-icon-left"></i>
-                        <input type="text" id="loginUsername" class="form-control" placeholder="Nhập tên đăng nhập quản trị" required autofocus>
+                        <input type="text" id="loginUsername" class="form-control"
+                            placeholder="Nhập tên đăng nhập quản trị" required autofocus>
                     </div>
                 </div>
 
@@ -61,7 +65,8 @@
                     <label for="loginPassword">Mật khẩu</label>
                     <div class="input-with-icon">
                         <i class="fa-solid fa-lock input-icon-left"></i>
-                        <input type="password" id="loginPassword" class="form-control" placeholder="Nhập mật khẩu quản trị" required>
+                        <input type="password" id="loginPassword" class="form-control"
+                            placeholder="Nhập mật khẩu quản trị" required>
                         <button type="button" class="btn-toggle-pwd" id="btnTogglePwd" title="Hiện/Ẩn mật khẩu">
                             <i class="fa-regular fa-eye" id="iconEye"></i>
                         </button>
@@ -83,7 +88,8 @@
     <!-- Top Navigation Header -->
     <header class="admin-header">
         <div class="header-brand">
-            <button class="btn-toggle-sidebar" id="btnToggleSidebar" title="Ẩn/Hiện thanh điều hướng bên" aria-label="Toggle Sidebar">
+            <button class="btn-toggle-sidebar" id="btnToggleSidebar" title="Ẩn/Hiện thanh điều hướng bên"
+                aria-label="Toggle Sidebar">
                 <i class="fa-solid fa-bars"></i>
             </button>
             <div class="brand-logo-icon">
@@ -158,7 +164,8 @@
                 <div class="pane-header">
                     <div>
                         <h2><i class="fa-solid fa-tower-broadcast"></i> Giám sát Trực quan Thời gian thực</h2>
-                        <p class="subtitle">Theo dõi vị trí du khách trên bản đồ di tích và phạm vi nhận diện của các điểm tham quan.</p>
+                        <p class="subtitle">Theo dõi vị trí du khách trên bản đồ di tích và phạm vi nhận diện của các
+                            điểm tham quan.</p>
                     </div>
                     <div class="pane-actions">
                         <button class="btn btn-primary" id="btnOpenAddSpotQuick">
@@ -208,20 +215,25 @@
                             </div>
                             <div class="card-controls">
                                 <span class="badge badge-pulse"><i class="fa-solid fa-circle"></i> Live Feed</span>
-                                <button class="btn btn-sm btn-outline" id="btnResetCanvasView" title="Đưa bản đồ về căn giữa">
+                                <!-- <button class="btn btn-sm btn-outline" id="btnResetCanvasView"
+                                    title="Đưa bản đồ về căn giữa">
                                     <i class="fa-solid fa-compress"></i> Căn vừa
-                                </button>
+                                </button> -->
                             </div>
                         </div>
                         <div class="card-body canvas-container-wrapper" id="canvasWrapper">
                             <canvas id="liveRadarCanvas" width="1200" height="800"></canvas>
                             <div class="canvas-legend">
-                                <div class="legend-item"><span class="legend-color spot-color"></span> Điểm tham quan</div>
-                                <div class="legend-item"><span class="legend-color radius-color"></span> Phạm vi nhận diện</div>
-                                <div class="legend-item"><span class="legend-color visitor-color"></span> Vị trí Du khách</div>
+                                <div class="legend-item"><span class="legend-color spot-color"></span> Điểm tham quan
+                                </div>
+                                <div class="legend-item"><span class="legend-color radius-color"></span> Phạm vi nhận
+                                    diện</div>
+                                <div class="legend-item"><span class="legend-color visitor-color"></span> Vị trí Du
+                                    khách</div>
                             </div>
                             <div class="canvas-overlay-tip" id="canvasTip">
-                                <i class="fa-solid fa-circle-info"></i> Click vào bản đồ để chọn tọa độ (X, Y) hoặc click vào điểm để xem thông tin
+                                <i class="fa-solid fa-circle-info"></i> Click vào bản đồ để chọn tọa độ (X, Y) hoặc
+                                click vào điểm để xem thông tin
                             </div>
                         </div>
                     </div>
@@ -263,7 +275,8 @@
                 <div class="pane-header">
                     <div>
                         <h2><i class="fa-solid fa-landmark-flag"></i> Quản lý Điểm tham quan</h2>
-                        <p class="subtitle">Thêm mới, sửa tọa độ, ảnh minh họa, trạng thái hoạt động và tùy chỉnh bán kính kích hoạt.</p>
+                        <p class="subtitle">Thêm mới, sửa tọa độ, ảnh minh họa, trạng thái hoạt động và tùy chỉnh bán
+                            kính kích hoạt.</p>
                     </div>
                     <div class="pane-actions">
                         <button class="btn btn-primary" id="btnOpenAddSpotModal">
@@ -306,7 +319,8 @@
                 <div class="pane-header">
                     <div>
                         <h2><i class="fa-solid fa-language"></i> Thuyết minh Đa ngôn ngữ & Tệp Âm thanh</h2>
-                        <p class="subtitle">Tải lên tệp âm thanh (MP3, WAV...) và văn bản thuyết minh theo từng ngôn ngữ cho mỗi điểm.</p>
+                        <p class="subtitle">Tải lên tệp âm thanh (MP3, WAV...) và văn bản thuyết minh theo từng ngôn ngữ
+                            cho mỗi điểm.</p>
                     </div>
                 </div>
 
@@ -327,7 +341,8 @@
                     <div class="card" id="narrationDetailsCard">
                         <div class="card-header">
                             <div class="card-title">
-                                <i class="fa-solid fa-folder-open"></i> Nội dung thuyết minh: <span id="narrationSpotTitle" class="text-accent">Chưa chọn điểm</span>
+                                <i class="fa-solid fa-folder-open"></i> Nội dung thuyết minh: <span
+                                    id="narrationSpotTitle" class="text-accent">Chưa chọn điểm</span>
                             </div>
                             <button class="btn btn-sm btn-primary" id="btnOpenAddLangModal" disabled>
                                 <i class="fa-solid fa-plus"></i> Thêm ngôn ngữ / Audio
@@ -338,7 +353,8 @@
                             <div class="language-cards-grid" id="languageCardsContainer">
                                 <div class="empty-placeholder">
                                     <i class="fa-solid fa-headphones text-4xl mb-3 text-muted"></i>
-                                    <p>Vui lòng chọn một điểm tham quan ở danh sách bên trái để xem và tải lên thuyết minh âm thanh.</p>
+                                    <p>Vui lòng chọn một điểm tham quan ở danh sách bên trái để xem và tải lên thuyết
+                                        minh âm thanh.</p>
                                 </div>
                             </div>
                         </div>
@@ -374,28 +390,34 @@
                                 <form id="formUploadMap">
                                     <div class="form-group">
                                         <label for="inputMapTitle">Tên bản đồ khu vực *</label>
-                                        <input type="text" id="inputMapTitle" class="form-control" placeholder="Ví dụ: Hoàng Thành Thăng Long - Khu Trung Tâm" required>
+                                        <input type="text" id="inputMapTitle" class="form-control"
+                                            placeholder="Ví dụ: Hoàng Thành Thăng Long - Khu Trung Tâm" required>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="inputMapImageFile">Tệp hình ảnh bản đồ (PNG, JPG, SVG, WebP) *</label>
-                                        <input type="file" id="inputMapImageFile" class="form-control" accept="image/*" required>
+                                        <label for="inputMapImageFile">Tệp hình ảnh bản đồ (PNG, JPG, SVG, WebP)
+                                            *</label>
+                                        <input type="file" id="inputMapImageFile" class="form-control" accept="image/*"
+                                            required>
                                     </div>
 
                                     <div class="form-row">
                                         <div class="form-group col-6">
                                             <label for="inputMapWidth">Chiều rộng (Pixel)</label>
-                                            <input type="number" id="inputMapWidth" class="form-control" value="1200" min="100">
+                                            <input type="number" id="inputMapWidth" class="form-control" value="1200"
+                                                min="100">
                                         </div>
                                         <div class="form-group col-6">
                                             <label for="inputMapHeight">Chiều cao (Pixel)</label>
-                                            <input type="number" id="inputMapHeight" class="form-control" value="800" min="100">
+                                            <input type="number" id="inputMapHeight" class="form-control" value="800"
+                                                min="100">
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="inputMapScale">Tỉ lệ ước tính (Mét / Pixel)</label>
-                                        <input type="number" step="0.01" id="inputMapScale" class="form-control" value="0.5" min="0.01">
+                                        <input type="number" step="0.01" id="inputMapScale" class="form-control"
+                                            value="0.5" min="0.01">
                                     </div>
 
                                     <button type="submit" class="btn btn-primary btn-block" id="btnSubmitMap">
@@ -426,7 +448,7 @@
                             <div class="picker-map-column">
                                 <div class="picker-topbar">
                                     <span class="picker-instruction">
-                                        <i class="fa-solid fa-crosshairs text-accent"></i> 
+                                        <i class="fa-solid fa-crosshairs text-accent"></i>
                                         <strong>Nhấp chuột vào bản đồ</strong> để tự động điền tọa độ
                                     </span>
                                     <span class="badge badge-accent" id="pickerCoordsBadge">
@@ -445,7 +467,8 @@
                                         <span class="legend-dot radius-zone ml-2"></span> Bán kính kích hoạt
                                         <span class="legend-dot existing-pin ml-2"></span> Điểm đã có
                                     </div>
-                                    <button type="button" class="btn btn-xs btn-outline" id="btnCenterPickerMap" title="Căn lại góc nhìn bản đồ">
+                                    <button type="button" class="btn btn-xs btn-outline" id="btnCenterPickerMap"
+                                        title="Căn lại góc nhìn bản đồ">
                                         <i class="fa-solid fa-arrows-to-dot"></i> Về tâm
                                     </button>
                                 </div>
@@ -455,34 +478,44 @@
                             <div class="picker-form-column">
                                 <div class="form-group">
                                     <label for="spotName">Tên điểm tham quan *</label>
-                                    <input type="text" id="spotName" class="form-control" placeholder="Ví dụ: Cổng Đoan Môn, Điện Kính Thiên..." required>
+                                    <input type="text" id="spotName" class="form-control"
+                                        placeholder="Ví dụ: Cổng Đoan Môn, Điện Kính Thiên..." required>
                                 </div>
 
                                 <div class="form-row">
                                     <div class="form-group col-6">
                                         <label for="spotCoordX">
-                                            Tọa độ X (Pixel) * 
-                                            <span class="badge-mini text-accent" title="Tự động điền khi click trên bản đồ"><i class="fa-solid fa-bolt"></i> Auto</span>
+                                            Tọa độ X (Pixel) *
+                                            <span class="badge-mini text-accent"
+                                                title="Tự động điền khi click trên bản đồ"><i
+                                                    class="fa-solid fa-bolt"></i> Auto</span>
                                         </label>
-                                        <input type="number" step="0.1" id="spotCoordX" class="form-control" placeholder="Tọa độ X" required>
+                                        <input type="number" step="0.1" id="spotCoordX" class="form-control"
+                                            placeholder="Tọa độ X" required>
                                     </div>
                                     <div class="form-group col-6">
                                         <label for="spotCoordY">
-                                            Tọa độ Y (Pixel) * 
-                                            <span class="badge-mini text-accent" title="Tự động điền khi click trên bản đồ"><i class="fa-solid fa-bolt"></i> Auto</span>
+                                            Tọa độ Y (Pixel) *
+                                            <span class="badge-mini text-accent"
+                                                title="Tự động điền khi click trên bản đồ"><i
+                                                    class="fa-solid fa-bolt"></i> Auto</span>
                                         </label>
-                                        <input type="number" step="0.1" id="spotCoordY" class="form-control" placeholder="Tọa độ Y" required>
+                                        <input type="number" step="0.1" id="spotCoordY" class="form-control"
+                                            placeholder="Tọa độ Y" required>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="spotRadius">Bán kính nhận diện tự động (Mét / Pixel) *</label>
                                     <div class="range-with-input">
-                                        <input type="range" id="spotRadiusSlider" min="10" max="250" value="50" class="custom-range">
-                                        <input type="number" id="spotRadius" class="form-control range-input" value="50" min="5" max="500" required>
+                                        <input type="range" id="spotRadiusSlider" min="10" max="250" value="50"
+                                            class="custom-range">
+                                        <input type="number" id="spotRadius" class="form-control range-input" value="50"
+                                            min="5" max="500" required>
                                         <span class="unit-text">m</span>
                                     </div>
-                                    <small class="form-hint">Vòng tròn màu xanh trên bản đồ sẽ tự động co giãn theo giá trị này ($d \le r$).</small>
+                                    <small class="form-hint">Vòng tròn màu xanh trên bản đồ sẽ tự động co giãn theo giá
+                                        trị này ($d \le r$).</small>
                                 </div>
 
                                 <div class="form-group">
@@ -527,15 +560,18 @@
                     <input type="hidden" id="radiusSpotId">
                     <div class="modal-body">
                         <p class="mb-3">Điểm: <strong id="radiusSpotName" class="text-accent">-</strong></p>
-                        
+
                         <div class="form-group">
                             <label for="quickRadiusInput">Bán kính kích hoạt (Khoảng cách nhận diện)</label>
                             <div class="range-with-input">
-                                <input type="range" id="quickRadiusSlider" min="10" max="300" value="50" class="custom-range">
-                                <input type="number" id="quickRadiusInput" class="form-control range-input" value="50" min="5" max="500">
+                                <input type="range" id="quickRadiusSlider" min="10" max="300" value="50"
+                                    class="custom-range">
+                                <input type="number" id="quickRadiusInput" class="form-control range-input" value="50"
+                                    min="5" max="500">
                                 <span class="unit-text">m</span>
                             </div>
-                            <small class="form-hint">Thay đổi có hiệu lực ngay lập tức cho tất cả du khách trên bản đồ.</small>
+                            <small class="form-hint">Thay đổi có hiệu lực ngay lập tức cho tất cả du khách trên bản
+                                đồ.</small>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -574,26 +610,31 @@
                             </div>
                             <div class="form-group col-6">
                                 <label for="narrTitle">Tiêu đề bài thuyết minh *</label>
-                                <input type="text" id="narrTitle" class="form-control" placeholder="Ví dụ: Giới thiệu Điện Kính Thiên" required>
+                                <input type="text" id="narrTitle" class="form-control"
+                                    placeholder="Ví dụ: Giới thiệu Điện Kính Thiên" required>
                             </div>
                         </div>
 
                         <!-- Audio File Upload -->
                         <div class="form-group upload-box-group">
-                            <label for="narrAudioFile"><i class="fa-solid fa-cloud-arrow-up text-accent"></i> Tệp âm thanh thuyết minh (MP3, WAV, AAC, OGG) *</label>
+                            <label for="narrAudioFile"><i class="fa-solid fa-cloud-arrow-up text-accent"></i> Tệp âm
+                                thanh thuyết minh (MP3, WAV, AAC, OGG) *</label>
                             <input type="file" id="narrAudioFile" class="form-control" accept="audio/*">
-                            <small class="form-hint">Tải lên file thu âm chính thức cho ngôn ngữ này. Tự động phát khi du khách đến gần.</small>
+                            <small class="form-hint">Tải lên file thu âm chính thức cho ngôn ngữ này. Tự động phát khi
+                                du khách đến gần.</small>
                         </div>
 
                         <!-- Text File Upload or Textarea -->
                         <div class="form-group">
-                            <label for="narrTextFile"><i class="fa-regular fa-file-lines"></i> Hoặc tải lên tệp văn bản thuyết minh (.txt)</label>
+                            <label for="narrTextFile"><i class="fa-regular fa-file-lines"></i> Hoặc tải lên tệp văn bản
+                                thuyết minh (.txt)</label>
                             <input type="file" id="narrTextFile" class="form-control" accept=".txt,text/plain">
                         </div>
 
                         <div class="form-group">
                             <label for="narrContent">Nội dung văn bản thuyết minh (Hiển thị cho khách đọc)</label>
-                            <textarea id="narrContent" class="form-control" rows="5" placeholder="Nhập trực tiếp hoặc tải từ file .txt phía trên..."></textarea>
+                            <textarea id="narrContent" class="form-control" rows="5"
+                                placeholder="Nhập trực tiếp hoặc tải từ file .txt phía trên..."></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -611,23 +652,30 @@
     <div class="modal-backdrop" id="modalAdminQr">
         <div class="modal-dialog" style="max-width: 440px;">
             <div class="modal-content" style="text-align: center; padding: 22px;">
-                <div class="modal-header" style="justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 16px;">
-                    <h3 style="margin: 0; font-size: 1.15rem;"><i class="fa-solid fa-qrcode text-accent"></i> Mã QR Cho Du Khách Quét</h3>
+                <div class="modal-header"
+                    style="justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 16px;">
+                    <h3 style="margin: 0; font-size: 1.15rem;"><i class="fa-solid fa-qrcode text-accent"></i> Mã QR Cho
+                        Du Khách Quét</h3>
                     <button class="btn-close" id="btnCloseAdminQrModal">&times;</button>
                 </div>
                 <div class="modal-body" style="display: flex; flex-direction: column; align-items: center; gap: 14px;">
-                    <div id="adminQrBox" style="background: #ffffff; padding: 14px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); display: inline-block;"></div>
-                    <div id="adminQrTypeBadge" style="font-size: 0.85rem; font-weight: 600; padding: 4px 12px; border-radius: 20px; background: rgba(16, 185, 129, 0.15); color: #10b981;">
+                    <div id="adminQrBox"
+                        style="background: #ffffff; padding: 14px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); display: inline-block;">
+                    </div>
+                    <div id="adminQrTypeBadge"
+                        style="font-size: 0.85rem; font-weight: 600; padding: 4px 12px; border-radius: 20px; background: rgba(16, 185, 129, 0.15); color: #10b981;">
                         <i class="fa-solid fa-cloud"></i> Đang tải thông tin...
                     </div>
                     <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0;">
                         Mở Camera hoặc ứng dụng quét mã trên điện thoại (4G / 5G / Wi-Fi) để vào thẳng Cổng Du Khách.
                     </p>
-                    <div style="width: 100%; background: var(--bg-surface); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); font-family: monospace; font-size: 0.82rem; word-break: break-all;" id="adminQrUrlText">
+                    <div style="width: 100%; background: var(--bg-surface); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); font-family: monospace; font-size: 0.82rem; word-break: break-all;"
+                        id="adminQrUrlText">
                         Đang tạo mã QR...
                     </div>
                 </div>
-                <div class="modal-footer" style="justify-content: center; gap: 10px; border-top: 1px solid var(--border-color); padding-top: 14px; margin-top: 16px;">
+                <div class="modal-footer"
+                    style="justify-content: center; gap: 10px; border-top: 1px solid var(--border-color); padding-top: 14px; margin-top: 16px;">
                     <button type="button" class="btn btn-secondary" id="btnCancelAdminQrModal">Đóng</button>
                     <button type="button" class="btn btn-primary" id="btnCopyAdminQrUrl">
                         <i class="fa-solid fa-copy"></i> Sao chép liên kết
@@ -644,4 +692,5 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
     <script src="admin.js?v=20261025_coords"></script>
 </body>
+
 </html>
