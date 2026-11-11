@@ -548,12 +548,13 @@ async function loadMap(targetMapId = null) {
                 }
 
                 await selectRadarMap(chosenMap.maBanDo, false);
-                updateMapTabUI(chosenMap);
             } else {
                 state.currentMap = null;
                 state.mapImageObj = null;
                 renderRadarCanvas();
             }
+
+            renderMapsTable();
         }
     } catch (err) {
         console.error('Failed to load map:', err);
@@ -670,6 +671,7 @@ async function loadSpots() {
 
             renderSpotsTable();
             renderNarrationSpotList();
+            renderMapsTable();
             renderRadarCanvas();
         }
     } catch (err) {
@@ -1031,11 +1033,19 @@ function initModalsAndForms() {
     document.getElementById('btnCloseNarrationModal')?.addEventListener('click', () => closeModal('modalNarration'));
     document.getElementById('btnCancelNarrationModal')?.addEventListener('click', () => closeModal('modalNarration'));
 
-    // Modal Mã QR Du Khách
-    document.getElementById('btnOpenQrModal')?.addEventListener('click', openAdminQrModal);
+    // Modal Mã QR Bản Đồ Cho Du Khách
     document.getElementById('btnCloseAdminQrModal')?.addEventListener('click', () => closeModal('modalAdminQr'));
     document.getElementById('btnCancelAdminQrModal')?.addEventListener('click', () => closeModal('modalAdminQr'));
     document.getElementById('btnCopyAdminQrUrl')?.addEventListener('click', copyAdminQrUrl);
+    document.getElementById('btnDownloadAdminQr')?.addEventListener('click', downloadAdminQr);
+
+    // Modal Thêm Bản đồ
+    document.getElementById('btnOpenAddMapModal')?.addEventListener('click', () => {
+        document.getElementById('formUploadMap')?.reset();
+        openModal('modalAddMap');
+    });
+    document.getElementById('btnCloseAddMapModal')?.addEventListener('click', () => closeModal('modalAddMap'));
+    document.getElementById('btnCancelAddMapModal')?.addEventListener('click', () => closeModal('modalAddMap'));
 
     // Submit Thêm / Sửa Điểm
     document.getElementById('formSpot')?.addEventListener('submit', handleSpotSubmit);
@@ -1767,21 +1777,135 @@ window.deleteNarration = async function(contentId) {
 };
 
 // ==========================================
-// 11. Quản lý Sơ đồ Bản đồ Di tích (Tab 4)
+// 11. Quản lý Bản đồ Khu vực (Tab 4)
 // ==========================================
-function updateMapTabUI(map) {
-    const imgEl = document.getElementById('activeMapImage');
-    const placeholder = document.getElementById('activeMapPlaceholder');
-    if (!imgEl || !placeholder) return;
+function renderMapsTable() {
+    const tbody = document.getElementById('mapsTableBody');
+    if (!tbody) return;
 
-    if (map && map.hinhAnhBanDo) {
-        imgEl.src = map.hinhAnhBanDo;
-        imgEl.style.display = 'block';
-        placeholder.style.display = 'none';
-    } else {
-        imgEl.style.display = 'none';
-        placeholder.style.display = 'block';
+    if (!state.maps || state.maps.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center text-muted py-5">
+                    <i class="fa-solid fa-map-location-dot mb-2 d-block" style="font-size: 2rem;"></i>
+                    Chưa có bản đồ nào trong hệ thống. Bấm "+ Thêm bản đồ mới" để bắt đầu.
+                </td>
+            </tr>
+        `;
+        return;
     }
+
+    tbody.innerHTML = state.maps.map(m => {
+        const spotCount = state.spots ? state.spots.filter(s => s.maBanDo === m.maBanDo).length : 0;
+        const imgSrc = m.hinhAnhBanDo || '';
+        const statusBadge = m.hoatDong
+            ? `<button class="btn btn-sm btn-outline-success" onclick="toggleMapActive('${m.maBanDo}', false)" title="Bấm để tạm dừng hoạt động bản đồ này">
+                 <i class="fa-solid fa-circle-check text-accent"></i> Đang hoạt động
+               </button>`
+            : `<button class="btn btn-sm btn-outline-secondary" onclick="toggleMapActive('${m.maBanDo}', true)" title="Bấm để kích hoạt bản đồ này">
+                 <i class="fa-solid fa-circle-pause text-muted"></i> Tạm dừng
+               </button>`;
+
+        return `
+            <tr>
+                <td>
+                    <img src="${imgSrc}" class="map-img-thumb" alt="${escapeHtml(m.tenBanDo)}"
+                         style="width: 80px; height: 55px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-color); background: #000;"
+                         onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'55\' fill=\'%2364748b\' viewBox=\'0 0 24 24\'><path d=\'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z\'/></svg>'">
+                </td>
+                <td>
+                    <strong style="color: #fff; font-size: 0.95rem;">${escapeHtml(m.tenBanDo)}</strong>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); font-family: monospace;">ID: ${m.maBanDo}</div>
+                </td>
+                <td>
+                    <span class="badge badge-secondary">${m.chieuRongPixel || 0} &times; ${m.chieuCaoPixel || 0} px</span>
+                </td>
+                <td>
+                    <span class="text-muted" style="font-size: 0.88rem;">${m.tiLeMetTrenPixel || 0.5} m/px</span>
+                </td>
+                <td>
+                    <span class="badge badge-info"><i class="fa-solid fa-landmark"></i> ${spotCount} điểm</span>
+                </td>
+                <td>
+                    ${statusBadge}
+                </td>
+                <td class="text-right">
+                    <button class="btn btn-sm btn-info mr-1" onclick="openMapQrModal('${m.maBanDo}', '${escapeHtml(m.tenBanDo)}')" title="Xem & Tải mã QR cho du khách">
+                        <i class="fa-solid fa-qrcode"></i> Mã QR
+                    </button>
+                    <button class="btn btn-sm btn-outline mr-1" onclick="viewMapOnRadar('${m.maBanDo}')" title="Xem trên Radar Live">
+                        <i class="fa-solid fa-radar"></i> Radar
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteMap('${m.maBanDo}', '${escapeHtml(m.tenBanDo)}')" title="Xóa bản đồ">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+async function toggleMapActive(mapId, newStatus) {
+    try {
+        const res = await fetch(`${API_BASE}/QuanLyDiaDiem/bando/${mapId}/trang-thai`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ hoatDong: newStatus })
+        });
+        if (res.ok) {
+            showToast(`Đã ${newStatus ? 'kích hoạt' : 'tạm dừng'} bản đồ thành công!`, 'success');
+            await loadMap();
+        } else {
+            const err = await res.json();
+            showToast(err.message || 'Lỗi khi cập nhật trạng thái bản đồ', 'error');
+        }
+    } catch (e) {
+        console.error(e);
+        showToast('Lỗi mạng khi cập nhật trạng thái bản đồ', 'error');
+    }
+}
+
+async function deleteMap(mapId, mapName) {
+    if (state.maps.length <= 1) {
+        showToast('Hệ thống cần giữ ít nhất 1 bản đồ, không thể xóa bản đồ duy nhất!', 'error');
+        return;
+    }
+    const spotCount = state.spots ? state.spots.filter(s => s.maBanDo === mapId).length : 0;
+    let confirmMsg = `Bạn có chắc chắn muốn xóa bản đồ "${mapName}" không?`;
+    if (spotCount > 0) {
+        confirmMsg += `\nLƯU Ý: Bản đồ này đang chứa ${spotCount} điểm tham quan và các thuyết minh liên quan sẽ bị xóa kèm!`;
+    }
+    if (!confirm(confirmMsg)) return;
+
+    try {
+        const res = await fetch(`${API_BASE}/QuanLyDiaDiem/bando/${mapId}`, {
+            method: 'DELETE'
+        });
+        if (res.ok) {
+            showToast(`Đã xóa bản đồ "${mapName}" thành công!`, 'success');
+            if (state.currentMap && state.currentMap.maBanDo === mapId) {
+                state.currentMap = null;
+            }
+            await loadMap();
+            await loadSpots();
+        } else {
+            const err = await res.json();
+            showToast(err.message || 'Lỗi khi xóa bản đồ', 'error');
+        }
+    } catch (e) {
+        console.error(e);
+        showToast('Lỗi mạng khi xóa bản đồ', 'error');
+    }
+}
+
+async function viewMapOnRadar(mapId) {
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+        if (item.getAttribute('data-tab') === 'tab-live') {
+            item.click();
+        }
+    });
+    await selectRadarMap(mapId, true);
 }
 
 async function handleMapSubmit(e) {
@@ -1831,8 +1955,11 @@ async function handleMapSubmit(e) {
         });
 
         if (saveRes.ok) {
-            showToast('Đã lưu và cập nhật sơ đồ bản đồ thành công!', 'success');
+            showToast('Đã lưu và thêm bản đồ thành công!', 'success');
+            closeModal('modalAddMap');
+            document.getElementById('formUploadMap')?.reset();
             await loadMap();
+            await loadSpots();
         } else {
             showToast('Lỗi khi lưu thông tin bản đồ', 'error');
         }
@@ -1878,39 +2005,48 @@ function escapeHtml(str) {
 }
 
 // ==========================================
-// 13. Tiện ích: Quản lý & Hiển thị Mã QR Du Khách
+// 13. Tiện ích: Quản lý & Hiển thị Mã QR Du Khách theo Bản đồ
 // ==========================================
 let currentAdminQrUrl = '';
+let currentAdminQrMapName = '';
 
-async function openAdminQrModal() {
+async function openMapQrModal(mapId, mapName) {
     const qrBox = document.getElementById('adminQrBox');
     const badge = document.getElementById('adminQrTypeBadge');
     const urlText = document.getElementById('adminQrUrlText');
+    const titleEl = document.getElementById('adminQrModalTitle');
+    const mapNameEl = document.getElementById('adminQrMapName');
     if (!qrBox) return;
+
+    currentAdminQrMapName = mapName || 'Bản đồ';
+    if (titleEl) titleEl.innerText = `Mã QR: ${currentAdminQrMapName}`;
+    if (mapNameEl) mapNameEl.innerText = currentAdminQrMapName;
 
     openModal('modalAdminQr');
     qrBox.innerHTML = '<div style="padding: 30px 10px; color: var(--accent-teal);"><i class="fa-solid fa-spinner fa-spin fa-2x"></i></div>';
     if (badge) badge.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tự động kiểm tra liên kết...';
     if (urlText) urlText.innerText = 'Đang tải thông tin...';
 
-    let finalUrl = window.location.protocol + '//' + window.location.host + '/user/';
+    let baseUrl = window.location.protocol + '//' + window.location.host;
 
     try {
         const res = await fetch('/api/HeThong/qr-link');
         if (res.ok) {
             const data = await res.json();
-            if (data && data.userUrl) {
-                finalUrl = data.userUrl;
-                if (badge) {
-                    if (data.loaiKetNoi === 'Ngrok') {
-                        badge.style.color = '#10b981';
-                        badge.style.background = 'rgba(16, 185, 129, 0.15)';
-                        badge.innerHTML = '<i class="fa-solid fa-cloud"></i> Đường hầm Ngrok (Mạng ngoài / 4G / 5G)';
-                    } else {
-                        badge.style.color = '#f59e0b';
-                        badge.style.background = 'rgba(245, 158, 11, 0.15)';
-                        badge.innerHTML = '<i class="fa-solid fa-wifi"></i> Mạng nội bộ (Điện thoại cùng Wi-Fi)';
-                    }
+            if (data && data.baseUrl) {
+                baseUrl = data.baseUrl;
+            } else if (data && data.userUrl) {
+                baseUrl = data.userUrl.replace(/\/user\/?$/, '');
+            }
+            if (badge) {
+                if (data.loaiKetNoi === 'Ngrok') {
+                    badge.style.color = '#10b981';
+                    badge.style.background = 'rgba(16, 185, 129, 0.15)';
+                    badge.innerHTML = '<i class="fa-solid fa-cloud"></i> Đường hầm Ngrok (Mạng ngoài / 4G / 5G)';
+                } else {
+                    badge.style.color = '#f59e0b';
+                    badge.style.background = 'rgba(245, 158, 11, 0.15)';
+                    badge.innerHTML = '<i class="fa-solid fa-wifi"></i> Mạng nội bộ (Điện thoại cùng Wi-Fi)';
                 }
             }
         }
@@ -1919,18 +2055,46 @@ async function openAdminQrModal() {
         if (badge) badge.innerText = 'Địa chỉ cục bộ';
     }
 
+    const cleanBaseUrl = baseUrl.replace(/\/$/, '');
+    const finalUrl = `${cleanBaseUrl}/user/?mapId=${mapId}`;
+
     currentAdminQrUrl = finalUrl;
     if (urlText) urlText.innerText = finalUrl;
     qrBox.innerHTML = '';
 
     new QRCode(qrBox, {
         text: finalUrl,
-        width: 170,
-        height: 170,
+        width: 190,
+        height: 190,
         colorDark : "#000000",
         colorLight : "#ffffff",
         correctLevel : QRCode.CorrectLevel.M
     });
+}
+
+function downloadAdminQr() {
+    const qrBox = document.getElementById('adminQrBox');
+    if (!qrBox) return;
+    const canvas = qrBox.querySelector('canvas');
+    const img = qrBox.querySelector('img');
+    let dataUrl = '';
+    if (canvas && canvas.toDataURL) {
+        dataUrl = canvas.toDataURL('image/png');
+    } else if (img && img.src && img.src.startsWith('data:')) {
+        dataUrl = img.src;
+    }
+    if (!dataUrl) {
+        showToast('Chưa thể tải mã QR, vui lòng đợi QR hiển thị xong', 'error');
+        return;
+    }
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    const cleanName = (currentAdminQrMapName || 'bando').trim().replace(/[^a-zA-Z0-9_\u00C0-\u024F\u1E00-\u1EFF]/g, '_');
+    a.download = `QR_${cleanName}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast(`Đã tải ảnh mã QR cho "${currentAdminQrMapName}"!`, 'success');
 }
 
 function copyAdminQrUrl() {
@@ -1941,3 +2105,10 @@ function copyAdminQrUrl() {
         showToast('Không thể sao chép tự động, vui lòng copy thủ công', 'error');
     });
 }
+
+// Gán toàn cục để gọi từ HTML template literals
+window.toggleMapActive = toggleMapActive;
+window.deleteMap = deleteMap;
+window.viewMapOnRadar = viewMapOnRadar;
+window.openMapQrModal = openMapQrModal;
+window.downloadAdminQr = downloadAdminQr;

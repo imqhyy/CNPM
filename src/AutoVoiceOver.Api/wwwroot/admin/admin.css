@@ -711,6 +711,50 @@ body {
     color: #fff;
 }
 
+.btn-info {
+    background: rgba(6, 182, 212, 0.15);
+    color: var(--accent-cyan);
+    border: 1px solid rgba(6, 182, 212, 0.3);
+}
+
+.btn-info:hover {
+    background: var(--accent-cyan);
+    color: #fff;
+}
+
+.btn-success {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--accent-emerald);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.btn-success:hover {
+    background: var(--accent-emerald);
+    color: #fff;
+}
+
+.btn-outline-success {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--accent-emerald);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.btn-outline-success:hover {
+    background: rgba(16, 185, 129, 0.25);
+    color: #fff;
+}
+
+.btn-outline-secondary {
+    background: rgba(100, 116, 139, 0.15);
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+}
+
+.btn-outline-secondary:hover {
+    background: rgba(100, 116, 139, 0.3);
+    color: var(--text-main);
+}
+
 .btn-block {
     width: 100%;
 }
