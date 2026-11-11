@@ -1,4 +1,4 @@
-using System.Data;
+﻿using System.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using AutoVoiceOver.Dal.Entities;
@@ -25,12 +25,23 @@ public static class KhoiTaoCoSoDuLieuAdoNet
         var dbName = string.IsNullOrWhiteSpace(connBuilder.InitialCatalog) ? "AutoVoiceOverDb" : connBuilder.InitialCatalog;
 
         var masterBuilder = new SqlConnectionStringBuilder(connectionString) { InitialCatalog = "master" };
-        using (var masterConn = new SqlConnection(masterBuilder.ConnectionString))
+        const int maxRetries = 5;
+        for (int retry = 1; retry <= maxRetries; retry++)
         {
-            await masterConn.OpenAsync();
-            var sqlCheckDb = $"IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = N'{dbName}') CREATE DATABASE [{dbName}];";
-            using var cmdCheckDb = new SqlCommand(sqlCheckDb, masterConn);
-            await cmdCheckDb.ExecuteNonQueryAsync();
+            try
+            {
+                using var masterConn = new SqlConnection(masterBuilder.ConnectionString);
+                await masterConn.OpenAsync();
+                var sqlCheckDb = $"IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = N'{dbName}') CREATE DATABASE [{dbName}];";
+                using var cmdCheckDb = new SqlCommand(sqlCheckDb, masterConn);
+                await cmdCheckDb.ExecuteNonQueryAsync();
+                break;
+            }
+            catch (SqlException ex) when (retry < maxRetries)
+            {
+                Console.WriteLine($"[KhoiTaoDatabase] Dang cho SQL Server san sang (Thu lai {retry}/{maxRetries}): {ex.Message}. Thu lai sau 2 giay...");
+                await Task.Delay(2000);
+            }
         }
 
         // 2. Kết nối vào CSDL chính thức để tạo các bảng (DDL)
