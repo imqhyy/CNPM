@@ -1,0 +1,87 @@
+flowchart TB
+%% =========================================================================
+%% SƠ ĐỒ LUỒNG DỮ LIỆU (DFD) MỨC 1 - DỰ ÁN AUTOVOICEOVER
+%% Hệ thống Thuyết minh Di tích Tự động Đa ngôn ngữ (Hoàng Thành Thăng Long)
+%% =========================================================================
+
+    %% --- 1. TÁC NHÂN NGOÀI (EXTERNAL ENTITIES) ---
+    subgraph KHACH_THE["TÁC NHÂN NGOÀI"]
+        Admin["👤 Quản Trị Viên (Admin)"]
+        Visitor["👥 Du Khách (Khách tham quan)"]
+    end
+
+    %% --- 2. CÁC TIẾN TRÌNH XỬ LÝ (PROCESSES) ---
+    subgraph TIEN_TRINH["CÁC TIẾN TRÌNH NGHIỆP VỤ (PROCESSES)"]
+        P1(("1.0<br/>Xử lý Xác thực<br/>& Quản trị phiên"))
+        P2(("2.0<br/>Quản lý Sơ đồ<br/>Bản đồ Khu vực"))
+        P3(("3.0<br/>Quản lý Điểm tham quan<br/>& Bán kính nhận diện"))
+        P4(("4.0<br/>Quản lý Nội dung<br/>Thuyết minh Đa ngôn ngữ"))
+        P5(("5.0<br/>Xử lý Di chuyển &<br/>Tự động Thuyết minh"))
+        P6(("6.0<br/>Giám sát & Thống kê<br/>Trực tuyến Realtime"))
+    end
+
+    %% --- 3. CÁC KHO DỮ LIỆU (DATA STORES) ---
+    subgraph KHO_DU_LIEU["KHO DỮ LIỆU HỆ THỐNG (DATA STORES)"]
+        D1[("D1: TaiKhoanAdmins<br/>(Tài khoản & Phân quyền)")]
+        D2[("D2: BanDoKhuVucs<br/>(Sơ đồ & Tỉ lệ mét/pixel)")]
+        D3[("D3: DiaDiemThamQuans<br/>(Điểm di tích, Tọa độ X-Y, Bán kính)")]
+        D4[("D4: NoiDungThuyetMinhs<br/>(Audio, Văn bản, Ảnh theo ngôn ngữ)")]
+        D5[("D5: PhienDuKhachOnline<br/>(Bộ nhớ đệm Realtime/SignalR)")]
+    end
+
+    %% =========================================================================
+    %% --- 4. LUỒNG DỮ LIỆU CHO TIẾN TRÌNH 1.0 (XÁC THỰC) ---
+    Admin -->|"(1) Thông tin đăng nhập (username, password)"| P1
+    P1 -->|"Kiểm tra tài khoản & mật khẩu SHA-256"| D1
+    D1 -->|"Dữ liệu tài khoản & quyền hạn"| P1
+    P1 -->|"Ghi nhận thời điểm đăng nhập cuối"| D1
+    P1 -->|"(2) Token phiên xác thực / Thông báo trạng thái"| Admin
+
+    %% --- 5. LUỒNG DỮ LIỆU CHO TIẾN TRÌNH 2.0 (BẢN ĐỒ) ---
+    Admin -->|"(3) File ảnh bản đồ, kích thước px, tỉ lệ m/px"| P2
+    P2 -->|"Lưu thông số & đường dẫn ảnh sơ đồ"| D2
+    D2 -->|"Truy xuất thông tin bản đồ"| P2
+    P2 -->|"(4) Danh sách sơ đồ khu vực"| Admin
+
+    %% --- 6. LUỒNG DỮ LIỆU CHO TIẾN TRÌNH 3.0 (ĐIỂM THAM QUAN & GEOFENCING) ---
+    Admin -->|"(5) Tên điểm, Tọa độ X-Y, Bán kính nhận diện, Ảnh"| P3
+    P3 -->|"Thêm / Cập nhật / Xóa điểm tham quan"| D3
+    D3 -->|"Truy xuất danh sách điểm tham quan"| P3
+    P3 -->|"(6) Danh sách mốc điểm & Phạm vi hiển thị"| Admin
+
+    %% --- 7. LUỒNG DỮ LIỆU CHO TIẾN TRÌNH 4.0 (THUYẾT MINH ĐA NGÔN NGỮ) ---
+    Admin -->|"(7) Tải lên file Audio, Văn bản theo mã ngôn ngữ"| P4
+    P4 -->|"Lưu trữ bài thuyết minh theo ngôn ngữ"| D4
+    D4 -->|"Truy xuất danh mục nội dung thuyết minh"| P4
+    P4 -->|"(8) Xác nhận lưu nội dung & Danh sách ngôn ngữ có sẵn"| Admin
+
+    %% --- 8. LUỒNG DỮ LIỆU CHO TIẾN TRÌNH 5.0 (DI CHUYỂN & THUYẾT MINH DU KHÁCH) ---
+    Visitor -->|"(9) Tên định danh (Nickname khi quét QR)"| P5
+    Visitor -->|"(10) Tọa độ click di chuyển (X, Y)"| P5
+    Visitor -->|"(11) Chọn mã ngôn ngữ & Lệnh điều khiển Audio (Play/Pause/Tua)"| P5
+
+    D2 -->|"Cung cấp ảnh nền sơ đồ & Tỉ lệ quy đổi"| P5
+    D3 -->|"Cung cấp tọa độ các điểm & Bán kính nhận diện"| P5
+    D4 -->|"Cung cấp file Audio, Lời văn bản theo ngôn ngữ chọn"| P5
+
+    P5 -->|"(12) Sơ đồ khu di tích & Các điểm mốc tham quan"| Visitor
+    P5 -->|"(13) Tín hiệu kích hoạt thuyết minh khi d ≤ R"| Visitor
+    P5 -->|"(14) Luồng âm thanh Audio, Văn bản chi tiết & Ảnh minh họa"| Visitor
+
+    %% --- 9. LUỒNG DỮ LIỆU CHO TIẾN TRÌNH 6.0 (REALTIME MONITORING & RADAR) ---
+    P5 -->|"Gửi tín hiệu kết nối & Tọa độ di chuyển thời gian thực"| P6
+    P6 -->|"Cập nhật kết nối, ngắt kết nối & Vị trí trực tuyến"| D5
+    D5 -->|"Truy xuất danh sách du khách đang online"| P6
+
+    Admin -->|"(15) Yêu cầu xem Dashboard & Radar trực tiếp"| P6
+    P6 -->|"(16) Số lượng online & Radar vị trí du khách realtime"| Admin
+
+    %% =========================================================================
+    %% --- 10. ĐỊNH KIỂU GIAO DIỆN CHUẨN (STYLING) ---
+    classDef actorStyle fill:#e8eaf6,stroke:#283593,stroke-width:2px,color:#1a237e,font-weight:bold;
+    classDef processStyle fill:#e1f5fe,stroke:#0277bd,stroke-width:2px,color:#01579b,font-weight:bold;
+    classDef storeStyle fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#bf360c,font-weight:bold;
+
+    class Admin,Visitor actorStyle;
+    class P1,P2,P3,P4,P5,P6 processStyle;
+    class D1,D2,D3,D4,D5 storeStyle;

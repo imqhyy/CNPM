@@ -1,0 +1,42 @@
+flowchart LR
+%% =========================================================================
+%% SƠ ĐỒ LUỒNG DỮ LIỆU (DFD) MỨC 0 - SƠ ĐỒ NGỮ CẢNH (CONTEXT DIAGRAM)
+%% Dự án: AutoVoiceOver - Hệ thống Thuyết minh Di tích Tự động Đa ngôn ngữ
+%% =========================================================================
+
+    %% --- 1. TÁC NHÂN NGOÀI (EXTERNAL ENTITIES) ---
+    Admin["👤 Quản Trị Viên<br/>(Admin)"]
+    Visitor["👥 Du Khách<br/>(Khách tham quan)"]
+
+    %% --- 2. TIẾN TRÌNH TRUNG TÂM DUY NHẤT (CONTEXT PROCESS) ---
+    System(("0.0<br/>HỆ THỐNG THUYẾT MINH<br/>DI TÍCH TỰ ĐỘNG<br/>(AutoVoiceOver)"))
+
+    %% =========================================================================
+    %% --- 3. LUỒNG DỮ LIỆU VÀO / RA PHÍA QUẢN TRỊ VIÊN (ADMIN) ---
+    Admin -->|"(1) Thông tin đăng nhập"| System
+    Admin -->|"(2) Dữ liệu sơ đồ bản đồ & Tỉ lệ mét/pixel"| System
+    Admin -->|"(3) Tọa độ X-Y & Bán kính nhận diện"| System
+    Admin -->|"(4) Tệp âm thanh, văn bản & ảnh minh họa"| System
+    Admin -->|"(5) Yêu cầu thống kê & giám sát realtime"| System
+
+    System -->|"(6) Kết quả xác thực / Quyền truy cập"| Admin
+    System -->|"(7) Danh sách & Chi tiết điểm tham quan"| Admin
+    System -->|"(8) Báo cáo thống kê & Radar vị trí du khách realtime"| Admin
+
+    %% =========================================================================
+    %% --- 4. LUỒNG DỮ LIỆU VÀO / RA PHÍA DU KHÁCH (VISITOR) ---
+    Visitor -->|"(9) Tên định danh (Nickname khi quét QR)"| System
+    Visitor -->|"(10) Tọa độ di chuyển mô phỏng X-Y"| System
+    Visitor -->|"(11) Tùy chọn ngôn ngữ & Lệnh điều khiển Audio"| System
+
+    System -->|"(12) Sơ đồ bản đồ & Vị trí các mốc di tích"| Visitor
+    System -->|"(13) Tín hiệu kích hoạt thuyết minh tự động khi đến gần"| Visitor
+    System -->|"(14) Luồng âm thanh Audio, Lời văn bản & Ảnh minh họa"| Visitor
+
+    %% =========================================================================
+    %% --- 5. ĐỊNH KIỂU GIAO DIỆN CHUẨN (STYLING) ---
+    classDef actorStyle fill:#e8eaf6,stroke:#283593,stroke-width:2px,color:#1a237e,font-weight:bold;
+    classDef processStyle fill:#e1f5fe,stroke:#0277bd,stroke-width:3px,color:#01579b,font-weight:bold;
+
+    class Admin,Visitor actorStyle;
+    class System processStyle;
