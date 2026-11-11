@@ -131,4 +131,69 @@ public class DichVuQuanLyDiaDiemTests
         _mockKhoNoiDung.Verify(k => k.CapNhat(existing), Times.Once);
         _mockKhoNoiDung.Verify(k => k.LuuThayDoiAsync(), Times.Once);
     }
+
+    [Fact]
+    public async Task ThemDiaDiem_KhiCoMaBanDo_GiuNguyenMaBanDo()
+    {
+        // Arrange
+        var customBanDoId = Guid.NewGuid();
+        var dto = new DiaDiemDto
+        {
+            MaBanDo = customBanDoId,
+            TenDiaDiem = "Kỳ Đài",
+            ToaDoX = 100,
+            ToaDoY = 200,
+            PhamViNhanDienMet = 40,
+            HoatDong = true
+        };
+
+        // Act
+        var resultId = await _dichVuQuanLy.ThemDiaDiemAsync(dto);
+
+        // Assert
+        Assert.NotEqual(Guid.Empty, resultId);
+        _mockKhoDiaDiem.Verify(k => k.ThemAsync(It.Is<DiaDiemThamQuan>(d =>
+            d.TenDiaDiem == "Kỳ Đài" &&
+            d.MaBanDo == customBanDoId)), Times.Once);
+    }
+
+    [Fact]
+    public async Task CapNhatDiaDiem_CapNhatCaMaBanDo()
+    {
+        // Arrange
+        var maDiaDiem = Guid.NewGuid();
+        var oldBanDoId = Guid.NewGuid();
+        var newBanDoId = Guid.NewGuid();
+        var existing = new DiaDiemThamQuan
+        {
+            MaDiaDiem = maDiaDiem,
+            MaBanDo = oldBanDoId,
+            TenDiaDiem = "Cổng Đoan Môn",
+            PhamViNhanDien = 50,
+            HoatDong = true
+        };
+
+        _mockKhoDiaDiem.Setup(k => k.LayTheoMaAsync(maDiaDiem)).ReturnsAsync(existing);
+
+        var dto = new DiaDiemDto
+        {
+            MaDiaDiem = maDiaDiem,
+            MaBanDo = newBanDoId,
+            TenDiaDiem = "Cổng Đoan Môn Cập Nhật",
+            ToaDoX = 300,
+            ToaDoY = 400,
+            PhamViNhanDienMet = 60,
+            HoatDong = true
+        };
+
+        // Act
+        var ok = await _dichVuQuanLy.CapNhatDiaDiemAsync(maDiaDiem, dto);
+
+        // Assert
+        Assert.True(ok);
+        Assert.Equal(newBanDoId, existing.MaBanDo);
+        Assert.Equal("Cổng Đoan Môn Cập Nhật", existing.TenDiaDiem);
+        _mockKhoDiaDiem.Verify(k => k.CapNhat(existing), Times.Once);
+        _mockKhoDiaDiem.Verify(k => k.LuuThayDoiAsync(), Times.Once);
+    }
 }

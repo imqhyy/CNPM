@@ -531,6 +531,8 @@ async function loadMap(targetMapId = null) {
 
             // Đổ danh sách vào dropdown chọn bản đồ trên Radar
             populateRadarMapSelector(state.maps);
+            // Đổ danh sách vào dropdown bộ lọc bản đồ trong Quản lý điểm tham quan
+            populateSpotMapFilter(state.maps);
 
             if (state.maps.length > 0) {
                 let chosenMap = null;
@@ -571,6 +573,38 @@ function populateRadarMapSelector(maps) {
     select.innerHTML = maps.map(m => {
         const statusText = m.hoatDong ? '' : ' [Tạm tắt]';
         const isSelected = m.maBanDo === currentVal ? 'selected' : '';
+        return `<option value="${m.maBanDo}" ${isSelected}>${escapeHtml(m.tenBanDo)}${statusText}</option>`;
+    }).join('');
+}
+
+function populateSpotMapFilter(maps) {
+    const select = document.getElementById('filterSpotMap');
+    if (!select) return;
+
+    const currentVal = select.value || '';
+    let html = '<option value="">-- Tất cả bản đồ --</option>';
+    if (maps && maps.length > 0) {
+        html += maps.map(m => {
+            const isSelected = m.maBanDo === currentVal ? 'selected' : '';
+            return `<option value="${m.maBanDo}" ${isSelected}>${escapeHtml(m.tenBanDo)}</option>`;
+        }).join('');
+    }
+    select.innerHTML = html;
+}
+
+function populateSpotMapSelect(selectedMapId = null) {
+    const select = document.getElementById('spotMapSelect');
+    if (!select) return;
+
+    if (!state.maps || state.maps.length === 0) {
+        select.innerHTML = '<option value="">(Chưa có bản đồ nào - vui lòng tạo bản đồ trước)</option>';
+        return;
+    }
+
+    const targetVal = selectedMapId || (state.currentMap ? state.currentMap.maBanDo : state.maps[0].maBanDo);
+    select.innerHTML = state.maps.map(m => {
+        const isSelected = m.maBanDo === targetVal ? 'selected' : '';
+        const statusText = m.hoatDong ? '' : ' [Tạm tắt]';
         return `<option value="${m.maBanDo}" ${isSelected}>${escapeHtml(m.tenBanDo)}${statusText}</option>`;
     }).join('');
 }
@@ -651,20 +685,27 @@ function renderSpotsTable() {
     const tbody = document.getElementById('spotsTableBody');
     if (!tbody) return;
 
-    if (state.spots.length === 0) {
+    const filterMapId = document.getElementById('filterSpotMap')?.value || '';
+    const displayedSpots = filterMapId
+        ? state.spots.filter(s => s.maBanDo === filterMapId)
+        : state.spots;
+
+    if (displayedSpots.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="7" class="text-center py-5 text-muted">
+                <td colspan="8" class="text-center py-5 text-muted">
                     <i class="fa-solid fa-map-location text-3xl mb-2 d-block"></i>
-                    Chưa có điểm tham quan nào. Hãy nhấn "Thêm điểm tham quan" để bắt đầu!
+                    ${filterMapId ? 'Không có điểm tham quan nào thuộc bản đồ này.' : 'Chưa có điểm tham quan nào. Hãy nhấn "Thêm điểm tham quan" để bắt đầu!'}
                 </td>
             </tr>
         `;
         return;
     }
 
-    tbody.innerHTML = state.spots.map(s => {
+    tbody.innerHTML = displayedSpots.map(s => {
         const imgSrc = s.hinhAnhMinhHoa || '/uploads/images/default_spot.png';
+        const mapOfSpot = state.maps.find(m => m.maBanDo === s.maBanDo);
+        const mapName = mapOfSpot ? mapOfSpot.tenBanDo : 'Chưa gán';
         const langTags = s.danhSachNgonNgu && s.danhSachNgonNgu.length > 0
             ? s.danhSachNgonNgu.map(l => `<span class="badge badge-info">${l.toUpperCase()}</span>`).join(' ')
             : `<span class="badge badge-secondary">Chưa có audio</span>`;
@@ -676,6 +717,11 @@ function renderSpotsTable() {
                 </td>
                 <td>
                     <strong style="color:#fff; font-size:0.95rem;">${escapeHtml(s.tenDiaDiem)}</strong>
+                </td>
+                <td>
+                    <span class="badge badge-accent" style="max-width: 170px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block;" title="${escapeHtml(mapName)}">
+                        <i class="fa-solid fa-map"></i> ${escapeHtml(mapName)}
+                    </span>
                 </td>
                 <td>
                     <span class="badge badge-secondary">(${s.toaDoX.toFixed(1)}, ${s.toaDoY.toFixed(1)})</span>
@@ -970,6 +1016,11 @@ function initModalsAndForms() {
     // Nút mở modal thêm điểm
     document.getElementById('btnOpenAddSpotModal')?.addEventListener('click', () => openAddSpotModal());
 
+    // Lắng nghe sự kiện đổi bộ lọc bản đồ ở tab Điểm tham quan
+    document.getElementById('filterSpotMap')?.addEventListener('change', () => {
+        renderSpotsTable();
+    });
+
     // Nút đóng modal
     document.getElementById('btnCloseSpotModal')?.addEventListener('click', () => closeModal('modalSpot'));
     document.getElementById('btnCancelSpotModal')?.addEventListener('click', () => closeModal('modalSpot'));
@@ -1077,8 +1128,19 @@ function initSpotPickerCanvas() {
 
         const r = radiusInput ? parseFloat(radiusInput.value) || 50 : 50;
         const currentSpotId = document.getElementById('spotId')?.value;
-        renderSpotPickerCanvas(clickX, clickY, r, currentSpotId);
+        const currentMapId = document.getElementById('spotMapSelect')?.value;
+        renderSpotPickerCanvas(clickX, clickY, r, currentSpotId, currentMapId);
         showToast(`Đã tự động chọn tọa độ: (${clickX.toFixed(1)}, ${clickY.toFixed(1)})`, 'info');
+    });
+
+    // Lắng nghe khi thay đổi bản đồ trong modal -> Tải lại ảnh nền và điểm của bản đồ đó
+    document.getElementById('spotMapSelect')?.addEventListener('change', async (e) => {
+        const chosenMapId = e.target.value;
+        const currentSpotId = document.getElementById('spotId')?.value;
+        const cx = parseFloat(document.getElementById('spotCoordX')?.value) || 600;
+        const cy = parseFloat(document.getElementById('spotCoordY')?.value) || 400;
+        const r = parseFloat(document.getElementById('spotRadius')?.value) || 50;
+        await renderSpotPickerCanvas(cx, cy, r, currentSpotId, chosenMapId);
     });
 
     // Lắng nghe khi nhập tay tọa độ X hoặc Y -> Cập nhật vị trí ghim tức thời trên bản đồ popup
@@ -1087,9 +1149,10 @@ function initSpotPickerCanvas() {
         const y = parseFloat(document.getElementById('spotCoordY')?.value) || 0;
         const r = parseFloat(document.getElementById('spotRadius')?.value) || 50;
         const currentSpotId = document.getElementById('spotId')?.value;
+        const currentMapId = document.getElementById('spotMapSelect')?.value;
         const badge = document.getElementById('pickerCoordsBadge');
         if (badge) badge.innerHTML = `<i class="fa-solid fa-location-pin"></i> Tọa độ: (${x.toFixed(1)}, ${y.toFixed(1)})`;
-        renderSpotPickerCanvas(x, y, r, currentSpotId);
+        renderSpotPickerCanvas(x, y, r, currentSpotId, currentMapId);
     };
 
     document.getElementById('spotCoordX')?.addEventListener('input', onCoordChange);
@@ -1101,7 +1164,8 @@ function initSpotPickerCanvas() {
         const y = parseFloat(document.getElementById('spotCoordY')?.value) || 0;
         const r = parseFloat(document.getElementById('spotRadius')?.value) || 50;
         const currentSpotId = document.getElementById('spotId')?.value;
-        renderSpotPickerCanvas(x, y, r, currentSpotId);
+        const currentMapId = document.getElementById('spotMapSelect')?.value;
+        renderSpotPickerCanvas(x, y, r, currentSpotId, currentMapId);
     };
 
     document.getElementById('spotRadiusSlider')?.addEventListener('input', onRadiusChange);
@@ -1117,15 +1181,30 @@ function initSpotPickerCanvas() {
         if (badge) badge.innerHTML = `<i class="fa-solid fa-location-pin"></i> Tọa độ: (${cx.toFixed(1)}, ${cy.toFixed(1)})`;
         const r = parseFloat(document.getElementById('spotRadius')?.value) || 50;
         const currentSpotId = document.getElementById('spotId')?.value;
-        renderSpotPickerCanvas(cx, cy, r, currentSpotId);
+        const currentMapId = document.getElementById('spotMapSelect')?.value;
+        renderSpotPickerCanvas(cx, cy, r, currentSpotId, currentMapId);
     });
 }
 
-function renderSpotPickerCanvas(targetX, targetY, radius, excludeSpotId = null) {
+async function renderSpotPickerCanvas(targetX, targetY, radius, excludeSpotId = null, pickerMapId = null) {
     const pCanvas = document.getElementById('spotPickerCanvas');
     if (!pCanvas) return;
     const pCtx = pCanvas.getContext('2d');
     if (!pCtx) return;
+
+    // Xác định bản đồ được chọn cho điểm này
+    const mapId = pickerMapId || document.getElementById('spotMapSelect')?.value || (state.currentMap ? state.currentMap.maBanDo : null);
+    const chosenMap = state.maps.find(m => m.maBanDo === mapId) || state.currentMap;
+
+    let pickerImg = null;
+    if (chosenMap && chosenMap.hinhAnhBanDo) {
+        pickerImg = await loadMapImage(chosenMap.hinhAnhBanDo);
+    }
+
+    if (chosenMap) {
+        pCanvas.width = chosenMap.chieuRongPixel || 1200;
+        pCanvas.height = chosenMap.chieuCaoPixel || 800;
+    }
 
     const width = pCanvas.width;
     const height = pCanvas.height;
@@ -1133,8 +1212,8 @@ function renderSpotPickerCanvas(targetX, targetY, radius, excludeSpotId = null) 
     // 1. Xóa và vẽ hình ảnh bản đồ nền
     pCtx.clearRect(0, 0, width, height);
 
-    if (state.mapImageObj) {
-        pCtx.drawImage(state.mapImageObj, 0, 0, width, height);
+    if (pickerImg) {
+        pCtx.drawImage(pickerImg, 0, 0, width, height);
         // Lớp phủ mờ giúp tăng tương phản thị giác
         pCtx.fillStyle = 'rgba(11, 15, 25, 0.42)';
         pCtx.fillRect(0, 0, width, height);
@@ -1160,8 +1239,9 @@ function renderSpotPickerCanvas(targetX, targetY, radius, excludeSpotId = null) 
         }
     }
 
-    // 2. Vẽ các điểm tham quan đã có (trừ điểm đang được sửa để tránh trùng)
-    state.spots.forEach(s => {
+    // 2. Vẽ các điểm tham quan đã có của bản đồ này (trừ điểm đang được sửa để tránh trùng)
+    const spotsOnMap = chosenMap ? state.spots.filter(s => s.maBanDo === chosenMap.maBanDo) : state.spots;
+    spotsOnMap.forEach(s => {
         if (excludeSpotId && s.maDiaDiem === excludeSpotId) return;
         const sx = s.toaDoX;
         const sy = s.toaDoY;
@@ -1297,6 +1377,11 @@ function openAddSpotModal() {
     document.getElementById('spotId').value = '';
     document.getElementById('spotName').value = '';
 
+    // Ưu tiên chọn bản đồ đang chọn trên bộ lọc hoặc trên radar
+    const filterMapVal = document.getElementById('filterSpotMap')?.value;
+    const initialMapId = filterMapVal || (state.currentMap ? state.currentMap.maBanDo : null);
+    populateSpotMapSelect(initialMapId);
+
     // Tọa độ mặc định đẹp ở khoảng giữa bản đồ (Chuẩn hóa 1200 x 800)
     const defaultX = 600.0;
     const defaultY = 400.0;
@@ -1317,7 +1402,7 @@ function openAddSpotModal() {
 
     // Chờ modal hiển thị rồi vẽ bản đồ chọn tọa độ
     setTimeout(() => {
-        renderSpotPickerCanvas(defaultX, defaultY, defaultR, null);
+        renderSpotPickerCanvas(defaultX, defaultY, defaultR, null, initialMapId);
     }, 60);
 }
 
@@ -1328,6 +1413,10 @@ window.openEditSpotModal = function(spotId) {
     document.getElementById('modalSpotTitle').innerHTML = '<i class="fa-solid fa-pen"></i> Chỉnh sửa Điểm tham quan';
     document.getElementById('spotId').value = spot.maDiaDiem;
     document.getElementById('spotName').value = spot.tenDiaDiem;
+
+    // Chọn đúng bản đồ của điểm này
+    populateSpotMapSelect(spot.maBanDo);
+
     document.getElementById('spotCoordX').value = spot.toaDoX.toFixed(1);
     document.getElementById('spotCoordY').value = spot.toaDoY.toFixed(1);
     document.getElementById('spotRadius').value = spot.phamViNhanDienMet;
@@ -1351,7 +1440,7 @@ window.openEditSpotModal = function(spotId) {
 
     // Chờ modal hiển thị rồi vẽ bản đồ với tọa độ hiện tại của điểm này
     setTimeout(() => {
-        renderSpotPickerCanvas(spot.toaDoX, spot.toaDoY, spot.phamViNhanDienMet, spot.maDiaDiem);
+        renderSpotPickerCanvas(spot.toaDoX, spot.toaDoY, spot.phamViNhanDienMet, spot.maDiaDiem, spot.maBanDo);
     }, 60);
 };
 
@@ -1359,6 +1448,7 @@ async function handleSpotSubmit(e) {
     e.preventDefault();
     const spotId = document.getElementById('spotId').value;
     const name = document.getElementById('spotName').value.trim();
+    const spotMapId = document.getElementById('spotMapSelect')?.value;
     const coordX = parseFloat(document.getElementById('spotCoordX').value);
     const coordY = parseFloat(document.getElementById('spotCoordY').value);
     const radius = parseFloat(document.getElementById('spotRadius').value);
@@ -1386,6 +1476,7 @@ async function handleSpotSubmit(e) {
 
     const payload = {
         maDiaDiem: spotId || '00000000-0000-0000-0000-000000000000',
+        maBanDo: spotMapId || (state.currentMap ? state.currentMap.maBanDo : '00000000-0000-0000-0000-000000000000'),
         tenDiaDiem: name,
         toaDoX: coordX,
         toaDoY: coordY,
@@ -1488,15 +1579,22 @@ function renderNarrationSpotList() {
         return;
     }
 
-    listEl.innerHTML = state.spots.map(s => `
+    listEl.innerHTML = state.spots.map(s => {
+        const mapOfSpot = state.maps.find(m => m.maBanDo === s.maBanDo);
+        const mapName = mapOfSpot ? mapOfSpot.tenBanDo : '';
+        return `
         <div class="spot-selector-item ${state.selectedSpotId === s.maDiaDiem ? 'selected' : ''}" onclick="selectSpotForNarration('${s.maDiaDiem}')">
             <div class="spot-selector-info">
                 <h4>${escapeHtml(s.tenDiaDiem)}</h4>
-                <span>(${s.danhSachNgonNgu ? s.danhSachNgonNgu.length : 0} ngôn ngữ)</span>
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-top:2px;">
+                    ${mapName ? `<span class="badge badge-accent" style="font-size:0.7rem; padding:1px 6px;"><i class="fa-solid fa-map"></i> ${escapeHtml(mapName)}</span>` : ''}
+                    <span style="font-size:0.75rem; color:var(--text-secondary);">(${s.danhSachNgonNgu ? s.danhSachNgonNgu.length : 0} ngôn ngữ)</span>
+                </div>
             </div>
             <i class="fa-solid fa-chevron-right text-muted" style="font-size:0.8rem;"></i>
         </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 window.goToNarrationForSpot = function(spotId) {
