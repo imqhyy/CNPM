@@ -209,5 +209,65 @@ public class DichVuDuKhachTests
         Assert.Equal("Khuôn viên Điện Kính Thiên (Vùng A)", ketQua.TenDiaDiem);
         Assert.Equal(250, ketQua.PhamViNhanDienMet);
     }
+
+    [Fact]
+    public async Task LayBanDoKhuVuc_KhiBanDoKhongHoatDong_TraVeNull()
+    {
+        // Arrange
+        var maBanDo = Guid.NewGuid();
+        var entity = new BanDoKhuVuc
+        {
+            MaBanDo = maBanDo,
+            TenBanDo = "Bản đồ di tích phụ",
+            HoatDong = false
+        };
+        _mockKhoBanDo.Setup(k => k.LayChiTietKemDiaDiemAsync(maBanDo)).ReturnsAsync(entity);
+
+        // Act
+        var ketQua = await _dichVuDuKhach.LayBanDoKhuVucAsync(maBanDo);
+
+        // Assert
+        Assert.Null(ketQua);
+    }
+
+    [Fact]
+    public async Task LayBanDoKhuVuc_KhiBanDoKhongTonTai_TraVeNull()
+    {
+        // Arrange
+        var maBanDo = Guid.NewGuid();
+        _mockKhoBanDo.Setup(k => k.LayChiTietKemDiaDiemAsync(maBanDo)).ReturnsAsync((BanDoKhuVuc?)null);
+
+        // Act
+        var ketQua = await _dichVuDuKhach.LayBanDoKhuVucAsync(maBanDo);
+
+        // Assert
+        Assert.Null(ketQua);
+    }
+
+    [Fact]
+    public async Task LayBanDoKhuVuc_KhiBanDoHoatDong_TraVeBanDoDto()
+    {
+        // Arrange
+        var maBanDo = Guid.NewGuid();
+        var entity = new BanDoKhuVuc
+        {
+            MaBanDo = maBanDo,
+            TenBanDo = "Bản đồ chính",
+            ChieuRongPixel = 1200,
+            ChieuCaoPixel = 800,
+            TiLeMetTrenPixel = 0.5,
+            HoatDong = true
+        };
+        _mockKhoBanDo.Setup(k => k.LayChiTietKemDiaDiemAsync(maBanDo)).ReturnsAsync(entity);
+
+        // Act
+        var ketQua = await _dichVuDuKhach.LayBanDoKhuVucAsync(maBanDo);
+
+        // Assert
+        Assert.NotNull(ketQua);
+        Assert.Equal(maBanDo, ketQua.MaBanDo);
+        Assert.Equal("Bản đồ chính", ketQua.TenBanDo);
+        Assert.True(ketQua.HoatDong);
+    }
 }
 
