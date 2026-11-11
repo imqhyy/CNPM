@@ -8,12 +8,13 @@ public class DichVuThongKe : IDichVuThongKe
 {
     private readonly ConcurrentDictionary<string, NguoiDungOnlineDto> _danhSachOnline = new();
 
-    public void ThemNguoiOnline(string connectionId, string tenDuKhach)
+    public void ThemNguoiOnline(string connectionId, string tenDuKhach, string? maBanDo = null)
     {
         var nguoiDung = new NguoiDungOnlineDto
         {
             ConnectionId = connectionId,
             TenDuKhach = string.IsNullOrWhiteSpace(tenDuKhach) ? "Khách tham quan" : tenDuKhach,
+            MaBanDo = maBanDo,
             ToaDoX = 600, // Tọa độ tâm mặc định trên bản đồ canvas 1200x800
             ToaDoY = 400, // Tọa độ tâm mặc định trên bản đồ canvas 1200x800
             ThoiDiemKetNoi = DateTime.UtcNow,
@@ -23,6 +24,7 @@ public class DichVuThongKe : IDichVuThongKe
         _danhSachOnline.AddOrUpdate(connectionId, nguoiDung, (key, existing) =>
         {
             existing.TenDuKhach = nguoiDung.TenDuKhach;
+            if (!string.IsNullOrWhiteSpace(maBanDo)) existing.MaBanDo = maBanDo;
             existing.LanHoatDongCuoi = DateTime.UtcNow;
             return existing;
         });
@@ -33,12 +35,13 @@ public class DichVuThongKe : IDichVuThongKe
         _danhSachOnline.TryRemove(connectionId, out _);
     }
 
-    public void CapNhatViTri(string connectionId, double x, double y)
+    public void CapNhatViTri(string connectionId, double x, double y, string? maBanDo = null)
     {
         if (_danhSachOnline.TryGetValue(connectionId, out var user))
         {
             user.ToaDoX = x;
             user.ToaDoY = y;
+            if (!string.IsNullOrWhiteSpace(maBanDo)) user.MaBanDo = maBanDo;
             user.LanHoatDongCuoi = DateTime.UtcNow;
         }
     }

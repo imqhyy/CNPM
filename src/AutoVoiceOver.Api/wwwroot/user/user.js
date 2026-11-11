@@ -313,10 +313,11 @@ function updateHeaderUI() {
 // 4. Kết nối SignalR Hub (Du khách tham gia)
 // ==========================================
 function initSignalR() {
+    const mapId = state.currentMap?.maBanDo || null;
     if (signalrConnection) {
         if (signalrConnection.state === signalR.HubConnectionState.Connected) {
-            signalrConnection.invoke('ThamGiaPhien', state.nickname)
-                .then(() => signalrConnection.invoke('CapNhatToaDo', state.userPos.x, state.userPos.y))
+            signalrConnection.invoke('ThamGiaPhien', state.nickname, mapId)
+                .then(() => signalrConnection.invoke('CapNhatToaDo', state.userPos.x, state.userPos.y, mapId))
                 .catch(console.error);
         }
         return;
@@ -331,23 +332,26 @@ function initSignalR() {
         signalrConnection.start()
             .then(async () => {
                 console.log('SignalR connected as Visitor');
-                // 1. Gửi nickname lên máy chủ trước
-                await signalrConnection.invoke('ThamGiaPhien', state.nickname);
+                const curMapId = state.currentMap?.maBanDo || null;
+                // 1. Gửi nickname và mã bản đồ lên máy chủ trước
+                await signalrConnection.invoke('ThamGiaPhien', state.nickname, curMapId);
                 // 2. Gửi tọa độ ban đầu
-                await signalrConnection.invoke('CapNhatToaDo', state.userPos.x, state.userPos.y);
+                await signalrConnection.invoke('CapNhatToaDo', state.userPos.x, state.userPos.y, curMapId);
             })
             .catch(err => console.warn('SignalR connection failed:', err));
 
         signalrConnection.onreconnected(async () => {
-            await signalrConnection.invoke('ThamGiaPhien', state.nickname).catch(console.error);
-            await signalrConnection.invoke('CapNhatToaDo', state.userPos.x, state.userPos.y).catch(console.error);
+            const curMapId = state.currentMap?.maBanDo || null;
+            await signalrConnection.invoke('ThamGiaPhien', state.nickname, curMapId).catch(console.error);
+            await signalrConnection.invoke('CapNhatToaDo', state.userPos.x, state.userPos.y, curMapId).catch(console.error);
         });
 
         // Nhịp tim định kỳ duy trì tọa độ trên Radar Admin khi du khách đứng yên (không gửi khi đang di chuyển)
         if (!window.__signalrHeartbeatInterval) {
             window.__signalrHeartbeatInterval = setInterval(() => {
                 if (!state.isMoving && signalrConnection && signalrConnection.state === signalR.HubConnectionState.Connected) {
-                    signalrConnection.invoke('CapNhatToaDo', state.userPos.x, state.userPos.y).catch(() => {});
+                    const curMapId = state.currentMap?.maBanDo || null;
+                    signalrConnection.invoke('CapNhatToaDo', state.userPos.x, state.userPos.y, curMapId).catch(() => {});
                 }
             }, 5000);
         }
@@ -500,7 +504,8 @@ function updateMovement() {
         if (now - lastServerCoordUpdateTime > 150) {
             lastServerCoordUpdateTime = now;
             if (signalrConnection && signalrConnection.state === signalR.HubConnectionState.Connected) {
-                signalrConnection.invoke('CapNhatToaDo', state.userPos.x, state.userPos.y).catch(() => {});
+                const curMapId = state.currentMap?.maBanDo || null;
+                signalrConnection.invoke('CapNhatToaDo', state.userPos.x, state.userPos.y, curMapId).catch(() => {});
             }
         }
 
@@ -515,7 +520,8 @@ function updateMovement() {
 
         // Chốt tọa độ điểm dừng chân cuối cùng lên Server
         if (signalrConnection && signalrConnection.state === signalR.HubConnectionState.Connected) {
-            signalrConnection.invoke('CapNhatToaDo', state.userPos.x, state.userPos.y).catch(() => {});
+            const curMapId = state.currentMap?.maBanDo || null;
+            signalrConnection.invoke('CapNhatToaDo', state.userPos.x, state.userPos.y, curMapId).catch(() => {});
         }
 
         checkProximity(state.userPos.x, state.userPos.y);

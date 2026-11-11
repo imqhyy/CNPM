@@ -9,6 +9,7 @@
 const API_BASE = '/api/admin';
 
 const state = {
+    maps: [],
     spots: [],
     visitors: new Map(), // connectionId -> visitor object
     currentMap: null,
@@ -353,6 +354,7 @@ function initSignalR() {
                         toaDoY: y,
                         toadoX: x,
                         toadoY: y,
+                        maBanDo: u.maBanDo || null,
                         lanHoatDongCuoi: new Date(u.lanHoatDongCuoi || Date.now())
                     });
                 });
@@ -369,6 +371,7 @@ function initSignalR() {
                 const x = Number(visitor.toaDoX ?? visitor.toadoX ?? existing?.toaDoX ?? existing?.toadoX ?? 600);
                 const y = Number(visitor.toaDoY ?? visitor.toadoY ?? existing?.toaDoY ?? existing?.toadoY ?? 400);
                 const name = visitor.tenDuKhach || existing?.tenDuKhach || 'Du khách';
+                const mapId = visitor.maBanDo || existing?.maBanDo || null;
 
                 state.visitors.set(visitor.connectionId, {
                     connectionId: visitor.connectionId,
@@ -377,6 +380,7 @@ function initSignalR() {
                     toaDoY: y,
                     toadoX: x,
                     toadoY: y,
+                    maBanDo: mapId,
                     lanHoatDongCuoi: new Date()
                 });
                 renderVisitorTable();
@@ -518,27 +522,102 @@ async function loadMapImage(url) {
     });
 }
 
-async function loadMap() {
+async function loadMap(targetMapId = null) {
     try {
         const res = await fetch(`${API_BASE}/QuanLyDiaDiem/bando`);
         if (res.ok) {
             const maps = await res.json();
-            if (maps && maps.length > 0) {
-                state.currentMap = maps[0];
-                updateMapTabUI(state.currentMap);
+            state.maps = maps || [];
 
-                // Tải ảnh bản đồ vào memory để vẽ lên canvas
-                if (state.currentMap.hinhAnhBanDo) {
-                    const loadedImg = await loadMapImage(state.currentMap.hinhAnhBanDo);
-                    if (loadedImg) {
-                        state.mapImageObj = loadedImg;
-                        renderRadarCanvas();
-                    }
+            // Đổ danh sách vào dropdown chọn bản đồ trên Radar
+            populateRadarMapSelector(state.maps);
+
+            if (state.maps.length > 0) {
+                let chosenMap = null;
+                if (targetMapId) {
+                    chosenMap = state.maps.find(m => m.maBanDo === targetMapId);
                 }
+                if (!chosenMap && state.currentMap) {
+                    chosenMap = state.maps.find(m => m.maBanDo === state.currentMap.maBanDo);
+                }
+                if (!chosenMap) {
+                    // Ưu tiên chọn bản đồ đang hoạt động đầu tiên
+                    chosenMap = state.maps.find(m => m.hoatDong) || state.maps[0];
+                }
+
+                await selectRadarMap(chosenMap.maBanDo, false);
+                updateMapTabUI(chosenMap);
+            } else {
+                state.currentMap = null;
+                state.mapImageObj = null;
+                renderRadarCanvas();
             }
         }
     } catch (err) {
         console.error('Failed to load map:', err);
+    }
+}
+
+function populateRadarMapSelector(maps) {
+    const select = document.getElementById('selectRadarMap');
+    if (!select) return;
+
+    if (!maps || maps.length === 0) {
+        select.innerHTML = '<option value="">(Chưa có bản đồ nào)</option>';
+        return;
+    }
+
+    const currentVal = state.currentMap ? state.currentMap.maBanDo : maps[0].maBanDo;
+    select.innerHTML = maps.map(m => {
+        const statusText = m.hoatDong ? '' : ' [Tạm tắt]';
+        const isSelected = m.maBanDo === currentVal ? 'selected' : '';
+        return `<option value="${m.maBanDo}" ${isSelected}>${escapeHtml(m.tenBanDo)}${statusText}</option>`;
+    }).join('');
+}
+
+async function selectRadarMap(mapId, showNotification = true) {
+    const map = state.maps.find(m => m.maBanDo === mapId);
+    if (!map) return;
+
+    state.currentMap = map;
+
+    // Đồng bộ giá trị hiển thị trên dropdown
+    const select = document.getElementById('selectRadarMap');
+    if (select && select.value !== mapId) {
+        select.value = mapId;
+    }
+
+    // Tải ảnh bản đồ vào memory để vẽ lên canvas
+    if (map.hinhAnhBanDo) {
+        const loadedImg = await loadMapImage(map.hinhAnhBanDo);
+        state.mapImageObj = loadedImg;
+    } else {
+        state.mapImageObj = null;
+    }
+
+    // Cập nhật kích thước canvas theo độ phân giải của bản đồ
+    if (canvas) {
+        canvas.width = map.chieuRongPixel || 1200;
+        canvas.height = map.chieuCaoPixel || 800;
+    }
+
+    updateRadarStats();
+    renderRadarCanvas();
+    renderVisitorTable();
+
+    if (showNotification) {
+        showToast(`Đang giám sát: ${map.tenBanDo}`, 'info');
+    }
+}
+
+function updateRadarStats() {
+    const statSpotCount = document.getElementById('statSpotCount');
+    if (statSpotCount) {
+        const currentMapId = state.currentMap ? state.currentMap.maBanDo : null;
+        const count = currentMapId 
+            ? state.spots.filter(s => s.maBanDo === currentMapId).length
+            : state.spots.length;
+        statSpotCount.innerText = count;
     }
 }
 
@@ -548,9 +627,8 @@ async function loadSpots() {
         if (res.ok) {
             state.spots = await res.json();
             
-            // Cập nhật thống kê
-            const statSpotCount = document.getElementById('statSpotCount');
-            if (statSpotCount) statSpotCount.innerText = state.spots.length;
+            // Cập nhật thống kê điểm tham quan cho bản đồ đang chọn
+            updateRadarStats();
 
             const totalAudios = state.spots.reduce((acc, cur) => acc + (cur.danhSachNgonNgu ? cur.danhSachNgonNgu.length : 0), 0);
             const statAudioCount = document.getElementById('statAudioCount');
@@ -636,13 +714,23 @@ function renderVisitorTable() {
     const tbody = document.getElementById('visitorTableBody');
     if (!tbody) return;
 
-    const list = Array.from(state.visitors.values());
+    const currentMapId = state.currentMap ? state.currentMap.maBanDo : null;
+    const allVisitors = Array.from(state.visitors.values());
+    const list = currentMapId
+        ? allVisitors.filter(v => !v.maBanDo || v.maBanDo === currentMapId)
+        : allVisitors;
+
+    const badgeVisitorCount = document.getElementById('badgeVisitorCount');
+    if (badgeVisitorCount) {
+        badgeVisitorCount.innerText = `${list.length} người`;
+    }
+
     if (list.length === 0) {
         tbody.innerHTML = `
             <tr>
                 <td colspan="3" class="text-center text-muted py-4">
                     <i class="fa-solid fa-user-slash mb-2 d-block text-lg"></i>
-                    Chưa có du khách nào kết nối
+                    Chưa có du khách nào trên bản đồ này
                 </td>
             </tr>
         `;
@@ -709,7 +797,12 @@ function renderRadarCanvas() {
     }
 
     // 2. Vẽ các Điểm Tham quan & Vòng tròn Bán kính Nhận diện (Detection Radius)
-    state.spots.forEach(spot => {
+    const currentMapId = state.currentMap ? state.currentMap.maBanDo : null;
+    const spotsToRender = currentMapId 
+        ? state.spots.filter(s => s.maBanDo === currentMapId)
+        : state.spots;
+
+    spotsToRender.forEach(spot => {
         const sx = spot.toaDoX;
         const sy = spot.toaDoY;
         const radius = spot.phamViNhanDienMet || 50;
@@ -758,6 +851,11 @@ function renderRadarCanvas() {
 
     // 3. Vẽ Du khách đang Online và Vị trí tức thời
     state.visitors.forEach(v => {
+        // Nếu du khách có gắn mã bản đồ và khác bản đồ đang xem thì không vẽ
+        if (currentMapId && v.maBanDo && v.maBanDo !== currentMapId) {
+            return;
+        }
+
         const vx = Number(v.toaDoX ?? v.toadoX ?? 600);
         const vy = Number(v.toaDoY ?? v.toadoY ?? 400);
         const name = v.tenDuKhach || 'Du khách';
@@ -823,14 +921,27 @@ function initCanvasEvents() {
             return;
         }
 
-        // Kiểm tra xem có click trúng điểm tham quan nào không
-        const clickedSpot = state.spots.find(s => {
+        // Kiểm tra xem có click trúng điểm tham quan nào không (thuộc bản đồ đang chọn)
+        const currentMapId = state.currentMap ? state.currentMap.maBanDo : null;
+        const spotsToCheck = currentMapId
+            ? state.spots.filter(s => s.maBanDo === currentMapId)
+            : state.spots;
+
+        const clickedSpot = spotsToCheck.find(s => {
             const dist = Math.hypot(s.toaDoX - clickX, s.toaDoY - clickY);
             return dist <= 20;
         });
 
         if (clickedSpot) {
             openEditSpotModal(clickedSpot.maDiaDiem);
+        }
+    });
+
+    // Lắng nghe sự kiện chuyển đổi bản đồ trên thanh điều khiển Radar
+    document.getElementById('selectRadarMap')?.addEventListener('change', async (e) => {
+        const mapId = e.target.value;
+        if (mapId) {
+            await selectRadarMap(mapId, true);
         }
     });
 

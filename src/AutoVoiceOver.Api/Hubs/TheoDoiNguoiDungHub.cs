@@ -34,9 +34,9 @@ public class TheoDoiNguoiDungHub : Hub
     /// <summary>
     /// Du khách gửi nickname của mình sau khi nhập tên (quét QR)
     /// </summary>
-    public async Task ThamGiaPhien(string tenDuKhach)
+    public async Task ThamGiaPhien(string tenDuKhach, string? maBanDo = null)
     {
-        _dichVuThongKe.ThemNguoiOnline(Context.ConnectionId, tenDuKhach);
+        _dichVuThongKe.ThemNguoiOnline(Context.ConnectionId, tenDuKhach, maBanDo);
         var user = _dichVuThongKe.LayNguoiDung(Context.ConnectionId);
         await ThongBaoCapNhatSoLuong();
 
@@ -50,7 +50,8 @@ public class TheoDoiNguoiDungHub : Hub
                 toaDoX = user.ToaDoX,
                 toaDoY = user.ToaDoY,
                 toadoX = user.ToaDoX,
-                toadoY = user.ToaDoY
+                toadoY = user.ToaDoY,
+                maBanDo = user.MaBanDo
             });
         }
     }
@@ -58,9 +59,9 @@ public class TheoDoiNguoiDungHub : Hub
     /// <summary>
     /// Du khách ấn di chuyển trên bản đồ -> gửi tọa độ X, Y mới
     /// </summary>
-    public async Task CapNhatToaDo(double x, double y)
+    public async Task CapNhatToaDo(double x, double y, string? maBanDo = null)
     {
-        _dichVuThongKe.CapNhatViTri(Context.ConnectionId, x, y);
+        _dichVuThongKe.CapNhatViTri(Context.ConnectionId, x, y, maBanDo);
         var user = _dichVuThongKe.LayNguoiDung(Context.ConnectionId);
 
         // Gửi tọa độ và tên cập nhật cho Admin Dashboard đang mở (gửi cả toaDoX và toadoX để tương thích 100%)
@@ -71,7 +72,8 @@ public class TheoDoiNguoiDungHub : Hub
             toaDoX = x,
             toaDoY = y,
             toadoX = x,
-            toadoY = y
+            toadoY = y,
+            maBanDo = user?.MaBanDo ?? maBanDo
         });
     }
 
