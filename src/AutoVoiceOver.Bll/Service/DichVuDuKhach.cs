@@ -26,7 +26,7 @@ public class DichVuDuKhach : IDichVuDuKhach
             ? await _khoBanDo.LayChiTietKemDiaDiemAsync(maBanDo.Value)
             : await _khoBanDo.LayBanDoMacDinhAsync();
 
-        if (entity == null) return null;
+        if (entity == null || !entity.HoatDong) return null;
 
         return new BanDoKhuVucDto
         {

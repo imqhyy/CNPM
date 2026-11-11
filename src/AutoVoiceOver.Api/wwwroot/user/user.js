@@ -238,9 +238,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Tải trước bản đồ & điểm tham quan để sẵn sàng ngay lập tức (đặc biệt cho Safari iOS)
-    loadMapAndSpots().then(() => {
-        resizeCanvas();
-        startCanvasLoop();
+    loadMapAndSpots().then((loaded) => {
+        if (loaded) {
+            resizeCanvas();
+            startCanvasLoop();
+        }
     });
 
     window.addEventListener('resize', resizeCanvas);
@@ -432,39 +434,99 @@ async function fetchAssetBlobUrl(url) {
 // ==========================================
 async function loadMapAndSpots() {
     try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetMapId = urlParams.get('mapId');
+
         const fetchOpts = {
             headers: { 'ngrok-skip-browser-warning': 'true' }
         };
 
-        // 1. Tải bản đồ: GET /api/DuKhach/bando
-        const resMap = await fetch('/api/DuKhach/bando', fetchOpts);
-        if (resMap.ok) {
-            state.currentMap = await resMap.json();
-            const mapTitleHeader = document.getElementById('mapTitleHeader');
-            if (mapTitleHeader && state.currentMap.tenBanDo) {
-                mapTitleHeader.innerText = state.currentMap.tenBanDo;
-            }
+        const mapQuery = targetMapId ? `?maBanDo=${encodeURIComponent(targetMapId)}` : '';
 
-            const mapUrl = state.currentMap.hinhAnhBanDo || '/uploads/maps/default_map.jpg';
-            const loadedImg = await loadMapImage(mapUrl);
-            if (loadedImg) {
-                state.mapImage = loadedImg;
-                const bgImg = document.getElementById('mapBackgroundImage');
-                if (bgImg) bgImg.src = loadedImg.src;
-                renderMap();
-            }
+        // 1. Tải bản đồ: GET /api/DuKhach/bando
+        const resMap = await fetch(`/api/DuKhach/bando${mapQuery}`, fetchOpts);
+        if (!resMap.ok) {
+            let msg = 'Bản đồ di tích này hiện không khả dụng hoặc đã bị ban quản lý tạm dừng hoạt động.';
+            try {
+                const errData = await resMap.json();
+                if (errData && errData.message) msg = errData.message;
+            } catch (e) {}
+            show404Page(msg);
+            return false;
+        }
+
+        state.currentMap = await resMap.json();
+        const mapTitleHeader = document.getElementById('mapTitleHeader');
+        if (mapTitleHeader && state.currentMap.tenBanDo) {
+            mapTitleHeader.innerText = state.currentMap.tenBanDo;
+        }
+
+        const mapUrl = state.currentMap.hinhAnhBanDo || '/uploads/maps/default_map.jpg';
+        const loadedImg = await loadMapImage(mapUrl);
+        if (loadedImg) {
+            state.mapImage = loadedImg;
+            const bgImg = document.getElementById('mapBackgroundImage');
+            if (bgImg) bgImg.src = loadedImg.src;
+            renderMap();
         }
 
         // 2. Tải danh sách điểm: GET /api/DuKhach/diadiem
-        const resSpots = await fetch('/api/DuKhach/diadiem', fetchOpts);
+        const spotQuery = state.currentMap?.maBanDo ? `?maBanDo=${encodeURIComponent(state.currentMap.maBanDo)}` : '';
+        const resSpots = await fetch(`/api/DuKhach/diadiem${spotQuery}`, fetchOpts);
         if (resSpots.ok) {
             state.spots = await resSpots.json();
             console.log('Loaded spots:', state.spots.length);
             renderMap();
         }
+        return true;
     } catch (err) {
         console.error('Failed to load map/spots:', err);
+        show404Page('Không thể kết nối đến máy chủ hoặc bản đồ không tồn tại.');
+        return false;
     }
+}
+
+function show404Page(msg) {
+    const errorView = document.getElementById('error404View');
+    const msgEl = document.getElementById('error404Message');
+    if (msg && msgEl) {
+        msgEl.innerText = msg;
+    }
+    if (errorView) {
+        errorView.style.display = 'flex';
+    }
+
+    // Đóng modal chào mừng nếu đang mở
+    const welcomeModal = document.getElementById('welcomeModal');
+    if (welcomeModal) welcomeModal.style.display = 'none';
+
+    // Dừng âm thanh nếu đang phát
+    try {
+        SoundEngine.stop();
+    } catch (e) {}
+
+    // Dừng vòng lặp canvas
+    if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+    }
+
+    // Ngắt kết nối SignalR
+    if (signalrConnection) {
+        try {
+            signalrConnection.stop();
+        } catch (e) {}
+    }
+
+    // Ẩn các thành phần giao diện khác của du khách
+    const dock = document.getElementById('audioPlayerDock');
+    if (dock) dock.style.display = 'none';
+    const banner = document.getElementById('proximityBanner');
+    if (banner) banner.style.display = 'none';
+    const header = document.querySelector('.user-header');
+    if (header) header.style.display = 'none';
+    const mapViewport = document.getElementById('mapViewport');
+    if (mapViewport) mapViewport.style.display = 'none';
 }
 
 // ==========================================

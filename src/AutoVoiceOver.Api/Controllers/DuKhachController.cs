@@ -21,7 +21,7 @@ public class DuKhachController : ControllerBase
     public async Task<IActionResult> LayThongTinBanDo([FromQuery] Guid? maBanDo = null)
     {
         var banDo = await _dichVuDuKhach.LayBanDoKhuVucAsync(maBanDo);
-        if (banDo == null) return NotFound(new { message = "Chưa có bản đồ nào được thiết lập." });
+        if (banDo == null) return NotFound(new { message = "Bản đồ không tồn tại hoặc đã tạm dừng hoạt động." });
         return Ok(banDo);
     }
 

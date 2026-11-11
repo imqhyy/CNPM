@@ -315,6 +315,27 @@
         </div>
     </div>
 
+    <!-- ERROR 404: BẢN ĐỒ KHÔNG TỒN TẠI HOẶC TẠM NGỪNG HOẠT ĐỘNG -->
+    <div class="error-404-screen" id="error404View" style="display: none;">
+        <div class="error-404-card">
+            <div class="error-404-icon">
+                <i class="fa-solid fa-map-location-dot"></i>
+                <div class="error-404-badge">404</div>
+            </div>
+            <h2 class="error-404-title">Bản đồ không hoạt động</h2>
+            <p class="error-404-desc" id="error404Message">
+                Bản đồ di tích này hiện không khả dụng hoặc đã bị ban quản lý tạm dừng hoạt động.
+            </p>
+            <div class="error-404-notice">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>Du khách vui lòng quét lại mã QR mới nhất tại biển hướng dẫn hoặc liên hệ Ban quản lý khu di tích để được hỗ trợ.</span>
+            </div>
+            <a href="/user/" class="btn btn-primary btn-retry">
+                <i class="fa-solid fa-rotate-right"></i> Về bản đồ chính
+            </a>
+        </div>
+    </div>
+
     <!-- Scripts: Microsoft SignalR + User App Logic -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
     <script src="user.js?v=20261025_09"></script>
