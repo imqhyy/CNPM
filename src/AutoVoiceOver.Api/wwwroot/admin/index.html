@@ -284,9 +284,17 @@
                     <div>
                         <h2><i class="fa-solid fa-landmark-flag"></i> Quản lý Điểm tham quan</h2>
                         <p class="subtitle">Thêm mới, sửa tọa độ, ảnh minh họa, trạng thái hoạt động và tùy chỉnh bán
-                            kính kích hoạt.</p>
+                            kính kích hoạt theo từng bản đồ.</p>
                     </div>
-                    <div class="pane-actions">
+                    <div class="pane-actions" style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                        <div class="spot-filter-group" style="display: flex; align-items: center; gap: 8px;">
+                            <label for="filterSpotMap" style="margin: 0; font-size: 0.85rem; color: var(--text-secondary); white-space: nowrap;">
+                                <i class="fa-solid fa-filter text-accent"></i> Bản đồ:
+                            </label>
+                            <select id="filterSpotMap" class="select-radar-map" style="min-width: 210px;" title="Lọc điểm tham quan theo bản đồ">
+                                <option value="">-- Tất cả bản đồ --</option>
+                            </select>
+                        </div>
                         <button class="btn btn-primary" id="btnOpenAddSpotModal">
                             <i class="fa-solid fa-plus"></i> Thêm điểm tham quan
                         </button>
@@ -301,6 +309,7 @@
                                     <tr>
                                         <th>Ảnh</th>
                                         <th>Tên điểm tham quan</th>
+                                        <th>Bản đồ</th>
                                         <th>Tọa độ (X, Y)</th>
                                         <th>Bán kính nhận diện</th>
                                         <th>Ngôn ngữ</th>
@@ -310,7 +319,7 @@
                                 </thead>
                                 <tbody id="spotsTableBody">
                                     <tr>
-                                        <td colspan="7" class="text-center py-5 text-muted">
+                                        <td colspan="8" class="text-center py-5 text-muted">
                                             <i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i>
                                             <p>Đang tải danh sách điểm tham quan...</p>
                                         </td>
@@ -484,6 +493,13 @@
 
                             <!-- CỘT 2 (PHẢI): BIỂU MẪU THÔNG TIN ĐIỂM THAM QUAN -->
                             <div class="picker-form-column">
+                                <div class="form-group">
+                                    <label for="spotMapSelect"><i class="fa-solid fa-map text-accent"></i> Thuộc Bản đồ *</label>
+                                    <select id="spotMapSelect" class="form-control" required title="Chọn bản đồ gắn với điểm tham quan này">
+                                        <!-- Điền danh sách bản đồ -->
+                                    </select>
+                                </div>
+
                                 <div class="form-group">
                                     <label for="spotName">Tên điểm tham quan *</label>
                                     <input type="text" id="spotName" class="form-control"

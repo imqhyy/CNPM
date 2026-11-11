@@ -92,6 +92,11 @@ public class DichVuQuanLyDiaDiem : IDichVuQuanLyDiaDiem
         var entity = await _khoDiaDiem.LayTheoMaAsync(maDiaDiem);
         if (entity == null) return false;
 
+        if (dto.MaBanDo != Guid.Empty)
+        {
+            entity.MaBanDo = dto.MaBanDo;
+        }
+
         entity.TenDiaDiem = dto.TenDiaDiem;
         entity.HinhAnhMinhHoa = dto.HinhAnhMinhHoa ?? entity.HinhAnhMinhHoa;
         entity.ToaDoX = dto.ToaDoX;

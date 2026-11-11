@@ -183,7 +183,8 @@ public class KhoDiaDiemAdoNet : IKhoDiaDiem
             {
                 var sqlUpdate = @"
                     UPDATE dbo.DiaDiemThamQuans
-                    SET TenDiaDiem = @TenDiaDiem,
+                    SET MaBanDo = @MaBanDo,
+                        TenDiaDiem = @TenDiaDiem,
                         HinhAnhMinhHoa = @HinhAnhMinhHoa,
                         ToaDoX = @ToaDoX,
                         ToaDoY = @ToaDoY,
@@ -193,6 +194,7 @@ public class KhoDiaDiemAdoNet : IKhoDiaDiem
                 ";
 
                 using var cmd = new SqlCommand(sqlUpdate, connection, transaction);
+                cmd.Parameters.Add(new SqlParameter("@MaBanDo", item.MaBanDo.ToString()));
                 cmd.Parameters.Add(new SqlParameter("@TenDiaDiem", item.TenDiaDiem));
                 cmd.Parameters.Add(new SqlParameter("@HinhAnhMinhHoa", (object?)item.HinhAnhMinhHoa ?? DBNull.Value));
                 cmd.Parameters.Add(new SqlParameter("@ToaDoX", item.ToaDoX));
