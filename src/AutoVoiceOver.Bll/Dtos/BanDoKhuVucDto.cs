@@ -11,3 +11,8 @@ public class BanDoKhuVucDto
     public bool HoatDong { get; set; } = true;
     public List<DiaDiemDto> DanhSachDiaDiem { get; set; } = new();
 }
+
+public class CapNhatTrangThaiBanDoDto
+{
+    public bool HoatDong { get; set; }
+}

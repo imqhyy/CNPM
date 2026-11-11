@@ -242,4 +242,25 @@ public class DichVuQuanLyDiaDiem : IDichVuQuanLyDiaDiem
         await _khoBanDo.LuuThayDoiAsync();
         return newEntity.MaBanDo;
     }
+
+    public async Task<bool> DoiTrangThaiBanDoAsync(Guid maBanDo, bool hoatDong)
+    {
+        var entity = await _khoBanDo.LayTheoMaAsync(maBanDo);
+        if (entity == null) return false;
+
+        entity.HoatDong = hoatDong;
+        _khoBanDo.CapNhat(entity);
+        await _khoBanDo.LuuThayDoiAsync();
+        return true;
+    }
+
+    public async Task<bool> XoaBanDoAsync(Guid maBanDo)
+    {
+        var entity = await _khoBanDo.LayTheoMaAsync(maBanDo);
+        if (entity == null) return false;
+
+        _khoBanDo.Xoa(entity);
+        await _khoBanDo.LuuThayDoiAsync();
+        return true;
+    }
 }

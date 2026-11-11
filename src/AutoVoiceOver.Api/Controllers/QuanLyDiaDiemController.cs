@@ -213,4 +213,26 @@ public class QuanLyDiaDiemController : ControllerBase
         var url = await _dichVuLuuTru.LuuTepAsync(file, "maps");
         return Ok(new { url, message = "Tải ảnh bản đồ thành công." });
     }
+
+    /// <summary>
+    /// Bật hoặc tắt trạng thái hoạt động của bản đồ
+    /// </summary>
+    [HttpPatch("bando/{maBanDo:guid}/trang-thai")]
+    public async Task<IActionResult> DoiTrangThaiBanDo(Guid maBanDo, [FromBody] CapNhatTrangThaiBanDoDto dto)
+    {
+        var success = await _dichVuQuanLy.DoiTrangThaiBanDoAsync(maBanDo, dto.HoatDong);
+        if (!success) return NotFound(new { message = "Không tìm thấy bản đồ cần cập nhật trạng thái." });
+        return Ok(new { message = "Cập nhật trạng thái bản đồ thành công.", hoatDong = dto.HoatDong });
+    }
+
+    /// <summary>
+    /// Xóa bản đồ khu vực
+    /// </summary>
+    [HttpDelete("bando/{maBanDo:guid}")]
+    public async Task<IActionResult> XoaBanDo(Guid maBanDo)
+    {
+        var success = await _dichVuQuanLy.XoaBanDoAsync(maBanDo);
+        if (!success) return NotFound(new { message = "Không tìm thấy bản đồ để xóa." });
+        return Ok(new { message = "Xóa bản đồ thành công." });
+    }
 }

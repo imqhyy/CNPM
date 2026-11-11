@@ -138,14 +138,11 @@
                 </button>
                 <button class="nav-item" data-tab="tab-map" id="navTabMap">
                     <i class="fa-solid fa-map"></i>
-                    <span>Sơ đồ Bản đồ Khu vực</span>
+                    <span>Quản lý Bản đồ</span>
                 </button>
             </nav>
 
             <div class="sidebar-footer">
-                <button class="btn btn-outline btn-sidebar-qr" id="btnOpenQrModal" title="Mã QR mở trên điện thoại">
-                    <i class="fa-solid fa-qrcode"></i> <span>Mã QR Du Khách</span>
-                </button>
                 <div class="sidebar-live-status" id="liveStatusBadge" title="Trạng thái kênh kết nối máy chủ">
                     <span class="live-indicator-dot"></span>
                     <span class="live-text">SignalR: <strong id="signalrStatus">Trực tuyến</strong></span>
@@ -379,69 +376,44 @@
                 </div>
             </section>
 
-            <!-- TAB 4: SƠ ĐỒ BẢN ĐỒ KHU VỰC -->
+            <!-- TAB 4: QUẢN LÝ BẢN ĐỒ -->
             <section class="tab-pane" id="tab-map">
                 <div class="pane-header">
                     <div>
-                        <h2><i class="fa-solid fa-map"></i> Quản lý Sơ đồ Bản đồ Di tích</h2>
-                        <p class="subtitle">Xem và tải lên hình ảnh sơ đồ mặt bằng khu di tích / bảo tàng.</p>
+                        <h2><i class="fa-solid fa-map"></i> Quản lý Bản đồ</h2>
+                        <p class="subtitle">Quản lý danh sách các sơ đồ mặt bằng di tích, bật/tắt hoạt động, xuất mã QR riêng cho từng bản đồ và thêm bản đồ mới.</p>
+                    </div>
+                    <div class="pane-actions">
+                        <button class="btn btn-primary" id="btnOpenAddMapModal">
+                            <i class="fa-solid fa-plus"></i> Thêm bản đồ mới
+                        </button>
                     </div>
                 </div>
 
                 <div class="card">
-                    <div class="card-body">
-                        <div class="map-settings-grid">
-                            <div class="map-preview-col">
-                                <h3>Sơ đồ đang kích hoạt</h3>
-                                <div class="map-image-wrapper" id="activeMapImageWrapper">
-                                    <img id="activeMapImage" src="" alt="Sơ đồ bản đồ">
-                                    <div class="map-placeholder" id="activeMapPlaceholder">
-                                        <i class="fa-solid fa-map text-4xl mb-2 text-muted"></i>
-                                        <p>Chưa có hình ảnh bản đồ</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="map-form-col">
-                                <h3>Cập nhật Sơ đồ mới</h3>
-                                <form id="formUploadMap">
-                                    <div class="form-group">
-                                        <label for="inputMapTitle">Tên bản đồ khu vực *</label>
-                                        <input type="text" id="inputMapTitle" class="form-control"
-                                            placeholder="Ví dụ: Hoàng Thành Thăng Long - Khu Trung Tâm" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="inputMapImageFile">Tệp hình ảnh bản đồ (PNG, JPG, SVG, WebP)
-                                            *</label>
-                                        <input type="file" id="inputMapImageFile" class="form-control" accept="image/*"
-                                            required>
-                                    </div>
-
-                                    <div class="form-row">
-                                        <div class="form-group col-6">
-                                            <label for="inputMapWidth">Chiều rộng (Pixel)</label>
-                                            <input type="number" id="inputMapWidth" class="form-control" value="1200"
-                                                min="100">
-                                        </div>
-                                        <div class="form-group col-6">
-                                            <label for="inputMapHeight">Chiều cao (Pixel)</label>
-                                            <input type="number" id="inputMapHeight" class="form-control" value="800"
-                                                min="100">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="inputMapScale">Tỉ lệ ước tính (Mét / Pixel)</label>
-                                        <input type="number" step="0.01" id="inputMapScale" class="form-control"
-                                            value="0.5" min="0.01">
-                                    </div>
-
-                                    <button type="submit" class="btn btn-primary btn-block" id="btnSubmitMap">
-                                        <i class="fa-solid fa-cloud-arrow-up"></i> Lưu & Áp dụng Bản đồ
-                                    </button>
-                                </form>
-                            </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="custom-table table-maps">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 100px;">Sơ đồ</th>
+                                        <th>Tên bản đồ</th>
+                                        <th>Kích thước</th>
+                                        <th>Tỉ lệ</th>
+                                        <th>Điểm tham quan</th>
+                                        <th>Trạng thái</th>
+                                        <th class="text-right" style="width: 260px;">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="mapsTableBody">
+                                    <tr>
+                                        <td colspan="7" class="text-center py-5 text-muted">
+                                            <i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i>
+                                            <p>Đang tải danh sách bản đồ...</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -672,17 +644,65 @@
         </div>
     </div>
 
-    <!-- MODAL 4: XEM & QUÉT MÃ QR DU KHÁCH -->
+    <!-- MODAL 4: THÊM BẢN ĐỒ MỚI -->
+    <div class="modal-backdrop" id="modalAddMap">
+        <div class="modal-dialog" style="max-width: 520px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fa-solid fa-map-location-dot text-accent"></i> Thêm Bản đồ Mới</h3>
+                    <button class="btn-close" id="btnCloseAddMapModal">&times;</button>
+                </div>
+                <form id="formUploadMap">
+                    <div class="modal-body">
+                        <div class="form-group mb-3">
+                            <label for="inputMapTitle">Tên bản đồ khu vực *</label>
+                            <input type="text" id="inputMapTitle" class="form-control"
+                                placeholder="Ví dụ: Hoàng Thành Thăng Long - Khu Trung Tâm" required>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="inputMapImageFile">Tệp hình ảnh bản đồ (PNG, JPG, SVG, WebP) *</label>
+                            <input type="file" id="inputMapImageFile" class="form-control" accept="image/*" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-6">
+                                <label for="inputMapWidth">Chiều rộng (Pixel)</label>
+                                <input type="number" id="inputMapWidth" class="form-control" value="1200" min="100">
+                            </div>
+                            <div class="form-group col-6">
+                                <label for="inputMapHeight">Chiều cao (Pixel)</label>
+                                <input type="number" id="inputMapHeight" class="form-control" value="800" min="100">
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label for="inputMapScale">Tỉ lệ ước tính (Mét / Pixel)</label>
+                            <input type="number" step="0.01" id="inputMapScale" class="form-control" value="0.5" min="0.01">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="btnCancelAddMapModal">Hủy bỏ</button>
+                        <button type="submit" class="btn btn-primary" id="btnSubmitMap">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Lưu & Áp dụng Bản đồ
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 5: XEM & TẢI MÃ QR BẢN ĐỒ DÀNH CHO DU KHÁCH -->
     <div class="modal-backdrop" id="modalAdminQr">
-        <div class="modal-dialog" style="max-width: 440px;">
+        <div class="modal-dialog" style="max-width: 460px;">
             <div class="modal-content" style="text-align: center; padding: 22px;">
                 <div class="modal-header"
                     style="justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 16px;">
-                    <h3 style="margin: 0; font-size: 1.15rem;"><i class="fa-solid fa-qrcode text-accent"></i> Mã QR Cho
-                        Du Khách Quét</h3>
+                    <h3 style="margin: 0; font-size: 1.15rem;"><i class="fa-solid fa-qrcode text-accent"></i> <span id="adminQrModalTitle">Mã QR Bản đồ</span></h3>
                     <button class="btn-close" id="btnCloseAdminQrModal">&times;</button>
                 </div>
                 <div class="modal-body" style="display: flex; flex-direction: column; align-items: center; gap: 14px;">
+                    <div id="adminQrMapName" style="font-weight: 700; font-size: 1.05rem; color: #fff;"></div>
                     <div id="adminQrBox"
                         style="background: #ffffff; padding: 14px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); display: inline-block;">
                     </div>
@@ -691,7 +711,7 @@
                         <i class="fa-solid fa-cloud"></i> Đang tải thông tin...
                     </div>
                     <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0;">
-                        Mở Camera hoặc ứng dụng quét mã trên điện thoại (4G / 5G / Wi-Fi) để vào thẳng Cổng Du Khách.
+                        Quản trị viên tải mã QR này về để photoshop, in ấn và dán biển báo hướng dẫn du khách quét tại điểm di tích.
                     </p>
                     <div style="width: 100%; background: var(--bg-surface); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); font-family: monospace; font-size: 0.82rem; word-break: break-all;"
                         id="adminQrUrlText">
@@ -701,6 +721,9 @@
                 <div class="modal-footer"
                     style="justify-content: center; gap: 10px; border-top: 1px solid var(--border-color); padding-top: 14px; margin-top: 16px;">
                     <button type="button" class="btn btn-secondary" id="btnCancelAdminQrModal">Đóng</button>
+                    <button type="button" class="btn btn-success" id="btnDownloadAdminQr">
+                        <i class="fa-solid fa-download"></i> Tải ảnh mã QR (PNG)
+                    </button>
                     <button type="button" class="btn btn-primary" id="btnCopyAdminQrUrl">
                         <i class="fa-solid fa-copy"></i> Sao chép liên kết
                     </button>

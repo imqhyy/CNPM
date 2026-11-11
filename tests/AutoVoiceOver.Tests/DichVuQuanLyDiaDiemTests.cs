@@ -196,4 +196,78 @@ public class DichVuQuanLyDiaDiemTests
         _mockKhoDiaDiem.Verify(k => k.CapNhat(existing), Times.Once);
         _mockKhoDiaDiem.Verify(k => k.LuuThayDoiAsync(), Times.Once);
     }
+
+    [Fact]
+    public async Task DoiTrangThaiBanDo_KhiBanDoTonTai_CapNhatTrangThai()
+    {
+        // Arrange
+        var maBanDo = Guid.NewGuid();
+        var entity = new BanDoKhuVuc
+        {
+            MaBanDo = maBanDo,
+            TenBanDo = "Bản đồ khu A",
+            HoatDong = true
+        };
+        _mockKhoBanDo.Setup(k => k.LayTheoMaAsync(maBanDo)).ReturnsAsync(entity);
+
+        // Act
+        var result = await _dichVuQuanLy.DoiTrangThaiBanDoAsync(maBanDo, false);
+
+        // Assert
+        Assert.True(result);
+        Assert.False(entity.HoatDong);
+        _mockKhoBanDo.Verify(k => k.CapNhat(entity), Times.Once);
+        _mockKhoBanDo.Verify(k => k.LuuThayDoiAsync(), Times.Once);
+    }
+
+    [Fact]
+    public async Task DoiTrangThaiBanDo_KhiKhongTonTai_TraVeFalse()
+    {
+        // Arrange
+        var maBanDo = Guid.NewGuid();
+        _mockKhoBanDo.Setup(k => k.LayTheoMaAsync(maBanDo)).ReturnsAsync((BanDoKhuVuc?)null);
+
+        // Act
+        var result = await _dichVuQuanLy.DoiTrangThaiBanDoAsync(maBanDo, false);
+
+        // Assert
+        Assert.False(result);
+        _mockKhoBanDo.Verify(k => k.CapNhat(It.IsAny<BanDoKhuVuc>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task XoaBanDo_KhiBanDoTonTai_XoaThanhCong()
+    {
+        // Arrange
+        var maBanDo = Guid.NewGuid();
+        var entity = new BanDoKhuVuc
+        {
+            MaBanDo = maBanDo,
+            TenBanDo = "Bản đồ khu A"
+        };
+        _mockKhoBanDo.Setup(k => k.LayTheoMaAsync(maBanDo)).ReturnsAsync(entity);
+
+        // Act
+        var result = await _dichVuQuanLy.XoaBanDoAsync(maBanDo);
+
+        // Assert
+        Assert.True(result);
+        _mockKhoBanDo.Verify(k => k.Xoa(entity), Times.Once);
+        _mockKhoBanDo.Verify(k => k.LuuThayDoiAsync(), Times.Once);
+    }
+
+    [Fact]
+    public async Task XoaBanDo_KhiKhongTonTai_TraVeFalse()
+    {
+        // Arrange
+        var maBanDo = Guid.NewGuid();
+        _mockKhoBanDo.Setup(k => k.LayTheoMaAsync(maBanDo)).ReturnsAsync((BanDoKhuVuc?)null);
+
+        // Act
+        var result = await _dichVuQuanLy.XoaBanDoAsync(maBanDo);
+
+        // Assert
+        Assert.False(result);
+        _mockKhoBanDo.Verify(k => k.Xoa(It.IsAny<BanDoKhuVuc>()), Times.Never);
+    }
 }

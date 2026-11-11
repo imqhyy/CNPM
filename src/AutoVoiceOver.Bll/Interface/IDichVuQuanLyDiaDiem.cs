@@ -17,4 +17,6 @@ public interface IDichVuQuanLyDiaDiem
 
     Task<List<BanDoKhuVucDto>> LayDanhSachBanDoAsync();
     Task<Guid> LuuBanDoKhuVucAsync(BanDoKhuVucDto dto);
+    Task<bool> DoiTrangThaiBanDoAsync(Guid maBanDo, bool hoatDong);
+    Task<bool> XoaBanDoAsync(Guid maBanDo);
 }
