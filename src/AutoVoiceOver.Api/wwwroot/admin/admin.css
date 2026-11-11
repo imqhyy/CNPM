@@ -438,6 +438,48 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.radar-map-selector-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.radar-map-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.select-radar-map {
+    min-width: 200px;
+    max-width: 280px;
+    height: 34px;
+    padding: 0.25rem 0.65rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background-color: rgba(15, 23, 42, 0.8);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.select-radar-map:focus,
+.select-radar-map:hover {
+    border-color: var(--accent-purple);
+    outline: none;
+    background-color: rgba(30, 41, 59, 0.9);
 }
 
 .card-title {

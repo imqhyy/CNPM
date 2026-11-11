@@ -4,6 +4,7 @@ public class NguoiDungOnlineDto
 {
     public string ConnectionId { get; set; } = string.Empty;
     public string TenDuKhach { get; set; } = "Khách tham quan";
+    public string? MaBanDo { get; set; }
     public double ToaDoX { get; set; }
     public double ToaDoY { get; set; }
     public DateTime ThoiDiemKetNoi { get; set; } = DateTime.UtcNow;
