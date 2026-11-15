@@ -45,7 +45,9 @@ CNPM/
 
 ### Cách 2: Triển khai bằng Docker (Chuẩn hóa môi trường)
 
-**Yêu cầu:** Đã cài đặt Docker và Docker Compose.
+> 📖 **Xem hướng dẫn chi tiết tại:** [huongdanDocker.md](huongdanDocker.md)
+
+**Yêu cầu:** Đã cài đặt Docker Desktop và Docker Compose.
 
 1. Build và khởi chạy container ở chế độ nền:
    ```bash
@@ -55,7 +57,10 @@ CNPM/
    ```bash
    docker compose ps
    ```
-3. Truy cập hệ thống tại: [http://localhost:5256/user/](http://localhost:5256/user/) hoặc [http://localhost:5256/admin/](http://localhost:5256/admin/)
+3. Truy cập hệ thống tại:
+   - Cổng Du khách: [http://localhost:5256/user/](http://localhost:5256/user/)
+   - Cổng Quản trị: [http://localhost:5256/admin/](http://localhost:5256/admin/) (Tài khoản: `admin` / `admin123`)
+   - Swagger API: [http://localhost:5256/swagger](http://localhost:5256/swagger)
 4. Để dừng hệ thống:
    ```bash
    docker compose down
