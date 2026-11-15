@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram id="DFD-Muc-2-1" name="DFD Mức 2 - 1.0 Xác thực &amp; Phân quyền">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1300" pageHeight="800" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Tiêu đề -->
+        <mxCell id="title" value="&lt;b style=&quot;font-size: 17px;&quot;&gt;DFD MỨC 2 - PHÂN RÃ CHỨC NĂNG 1.0: XÁC THỰC &amp;amp; PHÂN QUYỀN&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 12px; color: #4B5563;&quot;&gt;HỆ THỐNG THUYẾT MINH DU LỊCH TỰ ĐỘNG ĐA NGÔN NGỮ (AUTOVOICEOVER)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="320" y="30" width="660" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Tác nhân ngoài: Quản trị viên -->
+        <mxCell id="actor_admin" value="&lt;b&gt;Quản trị viên&lt;/b&gt;&lt;br&gt;(Admin)" style="rounded=0;whiteSpace=wrap;html=1;shadow=1;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;fontFamily=Helvetica;fontSize=13;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="80" y="270" width="160" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Ô xử lý 1.1: Tiếp nhận & Kiểm tra thông tin -->
+        <mxCell id="proc_1_1" value="&lt;b style=&quot;font-size: 14px;&quot;&gt;1.1&lt;/b&gt;&lt;br&gt;&lt;b&gt;Tiếp nhận &amp;amp;&lt;br&gt;Kiểm tra thông tin&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;fontFamily=Helvetica;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="420" y="255" width="130" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Ô xử lý 1.2: Xác thực mật khẩu & Cấp phát JWT -->
+        <mxCell id="proc_1_2" value="&lt;b style=&quot;font-size: 14px;&quot;&gt;1.2&lt;/b&gt;&lt;br&gt;&lt;b&gt;Xác thực mật khẩu&lt;br&gt;&amp;amp; Cấp phát JWT&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;fontFamily=Helvetica;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="720" y="255" width="130" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Kho dữ liệu: D1: TaiKhoanAdmin -->
+        <mxCell id="store_d1" value="&lt;b&gt;D1: TaiKhoanAdmin&lt;/b&gt;" style="shape=partialRectangle;top=1;bottom=1;right=0;left=0;fillColor=none;strokeColor=#000000;strokeWidth=1.5;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1010" y="297.5" width="190" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- Luồng: Admin -> 1.1 -->
+        <mxCell id="e_ad_to_p11" value="Thông tin xác thực (username, password)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="actor_admin" target="proc_1_1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="330" y="300" />
+              <mxPoint x="330" y="300" />
+            </Array>
+            <mxPoint as="offset" y="-12" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: 1.1 -> 1.2 (Luật 1: Chuyển tiếp) -->
+        <mxCell id="e_p11_to_p12" value="Thông tin đăng nhập hợp lệ" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_1_1" target="proc_1_2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="635" y="320" />
+              <mxPoint x="635" y="320" />
+            </Array>
+            <mxPoint as="offset" y="-12" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: D1 -> 1.2 -->
+        <mxCell id="e_d1_to_p12" value="Thông tin tài khoản &amp;amp; Hash" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="store_d1" target="proc_1_2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="930" y="300" />
+              <mxPoint x="930" y="300" />
+            </Array>
+            <mxPoint as="offset" y="-12" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: 1.2 -> D1 -->
+        <mxCell id="e_p12_to_d1" value="Cập nhật trạng thái đăng nhập" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_1_2" target="store_d1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="930" y="340" />
+              <mxPoint x="930" y="340" />
+            </Array>
+            <mxPoint as="offset" y="12" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: 1.2 -> Admin -->
+        <mxCell id="e_p12_to_ad" value="Kết quả xác thực &amp;amp; Token JWT" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_1_2" target="actor_admin">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="785" y="470" />
+              <mxPoint x="160" y="470" />
+            </Array>
+            <mxPoint as="offset" y="12" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Khung chú thích quy tắc & cân bằng -->
+        <mxCell id="note_balance" value="&lt;b&gt;QUY TẮC CÂN BẰNG &amp;amp; PHÂN RÃ (RULE_DFD.MD):&lt;/b&gt;&lt;br&gt;• &lt;b&gt;Luật 1 (Chuyển tiếp):&lt;/b&gt; 1.1 kiểm tra tính hợp lệ dữ liệu thô, sau đó chuyển tiếp cho 1.2 xác thực mật khẩu.&lt;br&gt;• &lt;b&gt;Luật 2 (Kho dữ liệu):&lt;/b&gt; 1.2 đối sánh hash và cập nhật trạng thái qua kho &lt;i&gt;D1: TaiKhoanAdmin&lt;/i&gt;.&lt;br&gt;• &lt;b&gt;Bảo toàn biên:&lt;/b&gt; Luồng ngoài từ Admin vào, nhận về và kết nối D1 khớp 100% với DFD Mức 1.&lt;br&gt;• &lt;b&gt;Giới hạn I/O:&lt;/b&gt; 1.1 có 1 vào / 1 ra; 1.2 có 2 vào / 2 ra (đều &amp;le; 3 nhóm)." style="shape=note;whiteSpace=wrap;html=1;size=14;verticalAlign=top;align=left;spacingLeft=8;spacingTop=6;fillColor=#F9FAFB;strokeColor=#D1D5DB;fontFamily=Helvetica;fontSize=11;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="80" y="550" width="1120" height="95" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
