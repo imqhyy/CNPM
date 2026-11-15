@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram id="W7rgfc-drXtilmiTbpnY" name="AD UC02">
+    <mxGraphModel dx="1518" dy="975" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="node_note" parent="1" style="shape=note;whiteSpace=wrap;html=1;size=14;verticalAlign=top;align=left;spacingTop=6;spacingLeft=8;fillColor=#FFFFCC;strokeColor=#800000;fontColor=#000000;fontStyle=1;fontSize=12;" value="Chọn ngôn ngữ thuyết minh&#xa;Activity Diagram&#xa;(UC-02)" vertex="1">
+          <mxGeometry height="65" width="200" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="node_start" parent="1" style="ellipse;html=1;shape=ellipse;fillColor=#000000;strokeColor=none;" vertex="1">
+          <mxGeometry height="24" width="24" x="438" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="act_bam_chon_ngon_ngu" parent="1" style="rounded=1;arcSize=24;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;fontColor=#000000;fontSize=11;" value="Khách bấm vào biểu tượng chọn ngôn ngữ trên thanh công cụ hoặc khung thuyết minh" vertex="1">
+          <mxGeometry height="45" width="280" x="310" y="95" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_start_to_1" edge="1" parent="1" source="node_start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;" target="act_bam_chon_ngon_ngu">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="act_hien_thi_ds" parent="1" style="rounded=1;arcSize=24;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;fontColor=#000000;fontSize=11;" value="Hệ thống hiển thị danh sách các ngôn ngữ được hỗ trợ (tiếng Việt, tiếng Anh, v.v.)" vertex="1">
+          <mxGeometry height="45" width="270" x="315" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1_to_2" edge="1" parent="1" source="act_bam_chon_ngon_ngu" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;" target="act_hien_thi_ds">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="act_chon_ngon_ngu" parent="1" style="rounded=1;arcSize=24;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;fontColor=#000000;fontSize=11;" value="Khách chọn ngôn ngữ mong muốn sử dụng" vertex="1">
+          <mxGeometry height="40" width="250" x="325" y="235" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_2_to_3" edge="1" parent="1" source="act_hien_thi_ds" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;" target="act_chon_ngon_ngu">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="act_ghi_nhan_ma" parent="1" style="rounded=1;arcSize=24;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;fontColor=#000000;fontSize=11;" value="Hệ thống ghi nhận mã ngôn ngữ mới vào phiên làm việc của khách" vertex="1">
+          <mxGeometry height="45" width="270" x="315" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_3_to_4" edge="1" parent="1" source="act_chon_ngon_ngu" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;" target="act_ghi_nhan_ma">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="act_tra_cuu_noi_dung" parent="1" style="rounded=1;arcSize=24;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;fontColor=#000000;fontSize=11;" value="Hệ thống gửi yêu cầu tra cứu nội dung thuyết minh tương ứng với ngôn ngữ đã chọn" vertex="1">
+          <mxGeometry height="45" width="290" x="305" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_4_to_5" edge="1" parent="1" source="act_ghi_nhan_ma" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;" target="act_tra_cuu_noi_dung">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_co_ban_dich" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;" vertex="1">
+          <mxGeometry height="35" width="40" x="430" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_5_to_dec1" edge="1" parent="1" source="act_tra_cuu_noi_dung" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;" target="dec_co_ban_dich">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_cond_1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;fontColor=#000000;fontSize=11;" value="Có bản dịch ngôn ngữ này?" vertex="1">
+          <mxGeometry height="25" width="160" x="480" y="445" as="geometry" />
+        </mxCell>
+        <mxCell id="act_chua_co_dich" parent="1" style="rounded=1;arcSize=24;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;fontColor=#000000;fontSize=11;" value="Hệ thống thông báo chưa có bản dịch ngôn ngữ này và tự động phát bài thuyết minh tiếng Việt mặc định kèm phụ đề" vertex="1">
+          <mxGeometry height="55" width="230" x="60" y="430" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_dec1_no" edge="1" parent="1" source="dec_co_ban_dich" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" target="act_chua_co_dich">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_dec1_no" parent="edge_dec1_no" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#000000;fontSize=11;" value="Không" vertex="1">
+          <mxGeometry relative="1" x="-0.2" y="-12" as="geometry" />
+        </mxCell>
+        <mxCell id="act_cap_nhat_phu_de" parent="1" style="rounded=1;arcSize=24;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;fontColor=#000000;fontSize=11;" value="Hệ thống cập nhật lại toàn bộ tiêu đề và nội dung văn bản phụ đề trên giao diện" vertex="1">
+          <mxGeometry height="45" width="290" x="305" y="505" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_dec1_yes" edge="1" parent="1" source="dec_co_ban_dich" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="act_cap_nhat_phu_de">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_dec1_yes" parent="edge_dec1_yes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#000000;fontSize=11;" value="Có" vertex="1">
+          <mxGeometry relative="1" x="-0.1" y="8" as="geometry" />
+        </mxCell>
+        <mxCell id="merge_1" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;" vertex="1">
+          <mxGeometry height="35" width="40" x="430" y="575" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_6_to_merge1" edge="1" parent="1" source="act_cap_nhat_phu_de" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="merge_1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_5a_to_merge1" edge="1" parent="1" source="act_chua_co_dich" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;entryX=0;entryY=0.5;" target="merge_1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="175" y="593" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dec_dang_phat" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;" vertex="1">
+          <mxGeometry height="35" width="40" x="430" y="635" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_merge1_to_dec2" edge="1" parent="1" source="merge_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="dec_dang_phat">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_cond_2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;fontColor=#000000;fontSize=11;" value="Có thuyết minh đang phát?" vertex="1">
+          <mxGeometry height="25" width="165" x="480" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="act_tai_audio_moi" parent="1" style="rounded=1;arcSize=24;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;fontColor=#000000;fontSize=11;" value="Hệ thống gửi yêu cầu tải tệp âm thanh của ngôn ngữ mới" vertex="1">
+          <mxGeometry height="45" width="270" x="315" y="695" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_dec2_yes" edge="1" parent="1" source="dec_dang_phat" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="act_tai_audio_moi">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_dec2_yes" parent="edge_dec2_yes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#000000;fontSize=11;" value="Có" vertex="1">
+          <mxGeometry relative="1" x="-0.1" y="8" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_tai_audio_ok" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;" vertex="1">
+          <mxGeometry height="35" width="40" x="430" y="765" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_7_to_dec3" edge="1" parent="1" source="act_tai_audio_moi" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;" target="dec_tai_audio_ok">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_cond_3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;fontColor=#000000;fontSize=11;" value="Tải âm thanh thành công?" vertex="1">
+          <mxGeometry height="25" width="160" x="480" y="770" as="geometry" />
+        </mxCell>
+        <mxCell id="act_loi_audio" parent="1" style="rounded=1;arcSize=24;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;fontColor=#000000;fontSize=11;" value="Hệ thống hiển thị thông báo lỗi tải tệp âm thanh và duy trì phát bài âm thanh của ngôn ngữ trước đó" vertex="1">
+          <mxGeometry height="55" width="230" x="60" y="755" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_dec3_no" edge="1" parent="1" source="dec_tai_audio_ok" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" target="act_loi_audio">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_dec3_no" parent="edge_dec3_no" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#000000;fontSize=11;" value="Không" vertex="1">
+          <mxGeometry relative="1" x="-0.2" y="-12" as="geometry" />
+        </mxCell>
+        <mxCell id="act_phat_tiep" parent="1" style="rounded=1;arcSize=24;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;fontColor=#000000;fontSize=11;" value="Hệ thống tự động phát tệp âm thanh của ngôn ngữ mới và tiếp tục phát từ mốc thời gian tương ứng" vertex="1">
+          <mxGeometry height="45" width="290" x="305" y="830" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_dec3_yes" edge="1" parent="1" source="dec_tai_audio_ok" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="act_phat_tiep">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_dec3_yes" parent="edge_dec3_yes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#000000;fontSize=11;" value="Có" vertex="1">
+          <mxGeometry relative="1" x="-0.1" y="8" as="geometry" />
+        </mxCell>
+        <mxCell id="merge_2" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;" vertex="1">
+          <mxGeometry height="35" width="40" x="430" y="900" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_dec2_no" edge="1" parent="1" source="dec_dang_phat" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=1;exitY=0.5;entryX=1;entryY=0.5;" target="merge_2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="670" y="652" />
+              <mxPoint x="670" y="917" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lbl_dec2_no" parent="edge_dec2_no" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#000000;fontSize=11;" value="Không" vertex="1">
+          <mxGeometry relative="1" x="-0.7" y="-12" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_7a_to_merge2" edge="1" parent="1" source="act_loi_audio" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;entryX=0;entryY=0.5;" target="merge_2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="175" y="917" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_7b_to_merge2" edge="1" parent="1" source="act_phat_tiep" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="merge_2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="node_end" parent="1" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#800000;strokeWidth=2;" vertex="1">
+          <mxGeometry height="24" width="24" x="438" y="960" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_merge2_to_end" edge="1" parent="1" source="merge_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="node_end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

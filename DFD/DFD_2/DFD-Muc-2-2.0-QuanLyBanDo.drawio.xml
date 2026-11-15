@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram id="DFD-Muc-2-2" name="DFD Mức 2 - 2.0 Quản lý bản đồ khu vực">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="950" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Tiêu đề -->
+        <mxCell id="title" value="&lt;b style=&quot;font-size: 17px;&quot;&gt;DFD MỨC 2 - PHÂN RÃ CHỨC NĂNG 2.0: QUẢN LÝ BẢN ĐỒ KHU VỰC&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 12px; color: #4B5563;&quot;&gt;HỆ THỐNG THUYẾT MINH DU LỊCH TỰ ĐỘNG ĐA NGÔN NGỮ (AUTOVOICEOVER)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="370" y="25" width="660" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Tác nhân ngoài: Quản trị viên -->
+        <mxCell id="actor_admin" value="&lt;b&gt;Quản trị viên&lt;/b&gt;&lt;br&gt;(Admin)" style="rounded=0;whiteSpace=wrap;html=1;shadow=1;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;fontFamily=Helvetica;fontSize=13;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="80" y="330" width="160" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Ô xử lý 2.1: Tiếp nhận & Tải ảnh bản đồ -->
+        <mxCell id="proc_2_1" value="&lt;b style=&quot;font-size: 14px;&quot;&gt;2.1&lt;/b&gt;&lt;br&gt;&lt;b&gt;Tiếp nhận &amp;amp;&lt;br&gt;Tải ảnh bản đồ&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;fontFamily=Helvetica;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="460" y="140" width="130" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Ô xử lý 2.2: Cấu hình thông số bản đồ -->
+        <mxCell id="proc_2_2" value="&lt;b style=&quot;font-size: 14px;&quot;&gt;2.2&lt;/b&gt;&lt;br&gt;&lt;b&gt;Cấu hình thông số&lt;br&gt;&amp;amp; Lưu bản đồ&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;fontFamily=Helvetica;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="460" y="325" width="130" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Ô xử lý 2.3: Quản lý trạng thái & Xóa -->
+        <mxCell id="proc_2_3" value="&lt;b style=&quot;font-size: 14px;&quot;&gt;2.3&lt;/b&gt;&lt;br&gt;&lt;b&gt;Truy vấn &amp;amp;&lt;br&gt;Đổi trạng thái / Xóa&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;fontFamily=Helvetica;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="460" y="510" width="130" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Kho dữ liệu: D2: BanDoKhuVuc -->
+        <mxCell id="store_d2" value="&lt;b&gt;D2: BanDoKhuVuc&lt;/b&gt;" style="shape=partialRectangle;top=1;bottom=1;right=0;left=0;fillColor=none;strokeColor=#000000;strokeWidth=1.5;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="840" y="367.5" width="190" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- Luồng: Admin -> 2.1 (Tải ảnh) -->
+        <mxCell id="e_ad_to_p21" value="Tệp hình ảnh bản đồ" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="actor_admin" target="proc_2_1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="140" y="205" />
+            </Array>
+            <mxPoint as="offset" y="-10" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: 2.1 -> Admin (Kết quả upload) -->
+        <mxCell id="e_p21_to_ad" value="URL ảnh &amp;amp; Thông báo tải ảnh" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_2_1" target="actor_admin">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="200" y="235" />
+            </Array>
+            <mxPoint as="offset" y="10" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: 2.1 -> 2.2 (Luật 1: Chuyển tiếp URL ảnh) -->
+        <mxCell id="e_p21_to_p22" value="Đường dẫn ảnh sơ đồ (/uploads/maps)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_2_1" target="proc_2_2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" x="20" y="0" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: Admin -> 2.2 (Cấu hình) -->
+        <mxCell id="e_ad_to_p22" value="Thông số cấu hình (Tên, tỉ lệ, px)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="actor_admin" target="proc_2_2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="350" y="370" />
+              <mxPoint x="350" y="370" />
+            </Array>
+            <mxPoint as="offset" y="-12" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: 2.2 -> Admin -->
+        <mxCell id="e_p22_to_ad" value="Kết quả lưu bản đồ &amp;amp; Mã bản đồ" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_2_2" target="actor_admin">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="350" y="410" />
+              <mxPoint x="350" y="410" />
+            </Array>
+            <mxPoint as="offset" y="12" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: 2.2 -> D2 -->
+        <mxCell id="e_p22_to_d2" value="Lưu/Cập nhật bản đồ" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_2_2" target="store_d2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="710" y="390" />
+              <mxPoint x="710" y="390" />
+            </Array>
+            <mxPoint as="offset" y="-10" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: D2 -> 2.3 -->
+        <mxCell id="e_d2_to_p23" value="Dữ liệu bản đồ" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="store_d2" target="proc_2_3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="935" y="550" />
+            </Array>
+            <mxPoint as="offset" y="-10" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: 2.3 -> D2 -->
+        <mxCell id="e_p23_to_d2" value="Đổi cờ HoatDong / Xóa bản đồ" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_2_3" target="store_d2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="760" y="590" />
+              <mxPoint x="760" y="405" />
+            </Array>
+            <mxPoint as="offset" y="10" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: Admin -> 2.3 -->
+        <mxCell id="e_ad_to_p23" value="Yêu cầu xem / Đổi trạng thái / Xóa" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="actor_admin" target="proc_2_3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="140" y="550" />
+            </Array>
+            <mxPoint as="offset" y="-10" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: 2.3 -> Admin -->
+        <mxCell id="e_p23_to_ad" value="Danh sách bản đồ &amp;amp; Thông báo kết quả" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_2_3" target="actor_admin">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="200" y="590" />
+            </Array>
+            <mxPoint as="offset" y="10" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Khung chú thích quy tắc & cân bằng -->
+        <mxCell id="note_balance" value="&lt;b&gt;QUY TẮC CÂN BẰNG &amp;amp; PHÂN RÃ (RULE_DFD.MD):&lt;/b&gt;&lt;br&gt;• &lt;b&gt;Luật 3 (Tách chức năng độc lập):&lt;/b&gt; Phân tách thành 3 xử lý: 2.1 Tải ảnh, 2.2 Cấu hình lưu trữ và 2.3 Điều khiển trạng thái.&lt;br&gt;• &lt;b&gt;Luật 1 (Chuyển tiếp):&lt;/b&gt; 2.1 sau khi upload tệp ảnh thành công chuyển tiếp đường dẫn URL sang 2.2 để lưu vào CSDL.&lt;br&gt;• &lt;b&gt;Bảo toàn biên:&lt;/b&gt; Tập hợp các luồng Admin và D2 bảo toàn 100% dòng dữ liệu của xử lý 2.0 ở DFD Mức 1.&lt;br&gt;• &lt;b&gt;Giới hạn I/O:&lt;/b&gt; Mỗi ô xử lý có từ 1 đến 2 nhóm vào và từ 1 đến 2 nhóm ra (&amp;le; 3 nhóm)." style="shape=note;whiteSpace=wrap;html=1;size=14;verticalAlign=top;align=left;spacingLeft=8;spacingTop=6;fillColor=#F9FAFB;strokeColor=#D1D5DB;fontFamily=Helvetica;fontSize=11;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="80" y="700" width="1120" height="95" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

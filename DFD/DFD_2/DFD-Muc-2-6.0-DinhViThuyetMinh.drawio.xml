@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram id="DFD-Muc-2-6" name="DFD Mức 2 - 6.0 Định vị &amp; Kích hoạt thuyết minh">
+    <mxGraphModel dx="1500" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1550" pageHeight="1000" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Tiêu đề -->
+        <mxCell id="title" value="&lt;b style=&quot;font-size: 17px;&quot;&gt;DFD MỨC 2 - PHÂN RÃ CHỨC NĂNG 6.0: ĐỊNH VỊ &amp;amp; KÍCH HOẠT THUYẾT MINH TỰ ĐỘNG&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 12px; color: #4B5563;&quot;&gt;HỆ THỐNG THUYẾT MINH DU LỊCH TỰ ĐỘNG ĐA NGÔN NGỮ (AUTOVOICEOVER)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="380" y="25" width="790" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Tác nhân ngoài 1: Khách tham quan -->
+        <mxCell id="actor_user" value="&lt;b&gt;Khách tham quan&lt;/b&gt;&lt;br&gt;(Du khách / Web Client)" style="rounded=0;whiteSpace=wrap;html=1;shadow=1;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;fontFamily=Helvetica;fontSize=13;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="80" y="280" width="160" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Tác nhân ngoài 2: Quản trị viên -->
+        <mxCell id="actor_admin" value="&lt;b&gt;Quản trị viên&lt;/b&gt;&lt;br&gt;(Admin)" style="rounded=0;whiteSpace=wrap;html=1;shadow=1;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;fontFamily=Helvetica;fontSize=13;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="80" y="550" width="160" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Ô xử lý 6.1: Định vị & Kiểm tra bán kính nhận diện -->
+        <mxCell id="proc_6_1" value="&lt;b style=&quot;font-size: 14px;&quot;&gt;6.1&lt;/b&gt;&lt;br&gt;&lt;b&gt;Định vị &amp;amp; Kiểm tra&lt;br&gt;Bán kính nhận diện&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 10px; color: #4B5563;&quot;&gt;(Geofence Engine)&lt;/span&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;fontFamily=Helvetica;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="500" y="210" width="140" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- Ô xử lý 6.2: Tra cứu & Kích hoạt âm thanh -->
+        <mxCell id="proc_6_2" value="&lt;b style=&quot;font-size: 14px;&quot;&gt;6.2&lt;/b&gt;&lt;br&gt;&lt;b&gt;Tra cứu &amp;amp; Kích hoạt&lt;br&gt;Âm thanh thuyết minh&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 10px; color: #4B5563;&quot;&gt;(Auto Trigger)&lt;/span&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;fontFamily=Helvetica;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="880" y="210" width="140" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- Ô xử lý 6.3: Đồng bộ radar du khách trực tuyến -->
+        <mxCell id="proc_6_3" value="&lt;b style=&quot;font-size: 14px;&quot;&gt;6.3&lt;/b&gt;&lt;br&gt;&lt;b&gt;Đồng bộ radar&lt;br&gt;Du khách trực tuyến&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 10px; color: #4B5563;&quot;&gt;(SignalR Live Tracking)&lt;/span&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;fontFamily=Helvetica;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="500" y="535" width="140" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- Kho dữ liệu D3: DiaDiemThamQuan -->
+        <mxCell id="store_d3" value="&lt;b&gt;D3: DiaDiemThamQuan&lt;/b&gt;" style="shape=partialRectangle;top=1;bottom=1;right=0;left=0;fillColor=none;strokeColor=#000000;strokeWidth=1.5;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="500" y="100" width="190" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- Kho dữ liệu D4: NoiDungThuyetMinh -->
+        <mxCell id="store_d4" value="&lt;b&gt;D4: NoiDungThuyetMinh&lt;/b&gt;" style="shape=partialRectangle;top=1;bottom=1;right=0;left=0;fillColor=none;strokeColor=#000000;strokeWidth=1.5;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="257.5" width="190" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- Luồng: User -> 6.1 (Tọa độ) -->
+        <mxCell id="e_user_to_p61" value="Tọa độ vị trí (X, Y)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="actor_user" target="proc_6_1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="360" y="260" />
+              <mxPoint x="360" y="260" />
+            </Array>
+            <mxPoint as="offset" y="-10" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: D3 -> 6.1 -->
+        <mxCell id="e_d3_to_p61" value="Tọa độ &amp;amp; Bán kính điểm" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="store_d3" target="proc_6_1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="570" y="180" />
+              <mxPoint x="570" y="180" />
+            </Array>
+            <mxPoint as="offset" y="-10" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: 6.1 -> 6.2 (Luật 1: Chuyển tiếp mã điểm kích hoạt) -->
+        <mxCell id="e_p61_to_p62" value="Mã điểm tham quan được kích hoạt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_6_1" target="proc_6_2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="760" y="260" />
+              <mxPoint x="760" y="260" />
+            </Array>
+            <mxPoint as="offset" y="-10" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: 6.1 -> 6.3 (Luật 1: Chuyển tiếp tọa độ radar) -->
+        <mxCell id="e_p61_to_p63" value="Tọa độ di chuyển thời gian thực" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_6_1" target="proc_6_3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="570" y="440" />
+              <mxPoint x="570" y="440" />
+            </Array>
+            <mxPoint as="offset" y="10" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: User -> 6.2 (Ngôn ngữ) -->
+        <mxCell id="e_user_to_p62" value="Tùy chọn ngôn ngữ (vi, en...)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="actor_user" target="proc_6_2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="200" y="360" />
+              <mxPoint x="760" y="360" />
+              <mxPoint x="760" y="300" />
+            </Array>
+            <mxPoint as="offset" y="-10" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: D4 -> 6.2 -->
+        <mxCell id="e_d4_to_p62" value="Nội dung audio &amp;amp; Phụ đề" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="store_d4" target="proc_6_2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1120" y="280" />
+              <mxPoint x="1120" y="280" />
+            </Array>
+            <mxPoint as="offset" y="-10" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: 6.2 -> User (Audio & Subtitle) -->
+        <mxCell id="e_p62_to_user" value="Âm thanh thuyết minh &amp;amp; Phụ đề tự động" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_6_2" target="actor_user">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="950" y="410" />
+              <mxPoint x="140" y="410" />
+            </Array>
+            <mxPoint as="offset" y="10" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: 6.3 -> Admin (SignalR Radar) -->
+        <mxCell id="e_p63_to_ad" value="Dữ liệu radar du khách online (SignalR Broadcast)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_6_3" target="actor_admin">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="360" y="605" />
+              <mxPoint x="360" y="605" />
+            </Array>
+            <mxPoint as="offset" y="-10" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Khung chú thích quy tắc & cân bằng -->
+        <mxCell id="note_balance" value="&lt;b&gt;QUY TẮC CÂN BẰNG &amp;amp; PHÂN RÃ (RULE_DFD.MD):&lt;/b&gt;&lt;br&gt;• &lt;b&gt;Luật 1 &amp;amp; Luật 5 (Chuyển đổi thông tin):&lt;/b&gt; 6.1 tính toán Euclid &amp;amp; giải quyết tranh chấp vùng chồng lấn, chuyển tiếp mã điểm sang 6.2 và chuyển tọa độ sang 6.3.&lt;br&gt;• &lt;b&gt;Bảo toàn số Actor:&lt;/b&gt; Duy trì đúng 2 tác nhân ngoài: Khách tham quan và Quản trị viên (nhận luồng radar).&lt;br&gt;• &lt;b&gt;Bảo toàn biên:&lt;/b&gt; Các luồng ngoài từ Du khách, Admin, D3 và D4 khớp chính xác 100% với xử lý 6.0 ở DFD Mức 1.&lt;br&gt;• &lt;b&gt;Giới hạn I/O:&lt;/b&gt; 6.1 có 2 vào / 2 ra; 6.2 có 3 vào / 1 ra; 6.3 có 1 vào / 1 ra (đều &amp;le; 3 nhóm)." style="shape=note;whiteSpace=wrap;html=1;size=14;verticalAlign=top;align=left;spacingLeft=8;spacingTop=6;fillColor=#F9FAFB;strokeColor=#D1D5DB;fontFamily=Helvetica;fontSize=11;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="80" y="740" width="1340" height="95" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

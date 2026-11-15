@@ -1,3 +1,8 @@
+sửa lại trang index
+
+
+//không cần đọc từ đây trở về sau vì đây là phần đã thực hiện
+
 hiện tại hệ thống này chỉ có phép 1 bản đồ hoạt động nên tôi muốn nó sẽ quản lý được nhiều bản đồ
 
 1. Trang giám sát Radar & Giám sát Live chỉ đang cho phép hiển thị 1 bản đồ duy nhất, tôi muốn trang này phải cho phép tùy chọn bản đồ sẽ hiển thị.

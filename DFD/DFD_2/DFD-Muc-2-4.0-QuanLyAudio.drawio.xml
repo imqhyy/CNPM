@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram id="DFD-Muc-2-4" name="DFD Mức 2 - 4.0 Quản lý audio &amp; thuyết minh">
+    <mxGraphModel dx="1400" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1450" pageHeight="950" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Tiêu đề -->
+        <mxCell id="title" value="&lt;b style=&quot;font-size: 17px;&quot;&gt;DFD MỨC 2 - PHÂN RÃ CHỨC NĂNG 4.0: QUẢN LÝ AUDIO &amp;amp; THUYẾT MINH&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 12px; color: #4B5563;&quot;&gt;HỆ THỐNG THUYẾT MINH DU LỊCH TỰ ĐỘNG ĐA NGÔN NGỮ (AUTOVOICEOVER)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="380" y="25" width="670" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Tác nhân ngoài: Quản trị viên -->
+        <mxCell id="actor_admin" value="&lt;b&gt;Quản trị viên&lt;/b&gt;&lt;br&gt;(Admin)" style="rounded=0;whiteSpace=wrap;html=1;shadow=1;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;fontFamily=Helvetica;fontSize=13;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="80" y="330" width="160" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Ô xử lý 4.1: Tiếp nhận & Tải lên tệp âm thanh / văn bản -->
+        <mxCell id="proc_4_1" value="&lt;b style=&quot;font-size: 14px;&quot;&gt;4.1&lt;/b&gt;&lt;br&gt;&lt;b&gt;Tiếp nhận &amp;amp; Tải lên&lt;br&gt;Tệp Media / Text&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;fontFamily=Helvetica;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="460" y="140" width="130" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Ô xử lý 4.2: Gán bài thuyết minh theo ngôn ngữ -->
+        <mxCell id="proc_4_2" value="&lt;b style=&quot;font-size: 14px;&quot;&gt;4.2&lt;/b&gt;&lt;br&gt;&lt;b&gt;Gán thuyết minh&lt;br&gt;Theo ngôn ngữ&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;fontFamily=Helvetica;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="460" y="325" width="130" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Ô xử lý 4.3: Truy vấn & Xóa bài thuyết minh -->
+        <mxCell id="proc_4_3" value="&lt;b style=&quot;font-size: 14px;&quot;&gt;4.3&lt;/b&gt;&lt;br&gt;&lt;b&gt;Truy vấn &amp;amp;&lt;br&gt;Xóa bài thuyết minh&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;fontFamily=Helvetica;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="460" y="510" width="130" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Kho dữ liệu D3: DiaDiemThamQuan -->
+        <mxCell id="store_d3" value="&lt;b&gt;D3: DiaDiemThamQuan&lt;/b&gt;" style="shape=partialRectangle;top=1;bottom=1;right=0;left=0;fillColor=none;strokeColor=#000000;strokeWidth=1.5;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="840" y="182.5" width="190" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- Kho dữ liệu D4: NoiDungThuyetMinh -->
+        <mxCell id="store_d4" value="&lt;b&gt;D4: NoiDungThuyetMinh&lt;/b&gt;" style="shape=partialRectangle;top=1;bottom=1;right=0;left=0;fillColor=none;strokeColor=#000000;strokeWidth=1.5;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="840" y="440" width="190" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- Luồng: Admin -> 4.1 -->
+        <mxCell id="e_ad_to_p41" value="File audio (MP3) &amp;amp; File phụ đề (.txt)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="actor_admin" target="proc_4_1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="140" y="205" />
+            </Array>
+            <mxPoint as="offset" y="-10" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: 4.1 -> Admin (Kết quả upload) -->
+        <mxCell id="e_p41_to_ad" value="URL tệp lưu trữ &amp;amp; Văn bản trích xuất" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_4_1" target="actor_admin">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="200" y="235" />
+            </Array>
+            <mxPoint as="offset" y="10" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: 4.1 -> 4.2 (Luật 1: Chuyển tiếp) -->
+        <mxCell id="e_p41_to_p42" value="URL âm thanh &amp;amp; Văn bản phụ đề" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_4_1" target="proc_4_2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" x="20" y="0" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: D3 -> 4.2 (Kiểm tra FK MaDiaDiem) -->
+        <mxCell id="e_d3_to_p42" value="Thông tin điểm tham quan (Kiểm tra FK)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="store_d3" target="proc_4_2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="935" y="360" />
+            </Array>
+            <mxPoint as="offset" y="-10" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: Admin -> 4.2 -->
+        <mxCell id="e_ad_to_p42" value="Mã điểm tham quan &amp;amp; Mã ngôn ngữ (vi, en...)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="actor_admin" target="proc_4_2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="350" y="370" />
+              <mxPoint x="350" y="370" />
+            </Array>
+            <mxPoint as="offset" y="-12" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: 4.2 -> Admin -->
+        <mxCell id="e_p42_to_ad" value="Kết quả lưu bài thuyết minh &amp;amp; Mã nội dung" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_4_2" target="actor_admin">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="350" y="410" />
+              <mxPoint x="350" y="410" />
+            </Array>
+            <mxPoint as="offset" y="12" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: 4.2 -> D4 -->
+        <mxCell id="e_p42_to_d4" value="Lưu/Cập nhật bài thuyết minh" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_4_2" target="store_d4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="710" y="390" />
+              <mxPoint x="710" y="450" />
+            </Array>
+            <mxPoint as="offset" y="-10" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: D4 -> 4.3 -->
+        <mxCell id="e_d4_to_p43" value="Dữ liệu thuyết minh" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="store_d4" target="proc_4_3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="935" y="550" />
+            </Array>
+            <mxPoint as="offset" y="-10" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: 4.3 -> D4 -->
+        <mxCell id="e_p43_to_d4" value="Lệnh xóa bài thuyết minh" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_4_3" target="store_d4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="760" y="590" />
+              <mxPoint x="760" y="475" />
+            </Array>
+            <mxPoint as="offset" y="10" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: Admin -> 4.3 -->
+        <mxCell id="e_ad_to_p43" value="Yêu cầu xem / Xóa bản dịch" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="actor_admin" target="proc_4_3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="140" y="550" />
+            </Array>
+            <mxPoint as="offset" y="-10" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Luồng: 4.3 -> Admin -->
+        <mxCell id="e_p43_to_ad" value="Danh sách thuyết minh &amp;amp; Thông báo kết quả" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_4_3" target="actor_admin">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="200" y="590" />
+            </Array>
+            <mxPoint as="offset" y="10" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Khung chú thích quy tắc & cân bằng -->
+        <mxCell id="note_balance" value="&lt;b&gt;QUY TẮC CÂN BẰNG &amp;amp; PHÂN RÃ (RULE_DFD.MD):&lt;/b&gt;&lt;br&gt;• &lt;b&gt;Luật 1 (Chuyển tiếp):&lt;/b&gt; 4.1 lưu trữ tệp vật lý, trích xuất text, rồi chuyển tiếp đường dẫn cho 4.2 gán vào CSDL.&lt;br&gt;• &lt;b&gt;Luật 3 (Tách xử lý):&lt;/b&gt; 4.3 là xử lý độc lập để tra cứu danh sách hoặc xóa bản dịch của điểm.&lt;br&gt;• &lt;b&gt;Bảo toàn biên:&lt;/b&gt; Các luồng ngoài từ Admin, D3 và D4 khớp chính xác 100% với xử lý 4.0 ở DFD Mức 1.&lt;br&gt;• &lt;b&gt;Giới hạn I/O:&lt;/b&gt; Mỗi ô xử lý có từ 1 đến 3 nhóm vào và từ 1 đến 2 nhóm ra (&amp;le; 3 nhóm)." style="shape=note;whiteSpace=wrap;html=1;size=14;verticalAlign=top;align=left;spacingLeft=8;spacingTop=6;fillColor=#F9FAFB;strokeColor=#D1D5DB;fontFamily=Helvetica;fontSize=11;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="80" y="700" width="1120" height="95" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
