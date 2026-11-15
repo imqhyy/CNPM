@@ -1,0 +1,14 @@
+**/.git
+**/.github
+**/.vs
+**/bin
+**/obj
+CNPM XML
+DFD
+database
+**/*.drawio.xml
+**/*.mmd
+run_server.bat
+*.md
+!README.md
+!huongdanDocker.md

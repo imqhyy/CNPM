@@ -1,0 +1,98 @@
+name: Backend CD Pipeline - Docker Image Delivery
+
+on:
+  push:
+    branches: [ "main" ]
+    tags: [ "v*.*.*" ]
+  workflow_dispatch: # Cho phép kích hoạt thủ công từ giao diện GitHub Actions nếu cần
+
+permissions:
+  contents: read
+  packages: write # Cần thiết để đẩy Docker Image lên GitHub Container Registry (ghcr.io)
+
+jobs:
+  # =========================================================================
+  # BƯỚC 1: KIỂM THỬ TỰ ĐỘNG ĐẢM BẢO CHẤT LƯỢNG TRƯỚC KHI ĐÓNG GÓI (GATEWAY)
+  # =========================================================================
+  test-before-delivery:
+    name: Run Verification & Tests
+    runs-on: ubuntu-latest
+
+    services:
+      mssql:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: 'Y'
+          MSSQL_SA_PASSWORD: 'YourStrong!Passw0rd'
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'YourStrong!Passw0rd' -C -Q 'SELECT 1'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up .NET 8 SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore AutoVoiceOver.slnx
+
+    - name: Build solution (Release)
+      run: dotnet build AutoVoiceOver.slnx --no-restore --configuration Release
+
+    - name: Run unit tests
+      env:
+        ConnectionStrings__DefaultConnection: "Server=127.0.0.1,1433;Database=AutoVoiceOverDb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;MultipleActiveResultSets=true"
+      run: dotnet test tests/AutoVoiceOver.Tests/AutoVoiceOver.Tests.csproj --no-build --configuration Release --verbosity normal
+
+  # =========================================================================
+  # BƯỚC 2: BUILD DOCKER IMAGE VÀ ĐẨY LÊN GITHUB CONTAINER REGISTRY (GHCR)
+  # =========================================================================
+  build-and-push-ghcr:
+    name: Build & Push Docker Image to GHCR
+    needs: test-before-delivery
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to GitHub Container Registry (GHCR)
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Extract Docker metadata (Tags & Labels)
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ghcr.io/${{ github.repository }}
+        tags: |
+          type=ref,event=branch
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=sha,prefix=sha-
+          type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+
+    - name: Build and push Docker Image
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max

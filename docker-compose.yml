@@ -1,26 +1,71 @@
 version: '3.8'
 
 services:
+  # -------------------------------------------------------------------------
+  # 1. Cơ sở dữ liệu Microsoft SQL Server 2022
+  # -------------------------------------------------------------------------
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: autovoiceover-db
+    restart: unless-stopped
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Password123!@#
+      - MSSQL_PID=Developer
+    ports:
+      # Map cổng 14333 bên ngoài host vào cổng 1433 bên trong container
+      # (dùng 14333 để tránh đụng độ nếu máy tính đã cài SQL Server cục bộ)
+      - "14333:1433"
+    volumes:
+      - autovoiceover_db_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Password123!@#' -C -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    networks:
+      - autovoiceover-net
+
+  # -------------------------------------------------------------------------
+  # 2. Máy chủ Ứng dụng Backend API & Web AutoVoiceOver (.NET 8)
+  # -------------------------------------------------------------------------
   autovoiceover-api:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: autovoiceover-system
     restart: unless-stopped
+    depends_on:
+      sqlserver:
+        condition: service_healthy
     ports:
+      # Map cổng 5256 của máy tính vào cổng 8080 của container
       - "5256:8080"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=AutoVoiceOverDb;User Id=sa;Password=Password123!@#;TrustServerCertificate=True;MultipleActiveResultSets=true;Connect Timeout=30;
     volumes:
-      - autovoiceover_data:/app/data
+      # Đồng bộ thư mục uploads (ảnh bản đồ, audio thuyết minh mp3) giữa máy host và container
       - ./src/AutoVoiceOver.Api/wwwroot/uploads:/app/wwwroot/uploads
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/api/DuKhach/bando"]
-      interval: 30s
-      timeout: 10s
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/HeThong/qr-link"]
+      interval: 20s
+      timeout: 5s
       retries: 3
-      start_period: 10s
+      start_period: 15s
+    networks:
+      - autovoiceover-net
 
+# ---------------------------------------------------------------------------
+# Volumes & Networks
+# ---------------------------------------------------------------------------
 volumes:
-  autovoiceover_data:
+  autovoiceover_db_data:
+    name: autovoiceover_db_data
+
+networks:
+  autovoiceover-net:
+    name: autovoiceover-net
+    driver: bridge
