@@ -51,8 +51,8 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
-      # Đồng bộ thư mục uploads (ảnh bản đồ, audio thuyết minh mp3) giữa máy host và container
-      - ./src/AutoVoiceOver.Api/wwwroot/uploads:/app/wwwroot/uploads
+      # Đồng bộ mã giao diện tĩnh wwwroot (admin, user và uploads) giữa máy host và container
+      - ./src/AutoVoiceOver.Api/wwwroot:/app/wwwroot
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8080/api/HeThong/qr-link" ]
       interval: 20s
