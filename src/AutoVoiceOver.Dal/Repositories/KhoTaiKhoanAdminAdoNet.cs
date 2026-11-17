@@ -161,6 +161,28 @@ public class KhoTaiKhoanAdminAdoNet : IKhoTaiKhoanAdmin
     }
 
     /// <summary>
+    /// Cập nhật mật khẩu mới cho tài khoản quản trị bằng ADO.NET
+    /// </summary>
+    public async Task<bool> CapNhatMatKhauAsync(Guid maTaiKhoan, string matKhauHashMoi)
+    {
+        using var connection = TaoKetNoi();
+        await connection.OpenAsync();
+
+        var sql = @"
+            UPDATE dbo.TaiKhoanAdmins 
+            SET MatKhauHash = @MatKhauHash
+            WHERE MaTaiKhoan = @MaTaiKhoan;
+        ";
+
+        using var cmd = new SqlCommand(sql, connection);
+        cmd.Parameters.Add(new SqlParameter("@MatKhauHash", matKhauHashMoi));
+        cmd.Parameters.Add(new SqlParameter("@MaTaiKhoan", maTaiKhoan.ToString()));
+
+        var rows = await cmd.ExecuteNonQueryAsync();
+        return rows > 0;
+    }
+
+    /// <summary>
     /// Tạo mới tài khoản bằng ADO.NET
     /// </summary>
     public async Task<bool> TaoTaiKhoanAsync(TaiKhoanAdmin taiKhoan)

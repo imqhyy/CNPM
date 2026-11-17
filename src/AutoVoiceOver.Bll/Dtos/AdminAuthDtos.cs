@@ -31,3 +31,21 @@ public class DangNhapResponseDto
     public string? Token { get; set; }
     public ThongTinAdminDto? Admin { get; set; }
 }
+
+/// <summary>
+/// DTO yêu cầu đổi mật khẩu quản trị viên
+/// </summary>
+public class DoiMatKhauRequestDto
+{
+    public string MatKhauCu { get; set; } = string.Empty;
+    public string MatKhauMoi { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// DTO kết quả đổi mật khẩu
+/// </summary>
+public class DoiMatKhauResponseDto
+{
+    public bool ThanhCong { get; set; }
+    public string ThongBao { get; set; } = string.Empty;
+}

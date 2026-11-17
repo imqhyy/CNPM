@@ -112,6 +112,9 @@
                     <i class="fa-solid fa-user-shield"></i>
                 </div>
                 <span class="user-meta-name" id="headerAdminName">Admin</span>
+                <button class="btn btn-outline" id="btnOpenChangePassModal" title="Đổi mật khẩu tài khoản quản trị">
+                    <i class="fa-solid fa-key"></i> Đổi mật khẩu
+                </button>
                 <button class="btn btn-outline btn-logout" id="btnLogout" title="Đăng xuất khỏi hệ thống">
                     <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
                 </button>
@@ -728,6 +731,41 @@
                         <i class="fa-solid fa-copy"></i> Sao chép liên kết
                     </button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 6: ĐỔI MẬT KHẨU TÀI KHOẢN ADMIN -->
+    <div class="modal-backdrop" id="modalChangePassword">
+        <div class="modal-dialog" style="max-width: 440px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fa-solid fa-key text-accent"></i> Đổi Mật Khẩu Quản Trị</h3>
+                    <button class="btn-close" id="btnCloseChangePassModal">&times;</button>
+                </div>
+                <form id="formChangePassword">
+                    <div class="modal-body">
+                        <div class="form-group mb-3">
+                            <label for="inputOldPassword">Mật khẩu hiện tại *</label>
+                            <input type="password" id="inputOldPassword" class="form-control" placeholder="Nhập mật khẩu hiện tại" required autocomplete="current-password">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="inputNewPassword">Mật khẩu mới *</label>
+                            <input type="password" id="inputNewPassword" class="form-control" placeholder="Tối thiểu 6 ký tự" minlength="6" required autocomplete="new-password">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="inputConfirmPassword">Xác nhận mật khẩu mới *</label>
+                            <input type="password" id="inputConfirmPassword" class="form-control" placeholder="Nhập lại mật khẩu mới" minlength="6" required autocomplete="new-password">
+                        </div>
+                        <div id="changePassAlert" class="alert alert-danger hidden" style="font-size: 0.88rem; padding: 8px 12px; margin-top: 10px;"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="btnCancelChangePassModal">Hủy</button>
+                        <button type="submit" class="btn btn-primary" id="btnSubmitChangePass">
+                            <i class="fa-solid fa-floppy-disk"></i> Cập nhật Mật khẩu
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

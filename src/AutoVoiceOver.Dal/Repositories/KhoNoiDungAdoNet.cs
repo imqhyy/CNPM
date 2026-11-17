@@ -220,7 +220,7 @@ public class KhoNoiDungAdoNet : IKhoNoiDung
         }
         catch
         {
-            await transaction.RollbackAsync();
+            try { await transaction.RollbackAsync(); } catch { }
             throw;
         }
     }

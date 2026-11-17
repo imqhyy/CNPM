@@ -232,7 +232,7 @@ public class KhoBanDoAdoNet : IKhoBanDo
         }
         catch
         {
-            await transaction.RollbackAsync();
+            try { await transaction.RollbackAsync(); } catch { }
             throw;
         }
     }

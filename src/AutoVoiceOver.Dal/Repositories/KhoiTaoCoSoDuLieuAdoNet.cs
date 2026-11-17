@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using AutoVoiceOver.Dal.Entities;
@@ -177,7 +177,7 @@ public static class KhoiTaoCoSoDuLieuAdoNet
         {
             insertCmd.Parameters.Add(new SqlParameter("@MaBanDo", maBanDo));
             insertCmd.Parameters.Add(new SqlParameter("@TenBanDo", "Bản đồ Khu di tích Lịch sử Hoàng Thành Thăng Long"));
-            insertCmd.Parameters.Add(new SqlParameter("@HinhAnhBanDo", "/uploads/maps/default_map.png"));
+            insertCmd.Parameters.Add(new SqlParameter("@HinhAnhBanDo", "/uploads/maps/default_map.jpg"));
             insertCmd.Parameters.Add(new SqlParameter("@NgayTao", DateTime.UtcNow));
             await insertCmd.ExecuteNonQueryAsync();
         }

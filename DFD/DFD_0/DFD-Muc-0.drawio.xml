@@ -27,8 +27,8 @@
         </mxCell>
 
         <!-- LUỒNG DỮ LIỆU: ADMIN -> 0.0 (3 LUỒNG VÀO) -->
-        <!-- Admin In 1: Thông tin xác thực -->
-        <mxCell id="flow_ad_in_1" value="Thông tin xác thực (username, password)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="actor_admin" target="proc_0">
+        <!-- Admin In 1: Thông tin xác thực & Đổi mật khẩu -->
+        <mxCell id="flow_ad_in_1" value="Thông tin xác thực (Đăng nhập / Đổi mật khẩu)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="actor_admin" target="proc_0">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="140" y="160" />
@@ -59,8 +59,8 @@
         </mxCell>
 
         <!-- LUỒNG DỮ LIỆU: 0.0 -> ADMIN (3 LUỒNG RA) -->
-        <!-- Admin Out 1: Kết quả xác thực & Token JWT -->
-        <mxCell id="flow_ad_out_1" value="Kết quả xác thực &amp; Token JWT" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_0" target="actor_admin">
+        <!-- Admin Out 1: Kết quả xác thực & Token phiên làm việc -->
+        <mxCell id="flow_ad_out_1" value="Kết quả xác thực (Token JWT / Thông báo)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_0" target="actor_admin">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="680" y="210" />

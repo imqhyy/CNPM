@@ -197,4 +197,112 @@ public class DichVuXacThucAdminTests
         // Assert
         Assert.Null(adminInfo);
     }
+
+    [Fact]
+    public async Task DoiMatKhau_ThanhCong_KhiMatKhauCuChinhXacVaMatKhauMoiHopLe()
+    {
+        // Arrange
+        var maTaiKhoan = Guid.NewGuid();
+        var matKhauCuHash = KhoTaiKhoanAdminAdoNet.MaHoaMatKhau("123456789");
+        var adminEntity = new TaiKhoanAdmin
+        {
+            MaTaiKhoan = maTaiKhoan,
+            TenDangNhap = "admin1",
+            MatKhauHash = matKhauCuHash,
+            TrangThai = true
+        };
+
+        _mockKhoTaiKhoan.Setup(k => k.LayTheoMaAsync(maTaiKhoan))
+            .ReturnsAsync(adminEntity);
+        _mockKhoTaiKhoan.Setup(k => k.CapNhatMatKhauAsync(maTaiKhoan, It.IsAny<string>()))
+            .ReturnsAsync(true);
+
+        var request = new DoiMatKhauRequestDto
+        {
+            MatKhauCu = "123456789",
+            MatKhauMoi = "MatKhauMoi@2026"
+        };
+
+        // Act
+        var ketQua = await _dichVuXacThuc.DoiMatKhauAsync(maTaiKhoan, request);
+
+        // Assert
+        Assert.True(ketQua.ThanhCong);
+        Assert.Contains("thành công", ketQua.ThongBao);
+
+        var expectedNewHash = KhoTaiKhoanAdminAdoNet.MaHoaMatKhau("MatKhauMoi@2026");
+        _mockKhoTaiKhoan.Verify(k => k.CapNhatMatKhauAsync(maTaiKhoan, expectedNewHash), Times.Once);
+    }
+
+    [Fact]
+    public async Task DoiMatKhau_ThatBai_KhiMatKhauCuSai()
+    {
+        // Arrange
+        var maTaiKhoan = Guid.NewGuid();
+        var matKhauCuHash = KhoTaiKhoanAdminAdoNet.MaHoaMatKhau("123456789");
+        var adminEntity = new TaiKhoanAdmin
+        {
+            MaTaiKhoan = maTaiKhoan,
+            TenDangNhap = "admin1",
+            MatKhauHash = matKhauCuHash,
+            TrangThai = true
+        };
+
+        _mockKhoTaiKhoan.Setup(k => k.LayTheoMaAsync(maTaiKhoan))
+            .ReturnsAsync(adminEntity);
+
+        var request = new DoiMatKhauRequestDto
+        {
+            MatKhauCu = "mat_khau_cu_sai_roi",
+            MatKhauMoi = "MatKhauMoi@2026"
+        };
+
+        // Act
+        var ketQua = await _dichVuXacThuc.DoiMatKhauAsync(maTaiKhoan, request);
+
+        // Assert
+        Assert.False(ketQua.ThanhCong);
+        Assert.Contains("không chính xác", ketQua.ThongBao);
+        _mockKhoTaiKhoan.Verify(k => k.CapNhatMatKhauAsync(It.IsAny<Guid>(), It.IsAny<string>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task DoiMatKhau_ThatBai_KhiMatKhauMoiQuaNgan()
+    {
+        // Arrange
+        var maTaiKhoan = Guid.NewGuid();
+        var request = new DoiMatKhauRequestDto
+        {
+            MatKhauCu = "123456789",
+            MatKhauMoi = "123" // Dưới 6 ký tự
+        };
+
+        // Act
+        var ketQua = await _dichVuXacThuc.DoiMatKhauAsync(maTaiKhoan, request);
+
+        // Assert
+        Assert.False(ketQua.ThanhCong);
+        Assert.Contains("tối thiểu 6 ký tự", ketQua.ThongBao);
+        _mockKhoTaiKhoan.Verify(k => k.CapNhatMatKhauAsync(It.IsAny<Guid>(), It.IsAny<string>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task DoiMatKhau_ThatBai_KhiMatKhauMoiTrungMatKhauCu()
+    {
+        // Arrange
+        var maTaiKhoan = Guid.NewGuid();
+        var request = new DoiMatKhauRequestDto
+        {
+            MatKhauCu = "123456789",
+            MatKhauMoi = "123456789" // Trùng mật khẩu cũ
+        };
+
+        // Act
+        var ketQua = await _dichVuXacThuc.DoiMatKhauAsync(maTaiKhoan, request);
+
+        // Assert
+        Assert.False(ketQua.ThanhCong);
+        Assert.Contains("không được trùng", ketQua.ThongBao);
+        _mockKhoTaiKhoan.Verify(k => k.CapNhatMatKhauAsync(It.IsAny<Guid>(), It.IsAny<string>()), Times.Never);
+    }
 }

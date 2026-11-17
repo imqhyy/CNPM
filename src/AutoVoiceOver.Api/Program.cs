@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using AutoVoiceOver.Dal.Repositories;
 using AutoVoiceOver.Bll.Interface;
 using AutoVoiceOver.Bll.Service;
@@ -9,11 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 // 1. Cấu hình Cơ sở dữ liệu (Microsoft SQL Server ADO.NET)
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
     ?? KhoiTaoCoSoDuLieuAdoNet.ChuoiKetNoiMacDinh;
-
-builder.Services.AddDbContext<NguCanhDuLieuApp>(options =>
-{
-    options.UseSqlServer(connectionString);
-});
 
 // 2. Đăng ký các Repository thuần túy ADO.NET (Data Access Layer - ADO.NET Repositories)
 builder.Services.AddScoped<IKhoDiaDiem, KhoDiaDiemAdoNet>();       // Điểm tham quan qua ADO.NET
@@ -118,10 +112,23 @@ app.UseStaticFiles(new StaticFileOptions
         ctx.Context.Response.Headers.Append("Access-Control-Allow-Headers", "*");
         ctx.Context.Response.Headers.Append("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS");
 
-        // Vô hiệu hóa cache cho toàn bộ static files để mobile không bị cache cũ
-        ctx.Context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
-        ctx.Context.Response.Headers["Pragma"] = "no-cache";
-        ctx.Context.Response.Headers["Expires"] = "0";
+        // Cấu hình Cache thông minh:
+        // - Tài nguyên media lớn (/uploads/maps/, /uploads/images/, /uploads/audios/): Bật cache 7 ngày
+        //   giúp điện thoại tải siêu tốc và hiển thị bản đồ tức thì (0ms) ở các lần quét tiếp theo.
+        // - Mã nguồn giao diện (HTML, JS, CSS): Giữ no-cache để khi sửa code trình duyệt luôn nhận bản mới nhất.
+        var requestPath = ctx.Context.Request.Path.Value ?? string.Empty;
+        if (requestPath.StartsWith("/uploads/", StringComparison.OrdinalIgnoreCase))
+        {
+            ctx.Context.Response.Headers["Cache-Control"] = "public, max-age=604800";
+            ctx.Context.Response.Headers.Remove("Pragma");
+            ctx.Context.Response.Headers.Remove("Expires");
+        }
+        else
+        {
+            ctx.Context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+            ctx.Context.Response.Headers["Pragma"] = "no-cache";
+            ctx.Context.Response.Headers["Expires"] = "0";
+        }
     }
 });
 

@@ -58,6 +58,35 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
+    /// Đổi mật khẩu cho tài khoản Quản trị viên đang đăng nhập
+    /// </summary>
+    [HttpPost("change-password")]
+    public async Task<IActionResult> DoiMatKhau(
+        [FromHeader(Name = "Authorization")] string? authHeader,
+        [FromBody] DoiMatKhauRequestDto request)
+    {
+        var token = LayTokenTuHeader(authHeader);
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            return Unauthorized(new { thanhCong = false, thongBao = "Chưa cung cấp token xác thực." });
+        }
+
+        var admin = await _dichVuXacThuc.XacThucTokenAsync(token);
+        if (admin == null)
+        {
+            return Unauthorized(new { thanhCong = false, thongBao = "Phiên làm việc không hợp lệ hoặc đã hết hạn." });
+        }
+
+        var ketQua = await _dichVuXacThuc.DoiMatKhauAsync(admin.MaTaiKhoan, request);
+        if (!ketQua.ThanhCong)
+        {
+            return BadRequest(ketQua);
+        }
+
+        return Ok(ketQua);
+    }
+
+    /// <summary>
     /// Đăng xuất tài khoản Quản trị viên
     /// </summary>
     [HttpPost("logout")]

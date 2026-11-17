@@ -81,8 +81,8 @@
         <!-- ======================================================== -->
         <!-- CÁC LUỒNG DỮ LIỆU CHO PROCESS 1.0 (XÁC THỰC)             -->
         <!-- ======================================================== -->
-        <!-- In 1 (Admin -> 1.0): Thông tin xác thực -->
-        <mxCell id="e_ad_to_p1" value="Thông tin xác thực (username, password)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="actor_admin" target="proc_1">
+        <!-- In 1 (Admin -> 1.0): Thông tin xác thực & Đổi mật khẩu -->
+        <mxCell id="e_ad_to_p1" value="Thông tin xác thực (Đăng nhập / Đổi mật khẩu)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="actor_admin" target="proc_1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="110" y="115" />
@@ -101,8 +101,8 @@
           </mxGeometry>
         </mxCell>
 
-        <!-- Out 1 (1.0 -> Admin): Kết quả xác thực & Token JWT -->
-        <mxCell id="e_p1_to_ad" value="Kết quả xác thực &amp; Token JWT" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_1" target="actor_admin">
+        <!-- Out 1 (1.0 -> Admin): Kết quả xác thực & Token phiên làm việc -->
+        <mxCell id="e_p1_to_ad" value="Kết quả xác thực (Token JWT / Thông báo)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_1" target="actor_admin">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="200" y="175" />
@@ -110,8 +110,8 @@
           </mxGeometry>
         </mxCell>
 
-        <!-- Out 2 (1.0 -> D1): Cập nhật trạng thái phiên đăng nhập -->
-        <mxCell id="e_p1_to_d1" value="Cập nhật trạng thái đăng nhập" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_1" target="store_d1">
+        <!-- Out 2 (1.0 -> D1): Cập nhật trạng thái phiên đăng nhập & Mật khẩu -->
+        <mxCell id="e_p1_to_d1" value="Cập nhật trạng thái &amp; Mật khẩu tài khoản" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_1" target="store_d1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="740" y="160" />

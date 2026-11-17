@@ -376,6 +376,22 @@ async function loadMapImage(url) {
         });
         if (res.ok) {
             const blob = await res.blob();
+            
+            // 1. Ưu tiên nạp siêu tốc qua Object URL (zero-copy, tải tức thì không tốn RAM chuỗi Base64)
+            try {
+                const objUrl = URL.createObjectURL(blob);
+                const img = new Image();
+                const loaded = await new Promise((resolve) => {
+                    img.onload = () => resolve(true);
+                    img.onerror = () => resolve(false);
+                    img.src = objUrl;
+                });
+                if (loaded) return img;
+            } catch (e) {
+                console.warn('Object URL không hỗ trợ, chuyển sang Data URL:', e);
+            }
+
+            // 2. Dự phòng: Chuyển sang Base64 Data URL nếu trình duyệt yêu cầu
             const dataUrl = await new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.onloadend = () => resolve(reader.result);
