@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace AutoVoiceOver.Dal.Entities;
 
 /// <summary>
@@ -7,18 +5,13 @@ namespace AutoVoiceOver.Dal.Entities;
 /// </summary>
 public class BanDoKhuVuc
 {
-    [Key]
     public Guid MaBanDo { get; set; } = Guid.NewGuid();
 
-    [Required]
-    [MaxLength(200)]
     public string TenBanDo { get; set; } = string.Empty;
 
     /// <summary>
     /// Đường dẫn file ảnh sơ đồ/bản đồ khu vực được lưu trữ trong wwwroot/uploads/maps/
     /// </summary>
-    [Required]
-    [MaxLength(500)]
     public string HinhAnhBanDo { get; set; } = string.Empty;
 
     public int ChieuRongPixel { get; set; } = 1920;

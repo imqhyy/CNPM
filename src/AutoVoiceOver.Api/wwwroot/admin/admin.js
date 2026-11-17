@@ -91,6 +91,77 @@ const canvas = document.getElementById('liveRadarCanvas');
 const ctx = canvas ? canvas.getContext('2d') : null;
 
 // ==========================================
+// 1.5. Tiện ích tự động nén & tối ưu ảnh thông minh (Client-side Canvas Image Compression)
+// Giúp nén ảnh 5MB - 20MB từ điện thoại/máy ảnh xuống còn ~200KB - 350KB siêu nhẹ
+// ==========================================
+async function compressImageFile(file, maxDimension = 1920, quality = 0.8) {
+    if (!file || !file.type.startsWith('image/')) {
+        return file;
+    }
+
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                let width = img.naturalWidth || img.width;
+                let height = img.naturalHeight || img.height;
+
+                // 1. Tính toán co giãn tỷ lệ nếu kích thước vượt quá giới hạn tối đa
+                if (width > maxDimension || height > maxDimension) {
+                    if (width > height) {
+                        height = Math.round((height * maxDimension) / width);
+                        width = maxDimension;
+                    } else {
+                        width = Math.round((width * maxDimension) / height);
+                        height = maxDimension;
+                    }
+                }
+
+                // 2. Sử dụng HTML5 Canvas vẽ lại và nén ảnh
+                const compCanvas = document.createElement('canvas');
+                compCanvas.width = width;
+                compCanvas.height = height;
+                const compCtx = compCanvas.getContext('2d');
+                compCtx.drawImage(img, 0, 0, width, height);
+
+                // 3. Xuất file JPEG chất lượng tối ưu (mặc định 80%)
+                compCanvas.toBlob(
+                    (blob) => {
+                        if (!blob) {
+                            resolve(file);
+                            return;
+                        }
+                        const baseName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+                        const newName = `${baseName}.jpg`;
+                        
+                        const compressedFile = new File([blob], newName, {
+                            type: 'image/jpeg',
+                            lastModified: Date.now()
+                        });
+
+                        compressedFile.actualWidth = width;
+                        compressedFile.actualHeight = height;
+
+                        const origKb = (file.size / 1024).toFixed(0);
+                        const compKb = (compressedFile.size / 1024).toFixed(0);
+                        console.log(`[Auto-Compress] Đã nén ảnh thành công: ${origKb} KB -> ${compKb} KB (Độ phân giải: ${width}x${height})`);
+                        
+                        resolve(compressedFile);
+                    },
+                    'image/jpeg',
+                    quality
+                );
+            };
+            img.onerror = () => resolve(file);
+            img.src = e.target.result;
+        };
+        reader.onerror = () => resolve(file);
+        reader.readAsDataURL(file);
+    });
+}
+
+// ==========================================
 // 2. DOM Ready & Event Listeners
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
@@ -1047,6 +1118,21 @@ function initModalsAndForms() {
     document.getElementById('btnCloseAddMapModal')?.addEventListener('click', () => closeModal('modalAddMap'));
     document.getElementById('btnCancelAddMapModal')?.addEventListener('click', () => closeModal('modalAddMap'));
 
+    // Modal Đổi Mật Khẩu
+    document.getElementById('btnOpenChangePassModal')?.addEventListener('click', () => {
+        const form = document.getElementById('formChangePassword');
+        if (form) form.reset();
+        const alertBox = document.getElementById('changePassAlert');
+        if (alertBox) {
+            alertBox.textContent = '';
+            alertBox.classList.add('hidden');
+        }
+        openModal('modalChangePassword');
+    });
+    document.getElementById('btnCloseChangePassModal')?.addEventListener('click', () => closeModal('modalChangePassword'));
+    document.getElementById('btnCancelChangePassModal')?.addEventListener('click', () => closeModal('modalChangePassword'));
+    document.getElementById('formChangePassword')?.addEventListener('submit', handleChangePasswordSubmit);
+
     // Submit Thêm / Sửa Điểm
     document.getElementById('formSpot')?.addEventListener('submit', handleSpotSubmit);
 
@@ -1058,6 +1144,38 @@ function initModalsAndForms() {
 
     // Submit Upload Bản đồ mới
     document.getElementById('formUploadMap')?.addEventListener('submit', handleMapSubmit);
+
+    // Tự động nhận diện kích thước ảnh và điền sẵn chiều rộng/cao tối ưu khi Admin chọn ảnh sơ đồ
+    document.getElementById('inputMapImageFile')?.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file || !file.type.startsWith('image/')) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => {
+                let w = img.naturalWidth || img.width;
+                let h = img.naturalHeight || img.height;
+                const maxDim = 1920;
+                if (w > maxDim || h > maxDim) {
+                    if (w > h) {
+                        h = Math.round((h * maxDim) / w);
+                        w = maxDim;
+                    } else {
+                        w = Math.round((w * maxDim) / h);
+                        h = maxDim;
+                    }
+                }
+                const widthInput = document.getElementById('inputMapWidth');
+                const heightInput = document.getElementById('inputMapHeight');
+                if (widthInput) widthInput.value = w;
+                if (heightInput) heightInput.value = h;
+                console.log(`[Auto-Detect Map Size] Đã tự động nhận diện kích thước: ${w}x${h}`);
+            };
+            img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
 
     // Xử lý tự động đọc file .txt khi chọn file văn bản thuyết minh
     document.getElementById('narrTextFile')?.addEventListener('change', async function(e) {
@@ -1465,11 +1583,14 @@ async function handleSpotSubmit(e) {
     const active = document.getElementById('spotActive').checked;
     let imagePath = document.getElementById('spotImagePath').value;
 
-    // Nếu có chọn file ảnh mới -> Upload qua /api/admin/QuanLyDiaDiem/upload-anh
+    // Nếu có chọn file ảnh mới -> Tự động nén thông minh rồi Upload qua /api/admin/QuanLyDiaDiem/upload-anh
     const fileInput = document.getElementById('spotImageFile');
     if (fileInput.files.length > 0) {
+        showToast('Đang tối ưu & nén ảnh di tích...', 'info');
+        const rawFile = fileInput.files[0];
+        const compressedFile = await compressImageFile(rawFile, 1200, 0.82);
         const formData = new FormData();
-        formData.append('file', fileInput.files[0]);
+        formData.append('file', compressedFile);
         try {
             const uploadRes = await fetch(`${API_BASE}/QuanLyDiaDiem/upload-anh`, {
                 method: 'POST',
@@ -1478,6 +1599,8 @@ async function handleSpotSubmit(e) {
             if (uploadRes.ok) {
                 const uploadData = await uploadRes.json();
                 imagePath = uploadData.url;
+            } else {
+                showToast('Không thể tải ảnh di tích lên máy chủ', 'error');
             }
         } catch (err) {
             console.error('Upload image failed:', err);
@@ -1911,8 +2034,8 @@ async function viewMapOnRadar(mapId) {
 async function handleMapSubmit(e) {
     e.preventDefault();
     const title = document.getElementById('inputMapTitle').value.trim();
-    const width = parseFloat(document.getElementById('inputMapWidth').value);
-    const height = parseFloat(document.getElementById('inputMapHeight').value);
+    let width = parseFloat(document.getElementById('inputMapWidth').value);
+    let height = parseFloat(document.getElementById('inputMapHeight').value);
     const scale = parseFloat(document.getElementById('inputMapScale').value);
     const fileInput = document.getElementById('inputMapImageFile');
 
@@ -1921,8 +2044,19 @@ async function handleMapSubmit(e) {
         return;
     }
 
+    // Tự động nén và tối ưu hóa ảnh bản đồ trước khi tải lên (chuẩn max 1920px, chất lượng 80%)
+    showToast('Đang tối ưu & nén ảnh sơ đồ bản đồ...', 'info');
+    const rawFile = fileInput.files[0];
+    const compressedFile = await compressImageFile(rawFile, 1920, 0.8);
+
+    // Tự động đồng bộ kích thước pixel thực tế nếu chưa nhập hoặc để mặc định
+    if (compressedFile.actualWidth && compressedFile.actualHeight) {
+        if (!width || isNaN(width) || width <= 0) width = compressedFile.actualWidth;
+        if (!height || isNaN(height) || height <= 0) height = compressedFile.actualHeight;
+    }
+
     const formData = new FormData();
-    formData.append('file', fileInput.files[0]);
+    formData.append('file', compressedFile);
 
     try {
         // 1. Tải lên tệp ảnh sơ đồ: POST /api/admin/QuanLyDiaDiem/bando/upload-anh
@@ -1966,6 +2100,77 @@ async function handleMapSubmit(e) {
     } catch (err) {
         console.error(err);
         showToast('Lỗi mạng', 'error');
+    }
+}
+
+// ==========================================
+// 11.5. Xử lý đổi mật khẩu tài khoản Admin
+// ==========================================
+async function handleChangePasswordSubmit(e) {
+    e.preventDefault();
+    const oldPass = document.getElementById('inputOldPassword')?.value || '';
+    const newPass = document.getElementById('inputNewPassword')?.value || '';
+    const confirmPass = document.getElementById('inputConfirmPassword')?.value || '';
+    const alertBox = document.getElementById('changePassAlert');
+
+    const showAlert = (msg) => {
+        if (alertBox) {
+            alertBox.textContent = msg;
+            alertBox.classList.remove('hidden');
+        } else {
+            showToast(msg, 'error');
+        }
+    };
+
+    if (alertBox) alertBox.classList.add('hidden');
+
+    if (!oldPass || !newPass || !confirmPass) {
+        showAlert('Vui lòng nhập đầy đủ các trường thông tin.');
+        return;
+    }
+
+    if (newPass.length < 6) {
+        showAlert('Mật khẩu mới phải có tối thiểu 6 ký tự.');
+        return;
+    }
+
+    if (newPass !== confirmPass) {
+        showAlert('Mật khẩu xác nhận không khớp với mật khẩu mới.');
+        return;
+    }
+
+    if (newPass === oldPass) {
+        showAlert('Mật khẩu mới không được trùng với mật khẩu hiện tại.');
+        return;
+    }
+
+    const submitBtn = document.getElementById('btnSubmitChangePass');
+    if (submitBtn) submitBtn.disabled = true;
+
+    try {
+        const res = await fetch(`${API_BASE}/Auth/change-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                matKhauCu: oldPass,
+                matKhauMoi: newPass
+            })
+        });
+
+        const data = await res.json().catch(() => null);
+
+        if (res.ok && data?.thanhCong) {
+            showToast(data.thongBao || 'Đổi mật khẩu thành công! Hãy ghi nhớ mật khẩu mới.', 'success');
+            closeModal('modalChangePassword');
+            document.getElementById('formChangePassword')?.reset();
+        } else {
+            showAlert(data?.thongBao || data?.message || 'Không thể đổi mật khẩu. Vui lòng kiểm tra lại mật khẩu cũ.');
+        }
+    } catch (err) {
+        console.error('Đổi mật khẩu thất bại:', err);
+        showAlert('Lỗi kết nối tới máy chủ. Vui lòng thử lại sau.');
+    } finally {
+        if (submitBtn) submitBtn.disabled = false;
     }
 }
 

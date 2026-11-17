@@ -1,6 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace AutoVoiceOver.Dal.Entities;
 
 /// <summary>
@@ -8,20 +5,15 @@ namespace AutoVoiceOver.Dal.Entities;
 /// </summary>
 public class DiaDiemThamQuan
 {
-    [Key]
     public Guid MaDiaDiem { get; set; } = Guid.NewGuid();
 
-    [ForeignKey(nameof(BanDo))]
     public Guid MaBanDo { get; set; }
 
-    [Required]
-    [MaxLength(250)]
     public string TenDiaDiem { get; set; } = string.Empty;
 
     /// <summary>
     /// Đường dẫn ảnh minh họa do admin tải lên
     /// </summary>
-    [MaxLength(500)]
     public string? HinhAnhMinhHoa { get; set; }
 
     /// <summary>

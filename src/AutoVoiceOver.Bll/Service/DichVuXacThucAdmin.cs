@@ -131,6 +131,75 @@ public class DichVuXacThucAdmin : IDichVuXacThucAdmin
     }
 
     /// <summary>
+    /// Xử lý nghiệp vụ đổi mật khẩu cho quản trị viên
+    /// </summary>
+    public async Task<DoiMatKhauResponseDto> DoiMatKhauAsync(Guid maTaiKhoan, DoiMatKhauRequestDto request)
+    {
+        if (request == null || string.IsNullOrWhiteSpace(request.MatKhauCu) || string.IsNullOrWhiteSpace(request.MatKhauMoi))
+        {
+            return new DoiMatKhauResponseDto
+            {
+                ThanhCong = false,
+                ThongBao = "Vui lòng nhập đầy đủ mật khẩu hiện tại và mật khẩu mới."
+            };
+        }
+
+        if (request.MatKhauMoi.Trim().Length < 6)
+        {
+            return new DoiMatKhauResponseDto
+            {
+                ThanhCong = false,
+                ThongBao = "Mật khẩu mới phải có tối thiểu 6 ký tự để đảm bảo an toàn."
+            };
+        }
+
+        if (string.Equals(request.MatKhauCu.Trim(), request.MatKhauMoi.Trim(), StringComparison.Ordinal))
+        {
+            return new DoiMatKhauResponseDto
+            {
+                ThanhCong = false,
+                ThongBao = "Mật khẩu mới không được trùng với mật khẩu cũ."
+            };
+        }
+
+        // 1. Kiểm tra tài khoản trong CSDL qua ADO.NET
+        var taiKhoan = await _khoTaiKhoan.LayTheoMaAsync(maTaiKhoan);
+        if (taiKhoan == null || !taiKhoan.TrangThai)
+        {
+            return new DoiMatKhauResponseDto
+            {
+                ThanhCong = false,
+                ThongBao = "Tài khoản quản trị không tồn tại hoặc đã bị khóa."
+            };
+        }
+
+        // 2. Xác thực mật khẩu cũ (hỗ trợ cả hash SHA-256 lẫn fallback)
+        var oldHash = KhoTaiKhoanAdminAdoNet.MaHoaMatKhau(request.MatKhauCu.Trim());
+        bool hopLe = string.Equals(taiKhoan.MatKhauHash, oldHash, StringComparison.OrdinalIgnoreCase)
+                     || string.Equals(taiKhoan.MatKhauHash, request.MatKhauCu.Trim(), StringComparison.Ordinal);
+
+        if (!hopLe)
+        {
+            return new DoiMatKhauResponseDto
+            {
+                ThanhCong = false,
+                ThongBao = "Mật khẩu hiện tại không chính xác."
+            };
+        }
+
+        // 3. Băm mật khẩu mới bằng SHA-256 và cập nhật vào CSDL qua ADO.NET
+        var newHash = KhoTaiKhoanAdminAdoNet.MaHoaMatKhau(request.MatKhauMoi.Trim());
+        var ketQua = await _khoTaiKhoan.CapNhatMatKhauAsync(maTaiKhoan, newHash);
+
+        return new DoiMatKhauResponseDto
+        {
+            ThanhCong = ketQua,
+            ThongBao = ketQua ? "Đổi mật khẩu thành công! Vui lòng sử dụng mật khẩu mới cho các lần đăng nhập tiếp theo." 
+                              : "Lỗi hệ thống: Không thể cập nhật mật khẩu vào cơ sở dữ liệu."
+        };
+    }
+
+    /// <summary>
     /// Khởi tạo bảng và tài khoản mặc định
     /// </summary>
     public async Task KhoiTaoHeThongAsync()

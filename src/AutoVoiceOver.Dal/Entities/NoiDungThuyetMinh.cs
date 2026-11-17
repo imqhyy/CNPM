@@ -1,6 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace AutoVoiceOver.Dal.Entities;
 
 /// <summary>
@@ -9,40 +6,30 @@ namespace AutoVoiceOver.Dal.Entities;
 /// </summary>
 public class NoiDungThuyetMinh
 {
-    [Key]
     public Guid MaNoiDung { get; set; } = Guid.NewGuid();
 
-    [ForeignKey(nameof(DiaDiem))]
     public Guid MaDiaDiem { get; set; }
 
     /// <summary>
     /// Mã ngôn ngữ chuẩn ISO (ví dụ: "vi", "en", "ja", "fr", "zh")
     /// </summary>
-    [Required]
-    [MaxLength(20)]
     public string MaNgonNgu { get; set; } = "vi";
 
     /// <summary>
     /// Tên hiển thị của ngôn ngữ (ví dụ: "Tiếng Việt", "English", "日本語")
     /// </summary>
-    [MaxLength(100)]
     public string TenNgonNgu { get; set; } = "Tiếng Việt";
 
-    [Required]
-    [MaxLength(250)]
     public string TieuDe { get; set; } = string.Empty;
 
     /// <summary>
     /// Văn bản thuyết minh do Admin tải lên hoặc soạn thảo
     /// </summary>
-    [Required]
     public string VanBanThuyetMinh { get; set; } = string.Empty;
 
     /// <summary>
     /// Đường dẫn file âm thanh (MP3, WAV, M4A) do Admin tự tải lên cho ngôn ngữ này
     /// </summary>
-    [Required]
-    [MaxLength(500)]
     public string DuongDanAmThanh { get; set; } = string.Empty;
 
     /// <summary>

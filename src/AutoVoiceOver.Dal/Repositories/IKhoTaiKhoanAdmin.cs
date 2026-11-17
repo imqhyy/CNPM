@@ -29,6 +29,11 @@ public interface IKhoTaiKhoanAdmin
     Task<bool> TaoTaiKhoanAsync(TaiKhoanAdmin taiKhoan);
 
     /// <summary>
+    /// Cập nhật mật khẩu mới cho tài khoản quản trị viên (sử dụng ADO.NET)
+    /// </summary>
+    Task<bool> CapNhatMatKhauAsync(Guid maTaiKhoan, string matKhauHashMoi);
+
+    /// <summary>
     /// Khởi tạo bảng TaiKhoanAdmins và tài khoản quản trị mặc định (admin1 / 123456789)
     /// thuần ADO.NET nếu chưa tồn tại trong cơ sở dữ liệu.
     /// </summary>

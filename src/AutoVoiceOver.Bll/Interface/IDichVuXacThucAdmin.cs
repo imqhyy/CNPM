@@ -18,6 +18,11 @@ public interface IDichVuXacThucAdmin
     Task<ThongTinAdminDto?> XacThucTokenAsync(string token);
 
     /// <summary>
+    /// Đổi mật khẩu cho tài khoản quản trị viên
+    /// </summary>
+    Task<DoiMatKhauResponseDto> DoiMatKhauAsync(Guid maTaiKhoan, DoiMatKhauRequestDto request);
+
+    /// <summary>
     /// Khởi tạo cấu trúc bảng và tài khoản quản trị mặc định (admin1 / 123456789)
     /// </summary>
     Task KhoiTaoHeThongAsync();

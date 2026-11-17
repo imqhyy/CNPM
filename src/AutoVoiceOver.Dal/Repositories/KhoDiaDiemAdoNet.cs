@@ -225,7 +225,7 @@ public class KhoDiaDiemAdoNet : IKhoDiaDiem
         }
         catch
         {
-            await transaction.RollbackAsync();
+            try { await transaction.RollbackAsync(); } catch { }
             throw;
         }
     }
