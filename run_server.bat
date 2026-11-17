@@ -19,7 +19,7 @@ if %errorlevel% equ 0 (
     echo ======================================================================
     echo.
     echo [2/3] Dang khoi dong cac container (SQL Server 2022 + .NET 8 Web API)...
-    docker compose up -d --build
+    docker compose up -d
     if %errorlevel% neq 0 (
         echo [CANH BAO] Khoi chay Docker gap loi, chuyen sang che do chay cuc bo...
         goto CHAY_CUC_BO
