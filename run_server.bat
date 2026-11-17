@@ -78,15 +78,29 @@ echo  - Tai lieu API Swagger : http://localhost:5256/swagger
 echo  - Trang chu he thong   : http://localhost:5256/
 echo.
 echo  DUONG DAN TREN DIEN THOAI (4G / 5G / NGOAI MANG DEU TRUY CAP DUOC):
-echo  - Quan tri qua Ngrok   : https://challenge-unwitting-upcoming.ngrok-free.dev/admin/
+echo  - Quan tri qua Ngrok   : https://implicit-reborn-subfloor.ngrok-free.dev/admin/
+echo  - Du khach qua Ngrok   : https://implicit-reborn-subfloor.ngrok-free.dev/user/
 echo ======================================================================
 echo.
-echo * Luu y: Neu dang chay bang Docker, khi muon dung toan bo container hay go:
-echo   docker compose down
+echo * Luu y: Khi muon tat hoan toan he thong, ban chi can chay:
+echo   - File: stop_server.bat (1-click tat sach se Docker, Ngrok va giai phong RAM)
+echo   - Hoac go lenh: docker compose down
 echo.
-echo Nhan Ctrl + C de dung duong ham Ngrok.
+echo Nhan Ctrl + C de dung may chu.
 echo.
 
-"%NGROK_EXE%" http 5256
+"%NGROK_EXE%" http --url https://implicit-reborn-subfloor.ngrok-free.dev 5256
+if %errorlevel% neq 0 (
+    echo [THONG BAO] Dang thu ket noi Ngrok mac dinh...
+    "%NGROK_EXE%" http 5256
+)
 
-pause
+rem Tu dong tat container Docker khi tien trinh Ngrok ket thuc
+echo.
+echo ======================================================================
+echo  Dang tu dong tat cac container Docker va giai phong tai nguyen...
+echo ======================================================================
+docker info >nul 2>&1
+if %errorlevel% equ 0 (
+    docker compose down
+)
