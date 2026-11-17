@@ -1,4 +1,4 @@
-version: '3.8'
+name: autovoiceover
 
 services:
   # -------------------------------------------------------------------------
@@ -19,7 +19,7 @@ services:
     volumes:
       - autovoiceover_db_data:/var/opt/mssql
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Password123!@#' -C -Q 'SELECT 1' || exit 1"]
+      test: [ "CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Password123!@#' -C -Q 'SELECT 1' || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -31,6 +31,7 @@ services:
   # 2. Máy chủ Ứng dụng Backend API & Web AutoVoiceOver (.NET 8)
   # -------------------------------------------------------------------------
   autovoiceover-api:
+    image: ghcr.io/imqhyy/cnpm:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -50,7 +51,7 @@ services:
       # Đồng bộ thư mục uploads (ảnh bản đồ, audio thuyết minh mp3) giữa máy host và container
       - ./src/AutoVoiceOver.Api/wwwroot/uploads:/app/wwwroot/uploads
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/api/HeThong/qr-link"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/api/HeThong/qr-link" ]
       interval: 20s
       timeout: 5s
       retries: 3
