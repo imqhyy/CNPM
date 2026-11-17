@@ -46,7 +46,10 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
+      - NGROK_URL=https://implicit-reborn-subfloor.ngrok-free.dev
       - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=AutoVoiceOverDb;User Id=sa;Password=Password123!@#;TrustServerCertificate=True;MultipleActiveResultSets=true;Connect Timeout=30;
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       # Đồng bộ thư mục uploads (ảnh bản đồ, audio thuyết minh mp3) giữa máy host và container
       - ./src/AutoVoiceOver.Api/wwwroot/uploads:/app/wwwroot/uploads

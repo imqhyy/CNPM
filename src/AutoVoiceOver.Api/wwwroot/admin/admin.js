@@ -1110,6 +1110,40 @@ function initModalsAndForms() {
     document.getElementById('btnCopyAdminQrUrl')?.addEventListener('click', copyAdminQrUrl);
     document.getElementById('btnDownloadAdminQr')?.addEventListener('click', downloadAdminQr);
 
+    document.getElementById('btnQrModeNgrok')?.addEventListener('click', () => {
+        if (!qrNgrokBaseUrl) qrNgrokBaseUrl = 'https://implicit-reborn-subfloor.ngrok-free.dev';
+        const finalUrl = `${qrNgrokBaseUrl.replace(/\/$/, '')}/user/?mapId=${currentAdminQrMapId}`;
+        renderQrWithUrl(finalUrl, 'ngrok');
+    });
+
+    document.getElementById('btnQrModeLan')?.addEventListener('click', () => {
+        if (!qrLanBaseUrl) qrLanBaseUrl = window.location.origin;
+        const finalUrl = `${qrLanBaseUrl.replace(/\/$/, '')}/user/?mapId=${currentAdminQrMapId}`;
+        renderQrWithUrl(finalUrl, 'lan');
+    });
+
+    document.getElementById('btnApplyCustomQrUrl')?.addEventListener('click', () => {
+        const inputVal = document.getElementById('adminQrUrlInput')?.value.trim();
+        if (inputVal) {
+            if (inputVal.includes('ngrok')) {
+                try {
+                    const u = new URL(inputVal);
+                    qrNgrokBaseUrl = u.origin;
+                    localStorage.setItem('admin_ngrok_url', qrNgrokBaseUrl);
+                } catch (e) {}
+            }
+            renderQrWithUrl(inputVal, inputVal.includes('ngrok') ? 'ngrok' : 'lan');
+            showToast('Đã cập nhật mã QR theo liên kết mới!', 'success');
+        }
+    });
+
+    document.getElementById('adminQrUrlInput')?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('btnApplyCustomQrUrl')?.click();
+        }
+    });
+
     // Modal Thêm Bản đồ
     document.getElementById('btnOpenAddMapModal')?.addEventListener('click', () => {
         document.getElementById('formUploadMap')?.reset();
@@ -2214,67 +2248,112 @@ function escapeHtml(str) {
 // ==========================================
 let currentAdminQrUrl = '';
 let currentAdminQrMapName = '';
+let currentAdminQrMapId = '';
+let qrNgrokBaseUrl = '';
+let qrLanBaseUrl = '';
 
-async function openMapQrModal(mapId, mapName) {
+function renderQrWithUrl(targetUrl, badgeType = 'ngrok') {
     const qrBox = document.getElementById('adminQrBox');
     const badge = document.getElementById('adminQrTypeBadge');
+    const urlInput = document.getElementById('adminQrUrlInput');
     const urlText = document.getElementById('adminQrUrlText');
-    const titleEl = document.getElementById('adminQrModalTitle');
-    const mapNameEl = document.getElementById('adminQrMapName');
+    const btnNgrok = document.getElementById('btnQrModeNgrok');
+    const btnLan = document.getElementById('btnQrModeLan');
     if (!qrBox) return;
 
-    currentAdminQrMapName = mapName || 'Bản đồ';
-    if (titleEl) titleEl.innerText = `Mã QR: ${currentAdminQrMapName}`;
-    if (mapNameEl) mapNameEl.innerText = currentAdminQrMapName;
+    currentAdminQrUrl = targetUrl;
+    if (urlInput) urlInput.value = targetUrl;
+    if (urlText) urlText.innerText = targetUrl;
 
-    openModal('modalAdminQr');
-    qrBox.innerHTML = '<div style="padding: 30px 10px; color: var(--accent-teal);"><i class="fa-solid fa-spinner fa-spin fa-2x"></i></div>';
-    if (badge) badge.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tự động kiểm tra liên kết...';
-    if (urlText) urlText.innerText = 'Đang tải thông tin...';
+    const isNgrok = badgeType === 'ngrok' || targetUrl.includes('ngrok') || targetUrl.startsWith('https://');
 
-    let baseUrl = window.location.protocol + '//' + window.location.host;
-
-    try {
-        const res = await fetch('/api/HeThong/qr-link');
-        if (res.ok) {
-            const data = await res.json();
-            if (data && data.baseUrl) {
-                baseUrl = data.baseUrl;
-            } else if (data && data.userUrl) {
-                baseUrl = data.userUrl.replace(/\/user\/?$/, '');
+    if (badge) {
+        if (isNgrok) {
+            badge.style.color = '#10b981';
+            badge.style.background = 'rgba(16, 185, 129, 0.15)';
+            badge.innerHTML = '<i class="fa-solid fa-cloud"></i> Đường hầm Ngrok (Mạng ngoài / 4G / 5G)';
+            if (btnNgrok) {
+                btnNgrok.className = 'btn btn-sm btn-success';
             }
-            if (badge) {
-                if (data.loaiKetNoi === 'Ngrok') {
-                    badge.style.color = '#10b981';
-                    badge.style.background = 'rgba(16, 185, 129, 0.15)';
-                    badge.innerHTML = '<i class="fa-solid fa-cloud"></i> Đường hầm Ngrok (Mạng ngoài / 4G / 5G)';
-                } else {
-                    badge.style.color = '#f59e0b';
-                    badge.style.background = 'rgba(245, 158, 11, 0.15)';
-                    badge.innerHTML = '<i class="fa-solid fa-wifi"></i> Mạng nội bộ (Điện thoại cùng Wi-Fi)';
-                }
+            if (btnLan) {
+                btnLan.className = 'btn btn-sm btn-outline-secondary';
+            }
+        } else {
+            badge.style.color = '#f59e0b';
+            badge.style.background = 'rgba(245, 158, 11, 0.15)';
+            badge.innerHTML = '<i class="fa-solid fa-wifi"></i> Mạng nội bộ (Điện thoại cùng Wi-Fi)';
+            if (btnNgrok) {
+                btnNgrok.className = 'btn btn-sm btn-outline-success';
+            }
+            if (btnLan) {
+                btnLan.className = 'btn btn-sm btn-secondary';
             }
         }
-    } catch (e) {
-        console.warn('Lỗi tải qr-link:', e);
-        if (badge) badge.innerText = 'Địa chỉ cục bộ';
     }
 
-    const cleanBaseUrl = baseUrl.replace(/\/$/, '');
-    const finalUrl = `${cleanBaseUrl}/user/?mapId=${mapId}`;
-
-    currentAdminQrUrl = finalUrl;
-    if (urlText) urlText.innerText = finalUrl;
     qrBox.innerHTML = '';
-
     new QRCode(qrBox, {
-        text: finalUrl,
+        text: targetUrl,
         width: 190,
         height: 190,
         colorDark : "#000000",
         colorLight : "#ffffff",
         correctLevel : QRCode.CorrectLevel.M
     });
+}
+
+async function openMapQrModal(mapId, mapName) {
+    currentAdminQrMapId = mapId;
+    currentAdminQrMapName = mapName || 'Bản đồ';
+    const qrBox = document.getElementById('adminQrBox');
+    const badge = document.getElementById('adminQrTypeBadge');
+    const urlInput = document.getElementById('adminQrUrlInput');
+    const titleEl = document.getElementById('adminQrModalTitle');
+    const mapNameEl = document.getElementById('adminQrMapName');
+    if (!qrBox) return;
+
+    if (titleEl) titleEl.innerText = `Mã QR: ${currentAdminQrMapName}`;
+    if (mapNameEl) mapNameEl.innerText = currentAdminQrMapName;
+
+    openModal('modalAdminQr');
+    qrBox.innerHTML = '<div style="padding: 30px 10px; color: var(--accent-teal);"><i class="fa-solid fa-spinner fa-spin fa-2x"></i></div>';
+    if (badge) badge.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tự động kiểm tra liên kết...';
+    if (urlInput) urlInput.value = 'Đang tải thông tin...';
+
+    // 1. Kiểm tra nguồn Ngrok từ host hiện tại hoặc localStorage
+    const currentOrigin = window.location.origin;
+    if (window.location.hostname.includes('ngrok')) {
+        qrNgrokBaseUrl = currentOrigin;
+    } else {
+        const savedCustomNgrok = localStorage.getItem('admin_ngrok_url');
+        if (savedCustomNgrok) qrNgrokBaseUrl = savedCustomNgrok;
+    }
+
+    // 2. Tra cứu API backend
+    try {
+        const res = await fetch('/api/HeThong/qr-link');
+        if (res.ok) {
+            const data = await res.json();
+            if (data.lanUrl) qrLanBaseUrl = data.lanUrl;
+            if (data.ngrokUrl) {
+                qrNgrokBaseUrl = data.ngrokUrl;
+            } else if (data.baseUrl && (data.loaiKetNoi === 'Ngrok' || data.baseUrl.includes('ngrok'))) {
+                qrNgrokBaseUrl = data.baseUrl;
+            } else if (!qrLanBaseUrl && data.baseUrl) {
+                qrLanBaseUrl = data.baseUrl;
+            }
+        }
+    } catch (e) {
+        console.warn('Lỗi tải qr-link:', e);
+    }
+
+    if (!qrLanBaseUrl) qrLanBaseUrl = currentOrigin;
+    if (!qrNgrokBaseUrl) qrNgrokBaseUrl = 'https://implicit-reborn-subfloor.ngrok-free.dev';
+
+    // Ưu tiên 100%: Dùng Ngrok làm mặc định để điện thoại quét 4G/5G vào được ngay
+    const chosenBase = qrNgrokBaseUrl.replace(/\/$/, '');
+    const finalUrl = `${chosenBase}/user/?mapId=${mapId}`;
+    renderQrWithUrl(finalUrl, 'ngrok');
 }
 
 function downloadAdminQr() {

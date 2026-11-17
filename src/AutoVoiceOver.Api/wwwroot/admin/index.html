@@ -697,7 +697,7 @@
 
     <!-- MODAL 5: XEM & TẢI MÃ QR BẢN ĐỒ DÀNH CHO DU KHÁCH -->
     <div class="modal-backdrop" id="modalAdminQr">
-        <div class="modal-dialog" style="max-width: 460px;">
+        <div class="modal-dialog" style="max-width: 480px;">
             <div class="modal-content" style="text-align: center; padding: 22px;">
                 <div class="modal-header"
                     style="justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 16px;">
@@ -706,20 +706,40 @@
                 </div>
                 <div class="modal-body" style="display: flex; flex-direction: column; align-items: center; gap: 14px;">
                     <div id="adminQrMapName" style="font-weight: 700; font-size: 1.05rem; color: #fff;"></div>
+                    
                     <div id="adminQrBox"
                         style="background: #ffffff; padding: 14px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); display: inline-block;">
                     </div>
+
+                    <!-- Lựa chọn chế độ mạng -->
+                    <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; width: 100%;">
+                        <button type="button" id="btnQrModeNgrok" class="btn btn-sm btn-success" style="border-radius: 20px; font-size: 0.8rem; padding: 5px 14px;">
+                            <i class="fa-solid fa-cloud"></i> Ngrok (Mạng ngoài / 4G / 5G)
+                        </button>
+                        <button type="button" id="btnQrModeLan" class="btn btn-sm btn-outline-secondary" style="border-radius: 20px; font-size: 0.8rem; padding: 5px 14px;">
+                            <i class="fa-solid fa-wifi"></i> Mạng Wi-Fi (LAN)
+                        </button>
+                    </div>
+
                     <div id="adminQrTypeBadge"
-                        style="font-size: 0.85rem; font-weight: 600; padding: 4px 12px; border-radius: 20px; background: rgba(16, 185, 129, 0.15); color: #10b981;">
-                        <i class="fa-solid fa-cloud"></i> Đang tải thông tin...
+                        style="font-size: 0.82rem; font-weight: 600; padding: 4px 12px; border-radius: 20px; background: rgba(16, 185, 129, 0.15); color: #10b981;">
+                        <i class="fa-solid fa-cloud"></i> Đường hầm Ngrok (Mạng ngoài / 4G / 5G)
                     </div>
-                    <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0;">
-                        Quản trị viên tải mã QR này về để photoshop, in ấn và dán biển báo hướng dẫn du khách quét tại điểm di tích.
+
+                    <p style="font-size: 0.84rem; color: var(--text-secondary); margin: 0; line-height: 1.45;">
+                        Du khách dùng camera điện thoại quét mã này để mở sơ đồ di tích và nghe thuyết minh tự động.
                     </p>
-                    <div style="width: 100%; background: var(--bg-surface); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); font-family: monospace; font-size: 0.82rem; word-break: break-all;"
-                        id="adminQrUrlText">
-                        Đang tạo mã QR...
+
+                    <!-- Khung xem & chỉnh sửa URL nếu muốn đổi link -->
+                    <div style="width: 100%; display: flex; gap: 6px; align-items: center;">
+                        <input type="text" id="adminQrUrlInput" 
+                            style="flex: 1; background: var(--bg-surface); padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border-color); font-family: monospace; font-size: 0.82rem; color: #fff;"
+                            placeholder="Đang tạo liên kết mã QR..." />
+                        <button type="button" id="btnApplyCustomQrUrl" class="btn btn-sm btn-primary" title="Cập nhật mã QR với link này">
+                            <i class="fa-solid fa-rotate"></i> Cập nhật
+                        </button>
                     </div>
+                    <div style="display: none;" id="adminQrUrlText"></div>
                 </div>
                 <div class="modal-footer"
                     style="justify-content: center; gap: 10px; border-top: 1px solid var(--border-color); padding-top: 14px; margin-top: 16px;">
