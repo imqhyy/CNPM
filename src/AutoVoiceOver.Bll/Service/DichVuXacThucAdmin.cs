@@ -58,10 +58,8 @@ public class DichVuXacThucAdmin : IDichVuXacThucAdmin
             };
         }
 
-        // 3. Xác thực mật khẩu (Hỗ trợ cả SHA-256 Hash chuẩn và Plaintext so khớp dự phòng)
-        var inputHash = KhoTaiKhoanAdminAdoNet.MaHoaMatKhau(request.MatKhau);
-        bool hopLe = string.Equals(taiKhoan.MatKhauHash, inputHash, StringComparison.OrdinalIgnoreCase)
-                     || string.Equals(taiKhoan.MatKhauHash, request.MatKhau, StringComparison.Ordinal);
+        // 3. Xác thực mật khẩu trực tiếp (plaintext, không dùng hàm băm)
+        bool hopLe = string.Equals(taiKhoan.MatKhauHash, request.MatKhau, StringComparison.Ordinal);
 
         if (!hopLe)
         {
@@ -173,10 +171,8 @@ public class DichVuXacThucAdmin : IDichVuXacThucAdmin
             };
         }
 
-        // 2. Xác thực mật khẩu cũ (hỗ trợ cả hash SHA-256 lẫn fallback)
-        var oldHash = KhoTaiKhoanAdminAdoNet.MaHoaMatKhau(request.MatKhauCu.Trim());
-        bool hopLe = string.Equals(taiKhoan.MatKhauHash, oldHash, StringComparison.OrdinalIgnoreCase)
-                     || string.Equals(taiKhoan.MatKhauHash, request.MatKhauCu.Trim(), StringComparison.Ordinal);
+        // 2. Xác thực mật khẩu cũ trực tiếp (plaintext, không dùng hàm băm)
+        bool hopLe = string.Equals(taiKhoan.MatKhauHash, request.MatKhauCu.Trim(), StringComparison.Ordinal);
 
         if (!hopLe)
         {
@@ -187,9 +183,9 @@ public class DichVuXacThucAdmin : IDichVuXacThucAdmin
             };
         }
 
-        // 3. Băm mật khẩu mới bằng SHA-256 và cập nhật vào CSDL qua ADO.NET
-        var newHash = KhoTaiKhoanAdminAdoNet.MaHoaMatKhau(request.MatKhauMoi.Trim());
-        var ketQua = await _khoTaiKhoan.CapNhatMatKhauAsync(maTaiKhoan, newHash);
+        // 3. Lưu mật khẩu mới trực tiếp vào CSDL qua ADO.NET (không băm)
+        var matKhauMoi = request.MatKhauMoi.Trim();
+        var ketQua = await _khoTaiKhoan.CapNhatMatKhauAsync(maTaiKhoan, matKhauMoi);
 
         return new DoiMatKhauResponseDto
         {

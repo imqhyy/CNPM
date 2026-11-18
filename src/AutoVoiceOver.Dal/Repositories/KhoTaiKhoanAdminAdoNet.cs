@@ -1,6 +1,4 @@
 using System.Data;
-using System.Security.Cryptography;
-using System.Text;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using AutoVoiceOver.Dal.Entities;
@@ -61,7 +59,7 @@ public class KhoTaiKhoanAdminAdoNet : IKhoTaiKhoanAdmin
             await cmd.ExecuteNonQueryAsync();
         }
 
-        // 2. DML ADO.NET: Nạp tài khoản mặc định nếu chưa tồn tại (nguyên tử chống xung đột đa luồng)
+        // 2. DML ADO.NET: Nạp tài khoản mặc định nếu chưa tồn tại (lưu trực tiếp mật khẩu gốc không băm)
         var sqlInsertDefault = @"
             IF NOT EXISTS (SELECT 1 FROM dbo.TaiKhoanAdmins WHERE LOWER(TenDangNhap) = 'admin1')
             BEGIN
@@ -70,13 +68,20 @@ public class KhoTaiKhoanAdminAdoNet : IKhoTaiKhoanAdmin
                 ) VALUES (
                     @MaTaiKhoan, @TenDangNhap, @MatKhauHash, @HoTen, @VaiTro, @TrangThai, @NgayTao, NULL
                 );
+            END
+            ELSE
+            BEGIN
+                UPDATE dbo.TaiKhoanAdmins
+                SET MatKhauHash = @MatKhauHash
+                WHERE LOWER(TenDangNhap) = 'admin1'
+                  AND LOWER(MatKhauHash) = '15e2b0d3c33891ebb0f1ef609ec419420c20e320ce94c65fbc8c3312448eb225';
             END;
         ";
 
         using var insertCmd = new SqlCommand(sqlInsertDefault, connection);
         insertCmd.Parameters.Add(new SqlParameter("@MaTaiKhoan", Guid.NewGuid().ToString()));
         insertCmd.Parameters.Add(new SqlParameter("@TenDangNhap", "admin1"));
-        insertCmd.Parameters.Add(new SqlParameter("@MatKhauHash", MaHoaMatKhau("123456789")));
+        insertCmd.Parameters.Add(new SqlParameter("@MatKhauHash", "123456789"));
         insertCmd.Parameters.Add(new SqlParameter("@HoTen", "Quản trị viên Hệ thống"));
         insertCmd.Parameters.Add(new SqlParameter("@VaiTro", "Admin"));
         insertCmd.Parameters.Add(new SqlParameter("@TrangThai", 1));
@@ -244,16 +249,5 @@ public class KhoTaiKhoanAdminAdoNet : IKhoTaiKhoanAdmin
             NgayTao = ngayTao,
             LanDangNhapCuoi = lanDangNhapCuoi
         };
-    }
-
-    /// <summary>
-    /// Tiện ích băm mật khẩu chuẩn SHA-256
-    /// </summary>
-    public static string MaHoaMatKhau(string matKhau)
-    {
-        using var sha256 = SHA256.Create();
-        var bytes = Encoding.UTF8.GetBytes(matKhau);
-        var hash = sha256.ComputeHash(bytes);
-        return Convert.ToHexString(hash).ToLowerInvariant();
     }
 }

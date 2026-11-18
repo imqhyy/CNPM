@@ -139,7 +139,7 @@ public static class KhoiTaoCoSoDuLieuAdoNet
 
     private static async Task NapDuLieuMauAsync(SqlConnection connection)
     {
-        // 1. Admin mặc định (admin1 / 123456789)
+        // 1. Admin mặc định (admin1 / 123456789 - lưu trực tiếp không băm)
         var sqlInsertAdmin = @"
             IF NOT EXISTS (SELECT 1 FROM dbo.TaiKhoanAdmins WHERE LOWER(TenDangNhap) = 'admin1')
             BEGIN
@@ -148,13 +148,20 @@ public static class KhoiTaoCoSoDuLieuAdoNet
                 ) VALUES (
                     @MaTaiKhoan, @TenDangNhap, @MatKhauHash, @HoTen, @VaiTro, 1, @NgayTao, NULL
                 );
+            END
+            ELSE
+            BEGIN
+                UPDATE dbo.TaiKhoanAdmins
+                SET MatKhauHash = @MatKhauHash
+                WHERE LOWER(TenDangNhap) = 'admin1'
+                  AND LOWER(MatKhauHash) = '15e2b0d3c33891ebb0f1ef609ec419420c20e320ce94c65fbc8c3312448eb225';
             END;
         ";
         using (var insertCmd = new SqlCommand(sqlInsertAdmin, connection))
         {
             insertCmd.Parameters.Add(new SqlParameter("@MaTaiKhoan", "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"));
             insertCmd.Parameters.Add(new SqlParameter("@TenDangNhap", "admin1"));
-            insertCmd.Parameters.Add(new SqlParameter("@MatKhauHash", KhoTaiKhoanAdminAdoNet.MaHoaMatKhau("123456789")));
+            insertCmd.Parameters.Add(new SqlParameter("@MatKhauHash", "123456789"));
             insertCmd.Parameters.Add(new SqlParameter("@HoTen", "Quản trị viên Hệ thống"));
             insertCmd.Parameters.Add(new SqlParameter("@VaiTro", "Admin"));
             insertCmd.Parameters.Add(new SqlParameter("@NgayTao", DateTime.UtcNow));

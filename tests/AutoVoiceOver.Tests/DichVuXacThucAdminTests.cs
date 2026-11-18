@@ -34,12 +34,11 @@ public class DichVuXacThucAdminTests
     {
         // Arrange
         var maTaiKhoan = Guid.NewGuid();
-        var matKhauHash = KhoTaiKhoanAdminAdoNet.MaHoaMatKhau("123456789");
         var adminEntity = new TaiKhoanAdmin
         {
             MaTaiKhoan = maTaiKhoan,
             TenDangNhap = "admin1",
-            MatKhauHash = matKhauHash,
+            MatKhauHash = "123456789",
             HoTen = "Quản trị viên Hệ thống",
             VaiTro = "Admin",
             TrangThai = true,
@@ -77,7 +76,7 @@ public class DichVuXacThucAdminTests
         {
             MaTaiKhoan = Guid.NewGuid(),
             TenDangNhap = "admin1",
-            MatKhauHash = KhoTaiKhoanAdminAdoNet.MaHoaMatKhau("123456789"),
+            MatKhauHash = "123456789",
             TrangThai = true
         };
 
@@ -129,7 +128,7 @@ public class DichVuXacThucAdminTests
         {
             MaTaiKhoan = Guid.NewGuid(),
             TenDangNhap = "admin1",
-            MatKhauHash = KhoTaiKhoanAdminAdoNet.MaHoaMatKhau("123456789"),
+            MatKhauHash = "123456789",
             TrangThai = false // Khóa
         };
 
@@ -159,7 +158,7 @@ public class DichVuXacThucAdminTests
         {
             MaTaiKhoan = maTaiKhoan,
             TenDangNhap = "admin1",
-            MatKhauHash = KhoTaiKhoanAdminAdoNet.MaHoaMatKhau("123456789"),
+            MatKhauHash = "123456789",
             HoTen = "Quản trị viên",
             VaiTro = "Admin",
             TrangThai = true
@@ -203,12 +202,11 @@ public class DichVuXacThucAdminTests
     {
         // Arrange
         var maTaiKhoan = Guid.NewGuid();
-        var matKhauCuHash = KhoTaiKhoanAdminAdoNet.MaHoaMatKhau("123456789");
         var adminEntity = new TaiKhoanAdmin
         {
             MaTaiKhoan = maTaiKhoan,
             TenDangNhap = "admin1",
-            MatKhauHash = matKhauCuHash,
+            MatKhauHash = "123456789",
             TrangThai = true
         };
 
@@ -230,8 +228,7 @@ public class DichVuXacThucAdminTests
         Assert.True(ketQua.ThanhCong);
         Assert.Contains("thành công", ketQua.ThongBao);
 
-        var expectedNewHash = KhoTaiKhoanAdminAdoNet.MaHoaMatKhau("MatKhauMoi@2026");
-        _mockKhoTaiKhoan.Verify(k => k.CapNhatMatKhauAsync(maTaiKhoan, expectedNewHash), Times.Once);
+        _mockKhoTaiKhoan.Verify(k => k.CapNhatMatKhauAsync(maTaiKhoan, "MatKhauMoi@2026"), Times.Once);
     }
 
     [Fact]
@@ -239,12 +236,11 @@ public class DichVuXacThucAdminTests
     {
         // Arrange
         var maTaiKhoan = Guid.NewGuid();
-        var matKhauCuHash = KhoTaiKhoanAdminAdoNet.MaHoaMatKhau("123456789");
         var adminEntity = new TaiKhoanAdmin
         {
             MaTaiKhoan = maTaiKhoan,
             TenDangNhap = "admin1",
-            MatKhauHash = matKhauCuHash,
+            MatKhauHash = "123456789",
             TrangThai = true
         };
 

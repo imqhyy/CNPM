@@ -43,7 +43,7 @@ public class KhoTaiKhoanAdminAdoNetTests
         var admin = await _khoAdoNet.LayTheoTenDangNhapAsync("admin1");
         Assert.NotNull(admin);
         Assert.Equal("admin1", admin.TenDangNhap);
-        Assert.Equal(KhoTaiKhoanAdminAdoNet.MaHoaMatKhau("123456789"), admin.MatKhauHash);
+        Assert.Equal("123456789", admin.MatKhauHash);
         Assert.True(admin.TrangThai);
     }
 

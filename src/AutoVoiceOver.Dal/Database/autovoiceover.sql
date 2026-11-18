@@ -28,7 +28,7 @@ BEGIN
     CREATE TABLE dbo.TaiKhoanAdmins (
         MaTaiKhoan       NVARCHAR(50)  NOT NULL PRIMARY KEY,         -- Khóa chính: GUID duy nhất
         TenDangNhap      NVARCHAR(100) NOT NULL UNIQUE,              -- Tên đăng nhập (Username)
-        MatKhauHash      NVARCHAR(256) NOT NULL,                     -- Mật khẩu băm SHA-256
+        MatKhauHash      NVARCHAR(256) NOT NULL,                     -- Mật khẩu lưu trực tiếp (không băm)
         HoTen            NVARCHAR(200) NOT NULL,                     -- Họ và tên Quản trị viên
         VaiTro           NVARCHAR(50)  NOT NULL DEFAULT N'Admin',    -- Vai trò (Admin/SuperAdmin)
         TrangThai        INT           NOT NULL DEFAULT 1,           -- 1: Hoạt động, 0: Khóa
@@ -107,7 +107,7 @@ BEGIN
     VALUES (
         N'00000000-0000-0000-0000-000000000001',
         N'admin1',
-        N'15e2b0d3c33891ebb0f1ef609ec419420c20e320ce94c65fbc8c3312448eb225', -- SHA256('123456789')
+        N'123456789', -- Lưu trực tiếp mật khẩu gốc (không băm)
         N'Quản trị viên Hệ thống',
         N'Admin',
         1,
