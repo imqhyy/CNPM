@@ -548,6 +548,7 @@ async function loadDashboardStats() {
                         toaDoY: y,
                         toadoX: x,
                         toadoY: y,
+                        maBanDo: u.maBanDo || null,
                         lanHoatDongCuoi: new Date(u.lanHoatDongCuoi || Date.now())
                     });
                 });
@@ -701,10 +702,10 @@ async function selectRadarMap(mapId, showNotification = true) {
         state.mapImageObj = null;
     }
 
-    // Cập nhật kích thước canvas theo độ phân giải của bản đồ
+    // Giữ cố định hệ quy chiếu 1200 x 800 để đồng bộ tuyệt đối với Web Du Khách và tọa độ đã lưu
     if (canvas) {
-        canvas.width = map.chieuRongPixel || 1200;
-        canvas.height = map.chieuCaoPixel || 800;
+        canvas.width = 1200;
+        canvas.height = 800;
     }
 
     updateRadarStats();
@@ -1363,10 +1364,9 @@ async function renderSpotPickerCanvas(targetX, targetY, radius, excludeSpotId = 
         pickerImg = await loadMapImage(chosenMap.hinhAnhBanDo);
     }
 
-    if (chosenMap) {
-        pCanvas.width = chosenMap.chieuRongPixel || 1200;
-        pCanvas.height = chosenMap.chieuCaoPixel || 800;
-    }
+    // Giữ cố định hệ quy chiếu 1200 x 800 để tọa độ chấm điểm khớp 100% với Radar và Web Du Khách
+    pCanvas.width = 1200;
+    pCanvas.height = 800;
 
     const width = pCanvas.width;
     const height = pCanvas.height;

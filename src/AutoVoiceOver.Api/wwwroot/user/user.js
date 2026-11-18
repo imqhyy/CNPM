@@ -12,9 +12,9 @@ const state = {
     currentMap: null,
     spots: [],
     
-    // Tọa độ hiện tại của du khách
-    userPos: { x: 250, y: 350 },
-    targetPos: { x: 250, y: 350 },
+    // Tọa độ hiện tại của du khách (đồng bộ tâm mặc định 600, 400 trên hệ 1200x800 với Server)
+    userPos: { x: 600, y: 400 },
+    targetPos: { x: 600, y: 400 },
     isMoving: false,
 
     // Trạng thái thuyết minh
