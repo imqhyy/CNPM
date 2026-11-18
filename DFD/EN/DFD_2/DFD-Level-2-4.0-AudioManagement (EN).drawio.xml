@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net">
+  <diagram id="DFD-Muc-2-4" name="DFD Level 2 - 4.0 (EN)">
+    <mxGraphModel dx="1400" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1450" pageHeight="950" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="&lt;b style=&quot;font-size: 17px;&quot;&gt;LEVEL 2 DFD - DECOMPOSITION OF FUNCTION 4.0: AUDIO &amp;amp; NARRATION MANAGEMENT&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 12px; color: #4B5563;&quot;&gt;MULTILINGUAL AUTOMATED AUDIO GUIDE SYSTEM (AUTOVOICEOVER)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="380" y="25" width="670" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="actor_admin" value="&lt;b&gt;Administrator&lt;/b&gt;&lt;br&gt;(Admin)" style="rounded=0;whiteSpace=wrap;html=1;shadow=1;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;fontFamily=Helvetica;fontSize=13;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="80" y="330" width="160" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="proc_4_1" value="&lt;b style=&quot;font-size: 14px;&quot;&gt;4.1&lt;/b&gt;&lt;br&gt;&lt;b&gt;Receive &amp;amp; Upload&lt;br&gt;Media / Text Files&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;fontFamily=Helvetica;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="460" y="140" width="130" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="proc_4_2" value="&lt;b style=&quot;font-size: 14px;&quot;&gt;4.2&lt;/b&gt;&lt;br&gt;&lt;b&gt;Assign Narration&lt;br&gt;by Language&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;fontFamily=Helvetica;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="460" y="325" width="130" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="proc_4_3" value="&lt;b style=&quot;font-size: 14px;&quot;&gt;4.3&lt;/b&gt;&lt;br&gt;&lt;b&gt;Query &amp;amp; Delete&lt;br&gt;Narration&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;fontFamily=Helvetica;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="460" y="510" width="130" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="store_d3" value="&lt;b&gt;D3: DiaDiemThamQuan&lt;/b&gt;" style="shape=partialRectangle;top=1;bottom=1;right=0;left=0;fillColor=none;strokeColor=#000000;strokeWidth=1.5;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="840" y="182.5" width="190" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="store_d4" value="&lt;b&gt;D4: NoiDungThuyetMinh&lt;/b&gt;" style="shape=partialRectangle;top=1;bottom=1;right=0;left=0;fillColor=none;strokeColor=#000000;strokeWidth=1.5;html=1;whiteSpace=wrap;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="840" y="440" width="190" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ad_to_p41" value="Audio File (MP3) &amp;amp; Subtitle File (.txt)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="actor_admin" target="proc_4_1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="140" y="205" />
+            </Array>
+            <mxPoint as="offset" y="-10" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_p41_to_ad" value="Stored File URL &amp;amp; Extracted Text" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_4_1" target="actor_admin">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="200" y="235" />
+            </Array>
+            <mxPoint as="offset" y="10" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_p41_to_p42" value="Audio URL &amp;amp; Subtitle Text" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_4_1" target="proc_4_2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" x="20" y="0" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_d3_to_p42" value="Point of Interest Info (FK Check)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="store_d3" target="proc_4_2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="935" y="360" />
+            </Array>
+            <mxPoint as="offset" y="-10" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_ad_to_p42" value="POI ID &amp;amp; Language Code (vi, en...)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="actor_admin" target="proc_4_2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="350" y="370" />
+              <mxPoint x="350" y="370" />
+            </Array>
+            <mxPoint as="offset" y="-12" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_p42_to_ad" value="Save Narration Result &amp;amp; Content ID" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_4_2" target="actor_admin">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="350" y="410" />
+              <mxPoint x="350" y="410" />
+            </Array>
+            <mxPoint as="offset" y="12" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_p42_to_d4" value="Save / Update Narration" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_4_2" target="store_d4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="710" y="390" />
+              <mxPoint x="710" y="450" />
+            </Array>
+            <mxPoint as="offset" y="-10" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_d4_to_p43" value="Narration Data" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="store_d4" target="proc_4_3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="935" y="550" />
+            </Array>
+            <mxPoint as="offset" y="-10" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_p43_to_d4" value="Delete Narration Command" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_4_3" target="store_d4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="760" y="590" />
+              <mxPoint x="760" y="475" />
+            </Array>
+            <mxPoint as="offset" y="10" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_ad_to_p43" value="View / Delete Translation Request" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="actor_admin" target="proc_4_3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="140" y="550" />
+            </Array>
+            <mxPoint as="offset" y="-10" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_p43_to_ad" value="Narration List &amp;amp; Operation Result" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_4_3" target="actor_admin">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="200" y="590" />
+            </Array>
+            <mxPoint as="offset" y="10" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="note_balance" value="&lt;b&gt;BALANCING &amp;amp; DECOMPOSITION RULES (RULE_DFD.MD):&lt;/b&gt;&lt;br&gt;• &lt;b&gt;Rule 1 (Forwarding):&lt;/b&gt; 4.1 stores physical media files, extracts text, and forwards the URL &amp;amp; text to 4.2 for database assignment.&lt;br&gt;• &lt;b&gt;Rule 3 (Independent Separation):&lt;/b&gt; 4.3 independently queries narration lists or deletes a translation.&lt;br&gt;• &lt;b&gt;Boundary Preservation:&lt;/b&gt; External flows with Admin, D3, and D4 match 100% of Process 4.0 in Level 1 DFD.&lt;br&gt;• &lt;b&gt;I/O Limit:&lt;/b&gt; Each process has 1 to 3 input groups and 1 to 2 output groups (≤ 3 groups)." style="shape=note;whiteSpace=wrap;html=1;size=14;verticalAlign=top;align=left;spacingLeft=8;spacingTop=6;fillColor=#F9FAFB;strokeColor=#D1D5DB;fontFamily=Helvetica;fontSize=11;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="80" y="700" width="1120" height="95" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

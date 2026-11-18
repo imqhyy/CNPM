@@ -203,11 +203,12 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge_m3_to_merge" edge="1" parent="1" source="act_xu_ly_radar_qr" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="merge_1">
+        <mxCell id="edge_m3_to_end" edge="1" parent="1" source="act_xu_ly_radar_qr" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;entryX=1;entryY=0.5;" target="merge_end">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="650" y="580" />
-              <mxPoint x="550" y="580" />
+              <mxPoint x="650" y="590" />
+              <mxPoint x="765" y="590" />
+              <mxPoint x="765" y="882" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -218,10 +219,10 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge_chan_xoa_to_merge" edge="1" parent="1" source="act_chan_xoa" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;entryX=1;entryY=0.25;" target="merge_1">
+        <mxCell id="edge_chan_xoa_to_merge" edge="1" parent="1" source="act_chan_xoa" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;entryX=1;entryY=0.5;" target="merge_end">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1160" y="659" />
+              <mxPoint x="1160" y="882" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -237,10 +238,16 @@
         <mxCell id="edge_csdl_to_sync" edge="1" parent="1" source="act_csdl_map_thanh_cong" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;" target="act_dong_bo_map">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="node_end" parent="1" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#800000;strokeWidth=2;" vertex="1">
-          <mxGeometry height="24" width="24" x="538" y="875" as="geometry" />
+        <mxCell id="merge_end" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;" vertex="1">
+          <mxGeometry height="35" width="40" x="530" y="865" as="geometry" />
         </mxCell>
-        <mxCell id="edge_sync_to_end" edge="1" parent="1" source="act_dong_bo_map" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="node_end">
+        <mxCell id="edge_sync_to_merge_end" edge="1" parent="1" source="act_dong_bo_map" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="merge_end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="node_end" parent="1" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#800000;strokeWidth=2;" vertex="1">
+          <mxGeometry height="24" width="24" x="538" y="925" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_sync_to_end" edge="1" parent="1" source="merge_end" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="node_end">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
       </root>

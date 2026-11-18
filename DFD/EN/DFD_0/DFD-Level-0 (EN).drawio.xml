@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net">
+  <diagram id="DFD-Muc-0" name="DFD Level 0 (EN)">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="850" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="&lt;b style=&quot;font-size: 18px;&quot;&gt;LEVEL 0 DATA FLOW DIAGRAM (DFD) - CONTEXT DIAGRAM&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 13px; color: #4B5563;&quot;&gt;MULTILINGUAL AUTOMATED AUDIO GUIDE SYSTEM (AUTOVOICEOVER)&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="380" y="30" width="680" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="actor_admin" value="&lt;b&gt;Administrator&lt;/b&gt;&lt;br&gt;(Admin)" style="rounded=0;whiteSpace=wrap;html=1;shadow=1;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;fontFamily=Helvetica;fontSize=13;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="90" y="310" width="170" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="proc_0" value="&lt;b style=&quot;font-size: 16px;&quot;&gt;0.0&lt;/b&gt;&lt;br&gt;&lt;b style=&quot;font-size: 13px;&quot;&gt;MULTILINGUAL AUTOMATED&lt;br&gt;AUDIO GUIDE SYSTEM&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 11px; color: #374151;&quot;&gt;(AutoVoiceOver Core)&lt;/span&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeColor=#000000;strokeWidth=2;fillColor=#ffffff;fontFamily=Helvetica;fontSize=13;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="580" y="250" width="220" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="actor_user" value="&lt;b&gt;Visitor&lt;/b&gt;&lt;br&gt;(Tourist / Web Client)" style="rounded=0;whiteSpace=wrap;html=1;shadow=1;strokeColor=#000000;strokeWidth=1.5;fillColor=#ffffff;fontFamily=Helvetica;fontSize=13;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="310" width="170" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="flow_ad_in_1" value="Authentication Credentials (Login / Change Password)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="actor_admin" target="proc_0">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="140" y="160" />
+              <mxPoint x="640" y="160" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow_ad_in_2" value="Map &amp; POI Management Data" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="actor_admin" target="proc_0">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="360" y="335" />
+              <mxPoint x="360" y="335" />
+            </Array>
+            <mxPoint as="offset" y="-12" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow_ad_in_3" value="Audio Files &amp; Multilingual Narrations" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="actor_admin" target="proc_0">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="140" y="550" />
+              <mxPoint x="640" y="550" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow_ad_out_1" value="Authentication Result (JWT Token / Status)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_0" target="actor_admin">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="680" y="210" />
+              <mxPoint x="220" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow_ad_out_2" value="Map, POI &amp; Content Data" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_0" target="actor_admin">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="480" y="375" />
+              <mxPoint x="480" y="375" />
+            </Array>
+            <mxPoint as="offset" y="12" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow_ad_out_3" value="Online Visitor Radar Data (SignalR)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_0" target="actor_admin">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="680" y="500" />
+              <mxPoint x="220" y="500" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow_user_in_1" value="Tour Information Request (Map / POIs)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="actor_user" target="proc_0">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1260" y="170" />
+              <mxPoint x="740" y="170" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow_user_in_2" value="Position Coordinates &amp; Language Preference" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="actor_user" target="proc_0">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1260" y="530" />
+              <mxPoint x="740" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow_user_out_1" value="Map &amp; Point of Interest Data" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_0" target="actor_user">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="930" y="335" />
+              <mxPoint x="930" y="335" />
+            </Array>
+            <mxPoint as="offset" y="-12" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow_user_out_2" value="Narration Audio &amp; Subtitles" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#000000;strokeWidth=1.2;fontFamily=Helvetica;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="proc_0" target="actor_user">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="930" y="375" />
+              <mxPoint x="930" y="375" />
+            </Array>
+            <mxPoint as="offset" y="12" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="note_balance" value="&lt;b&gt;DFD BALANCING RULES (BALANCE DFD):&lt;/b&gt;&lt;br&gt;• 2 External Entities (Actors): Administrator &amp;amp; Visitor&lt;br&gt;• Administrator: 3 incoming flows to system, 3 outgoing flows returned&lt;br&gt;• Visitor: 2 incoming flows to system, 2 outgoing flows returned&lt;br&gt;• All boundary data flows are strictly preserved in Level 1 DFD" style="shape=note;whiteSpace=wrap;html=1;size=14;verticalAlign=top;align=left;spacingLeft=5;fillColor=#F9FAFB;strokeColor=#D1D5DB;fontFamily=Helvetica;fontSize=11;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="90" y="620" width="380" height="85" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

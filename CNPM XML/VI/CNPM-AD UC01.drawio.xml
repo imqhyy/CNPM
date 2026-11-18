@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="app.diagrams.net">
   <diagram id="7n-adP654Iq17z-8zpZZ" name="AD UC01">
-    <mxGraphModel dx="2764" dy="1775" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="2764" dy="1775" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="960" pageHeight="1300" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -183,17 +183,51 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="act_kich_hoat_thuyet_minh" parent="1" style="rounded=1;arcSize=24;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;fontColor=#000000;fontSize=11;" value="Hệ thống làm nổi bật biểu tượng điểm dừng và chuyển sang nghe thuyết minh tự động" vertex="1">
-          <mxGeometry height="50" width="320" x="290" y="995" as="geometry" />
+        <mxCell id="dec_vung_long_nhau" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;" vertex="1">
+          <mxGeometry height="35" width="40" x="430" y="995" as="geometry" />
         </mxCell>
-        <mxCell id="edge_dec4_yes" edge="1" parent="1" source="dec_pham_vi" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="act_kich_hoat_thuyet_minh">
+        <mxCell id="edge_dec4_yes" edge="1" parent="1" source="dec_pham_vi" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="dec_vung_long_nhau">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="lbl_dec4_yes" parent="edge_dec4_yes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#000000;fontSize=11;" value="Có" vertex="1">
-          <mxGeometry relative="1" x="-0.1" y="8" as="geometry" />
+          <mxGeometry relative="1" x="-0.1" y="12" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_cond_5" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;fontColor=#000000;fontSize=11;" value="Thuộc nhiều vùng lồng nhau (≥ 2 điểm)?" vertex="1">
+          <mxGeometry height="25" width="220" x="475" y="1000" as="geometry" />
+        </mxCell>
+        <mxCell id="act_chon_diem_gan_nhat" parent="1" style="rounded=1;arcSize=24;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;fontColor=#000000;fontSize=11;" value="Hệ thống so sánh khoảng cách Euclid và ưu tiên chọn điểm gần khách nhất (d nhỏ nhất)" vertex="1">
+          <mxGeometry height="50" width="250" x="50" y="988" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_dec5_yes" edge="1" parent="1" source="dec_vung_long_nhau" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" target="act_chon_diem_gan_nhat">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_dec5_yes" parent="edge_dec5_yes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#000000;fontSize=11;" value="Có" vertex="1">
+          <mxGeometry relative="1" x="-0.2" y="-12" as="geometry" />
+        </mxCell>
+        <mxCell id="merge_vung" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;" vertex="1">
+          <mxGeometry height="35" width="40" x="430" y="1065" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_dec5_no" edge="1" parent="1" source="dec_vung_long_nhau" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="merge_vung">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_dec5_no" parent="edge_dec5_no" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#000000;fontSize=11;" value="Không" vertex="1">
+          <mxGeometry relative="1" x="-0.1" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_chon_to_merge" edge="1" parent="1" source="act_chon_diem_gan_nhat" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;entryX=0;entryY=0.5;" target="merge_vung">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="175" y="1082.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="act_kich_hoat_thuyet_minh" parent="1" style="rounded=1;arcSize=24;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;fontColor=#000000;fontSize=11;" value="Hệ thống làm nổi bật biểu tượng điểm dừng được chọn và chuyển sang nghe thuyết minh tự động" vertex="1">
+          <mxGeometry height="50" width="320" x="290" y="1125" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_merge_to_10" edge="1" parent="1" source="merge_vung" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="act_kich_hoat_thuyet_minh">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="node_end" parent="1" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#800000;strokeWidth=2;" vertex="1">
-          <mxGeometry height="24" width="24" x="438" y="1075" as="geometry" />
+          <mxGeometry height="24" width="24" x="438" y="1205" as="geometry" />
         </mxCell>
         <mxCell id="edge_10_to_end" edge="1" parent="1" source="act_kich_hoat_thuyet_minh" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;" target="node_end">
           <mxGeometry relative="1" as="geometry" />

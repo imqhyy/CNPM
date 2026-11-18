@@ -110,7 +110,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="act_kiem_tra_mat_khau" parent="1" style="rounded=1;arcSize=24;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;fontColor=#000000;fontSize=11;" value="Máy chủ truy vấn cơ sở dữ liệu, kiểm tra tài khoản và đối chiếu băm mật khẩu kèm chuỗi muối" vertex="1">
+        <mxCell id="act_kiem_tra_mat_khau" parent="1" style="rounded=1;arcSize=24;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;fontColor=#000000;fontSize=11;" value="Máy chủ truy vấn cơ sở dữ liệu qua ADO.NET, kiểm tra tài khoản và đối chiếu mật khẩu trong bảng TaiKhoanAdmins" vertex="1">
           <mxGeometry height="50" width="340" x="280" y="635" as="geometry" />
         </mxCell>
         <mxCell id="edge_dec2_yes" edge="1" parent="1" source="dec_ket_noi_server" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="act_kiem_tra_mat_khau">

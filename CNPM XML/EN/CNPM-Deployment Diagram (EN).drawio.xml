@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net">
+  <diagram name="Deployment Diagram (EN)" id="V-SwQ047rZEdWapB3c9_">
+    <mxGraphModel dx="1935" dy="1243" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1300" math="0" shadow="0">
+      <root>
+        <mxCell id="dep_0" />
+        <mxCell id="dep_1" parent="dep_0" />
+        <mxCell id="node_host" parent="dep_1" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;darkOpacity=0.05;darkOpacity2=0.1;size=20;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=16;verticalAlign=top;spacingTop=10;" value="&amp;lt;&amp;lt;device&amp;gt;&amp;gt;&lt;br&gt;Host Server (PC / Laptop running Docker &amp;amp; Ngrok)&lt;br&gt;&lt;font style=&quot;font-size: 12px; font-weight: normal;&quot;&gt;Host Ports: 5256 (Web/API) | 14333 (SQL Server)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="740" width="940" x="120" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="node_docker" parent="dep_1" style="shape=module;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fillColor=#e1f5fe;strokeColor=#0288d1;fontStyle=1;fontSize=14;" value="&amp;lt;&amp;lt;executionEnvironment&amp;gt;&amp;gt; Docker Compose (autovoiceover)" vertex="1">
+          <mxGeometry height="620" width="860" x="160" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="cont_api" parent="dep_1" style="shape=component;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=13;" value="&amp;lt;&amp;lt;container&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;autovoiceover-system (.NET 8 Kestrel)&lt;/b&gt;&lt;br&gt;• 3-Tier: Api / Bll / Dal &amp;amp; SignalR Hub (/hub/theodoi)&lt;br&gt;• Static Web Hosting: /admin/ &amp;amp; /user/ (wwwroot)&lt;br&gt;• Port Mapping: 5256:8080" vertex="1">
+          <mxGeometry height="150" width="380" x="190" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="cont_web" parent="dep_1" style="shape=component;whiteSpace=wrap;html=1;fillColor=#e8eaf6;strokeColor=#3f51b5;fontStyle=1;fontSize=13;" value="&amp;lt;&amp;lt;reverse proxy&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;Ngrok HTTPS Tunnel &amp;amp; Static Web&lt;/b&gt;&lt;br&gt;• Forwards HTTPS → localhost:5256&lt;br&gt;• Admin: /admin/ | Visitor: /user/&lt;br&gt;• HTML5, CSS3, JS, Canvas 1200x800, Web Audio" vertex="1">
+          <mxGeometry height="150" width="360" x="630" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="cont_db" parent="dep_1" style="shape=component;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=13;" value="&amp;lt;&amp;lt;container&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;autovoiceover-db (SQL Server 2022)&lt;/b&gt;&lt;br&gt;• Database: AutoVoiceOverDb&lt;br&gt;• Volume: autovoiceover_db_data (/var/opt/mssql)&lt;br&gt;• Port Mapping: 14333:1433" vertex="1">
+          <mxGeometry height="145" width="380" x="190" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="vol_storage" parent="dep_1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=12;" value="&amp;lt;&amp;lt;Bind Mount&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;wwwroot Volume&lt;/b&gt;&lt;br&gt;./src/AutoVoiceOver.Api/wwwroot&lt;br&gt;→ /app/wwwroot (admin, user, uploads)" vertex="1">
+          <mxGeometry height="145" width="310" x="655" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="net_bridge" parent="dep_1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0288d1;strokeWidth=1;dashed=1;fontStyle=2;fontSize=12;" value="Docker Bridge Network: autovoiceover-net (Internal DNS: sqlserver:1433 ↔ autovoiceover-api:8080)" vertex="1">
+          <mxGeometry height="40" width="800" x="190" y="655" as="geometry" />
+        </mxCell>
+        <mxCell id="node_phone" parent="dep_1" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;darkOpacity=0.05;darkOpacity2=0.1;size=20;fillColor=#e8f5e9;strokeColor=#4caf50;fontStyle=1;fontSize=15;verticalAlign=top;spacingTop=10;" value="&amp;lt;&amp;lt;device&amp;gt;&amp;gt;&lt;br&gt;Visitor Smartphone&lt;br&gt;&lt;font style=&quot;font-size: 12px; font-weight: normal;&quot;&gt;Android / iOS (4G / 5G / Wi-Fi)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="260" width="440" x="1260" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="art_browser_mobile" parent="dep_1" style="shape=component;whiteSpace=wrap;html=1;fillColor=#c8e6c9;strokeColor=#388e3c;fontStyle=1;fontSize=12;" value="&amp;lt;&amp;lt;browser&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;Mobile Web Browser&lt;/b&gt;&lt;br&gt;• Scan QR: https://&amp;lt;ngrok-domain&amp;gt;/user/&lt;br&gt;• HTML5 Canvas &amp;amp; Web Audio API&lt;br&gt;• SignalR WebSocket Client" vertex="1">
+          <mxGeometry height="140" width="360" x="1300" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="node_admin_pc" parent="dep_1" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;darkOpacity=0.05;darkOpacity2=0.1;size=20;fillColor=#e1f5fe;strokeColor=#0288d1;fontStyle=1;fontSize=15;verticalAlign=top;spacingTop=10;" value="&amp;lt;&amp;lt;device&amp;gt;&amp;gt;&lt;br&gt;Administrator Computer (Admin PC)&lt;br&gt;&lt;font style=&quot;font-size: 12px; font-weight: normal;&quot;&gt;Windows / macOS / Linux&lt;/font&gt;" vertex="1">
+          <mxGeometry height="260" width="440" x="1260" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="art_browser_admin" parent="dep_1" style="shape=component;whiteSpace=wrap;html=1;fillColor=#b3e5fc;strokeColor=#0288d1;fontStyle=1;fontSize=12;" value="&amp;lt;&amp;lt;browser&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;Desktop Web Browser&lt;/b&gt;&lt;br&gt;• Local Access: http://localhost:5256/admin/&lt;br&gt;• Remote via Ngrok: https://&amp;lt;ngrok-domain&amp;gt;/admin/&lt;br&gt;• SignalR Live Radar Dashboard" vertex="1">
+          <mxGeometry height="140" width="360" x="1300" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_wifi_mobile" edge="1" parent="dep_1" source="art_browser_mobile" style="endArrow=none;html=1;rounded=0;strokeWidth=2.5;strokeColor=#2e7d32;" target="cont_web" value="HTTPS / WebSocket (Ngrok → Port 5256)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_mobile_api" edge="1" parent="dep_1" source="art_browser_mobile" style="endArrow=none;html=1;rounded=0;strokeWidth=2;strokeColor=#0288d1;dashed=1;edgeStyle=orthogonalEdgeStyle;" target="cont_api" value="RESTful API &amp;amp; SignalR (/hub/theodoi)">
+          <mxGeometry relative="1" x="0.3774" as="geometry">
+            <Array as="points">
+              <mxPoint x="1480" y="135" />
+              <mxPoint x="380" y="135" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_lan_admin" edge="1" parent="dep_1" source="art_browser_admin" style="endArrow=none;html=1;rounded=0;strokeWidth=2.5;strokeColor=#1565c0;" target="cont_web" value="HTTP / HTTPS (Port 5256 / Ngrok)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_api" edge="1" parent="dep_1" source="art_browser_admin" style="endArrow=none;html=1;rounded=0;strokeWidth=2;strokeColor=#1565c0;dashed=1;" target="cont_api" value="Admin REST API &amp;amp; Realtime Hub (Port 5256)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_api_db" edge="1" parent="dep_1" source="cont_api" style="endArrow=none;html=1;rounded=0;strokeWidth=2;strokeColor=#555555;" target="cont_db" value="TDS / TCP Port 1433 (ADO.NET - Internal Net)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_api_vol" edge="1" parent="dep_1" source="cont_api" style="endArrow=none;html=1;rounded=0;strokeWidth=2;strokeColor=#e65100;dashed=1;" target="vol_storage" value="Bind Mount (/app/wwwroot)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_web_vol" edge="1" parent="dep_1" source="cont_web" style="endArrow=none;html=1;rounded=0;strokeWidth=2;strokeColor=#e65100;dashed=1;" target="vol_storage" value="Serve Static Files &amp;amp; Media">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

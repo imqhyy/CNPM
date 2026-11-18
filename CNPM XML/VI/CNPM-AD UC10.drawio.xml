@@ -150,8 +150,8 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <!-- Bước 6: Máy chủ băm SHA-256 mật khẩu cũ và đối soát CSDL -->
-        <mxCell id="act_kiem_tra_mat_khau_cu" parent="1" style="rounded=1;arcSize=24;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;fontColor=#000000;fontSize=11;" value="Máy chủ BLL băm SHA-256 mật khẩu cũ và đối soát với MatKhauHash trong CSDL" vertex="1">
+        <!-- Bước 6: Máy chủ đối soát mật khẩu cũ trong CSDL -->
+        <mxCell id="act_kiem_tra_mat_khau_cu" parent="1" style="rounded=1;arcSize=24;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;fontColor=#000000;fontSize=11;" value="Máy chủ BLL đối soát mật khẩu hiện tại trực tiếp với dữ liệu trong bảng TaiKhoanAdmins" vertex="1">
           <mxGeometry height="45" width="340" x="280" y="650" as="geometry" />
         </mxCell>
         <mxCell id="edge_dec3_yes" edge="1" parent="1" source="dec_token_valid" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="act_kiem_tra_mat_khau_cu">
@@ -190,8 +190,8 @@
           </mxGeometry>
         </mxCell>
 
-        <!-- Bước 7: Băm SHA-256 mật khẩu mới và lưu vào CSDL qua ADO.NET -->
-        <mxCell id="act_cap_nhat_csdl" parent="1" style="rounded=1;arcSize=24;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;fontColor=#000000;fontSize=11;" value="Máy chủ băm SHA-256 mật khẩu mới và gọi ADO.NET UPDATE bảng TaiKhoanAdmins" vertex="1">
+        <!-- Bước 7: Lưu mật khẩu mới trực tiếp vào CSDL qua ADO.NET -->
+        <mxCell id="act_cap_nhat_csdl" parent="1" style="rounded=1;arcSize=24;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#800000;strokeWidth=1;fontColor=#000000;fontSize=11;" value="Máy chủ lưu mật khẩu mới trực tiếp và gọi ADO.NET UPDATE bảng TaiKhoanAdmins" vertex="1">
           <mxGeometry height="45" width="340" x="280" y="790" as="geometry" />
         </mxCell>
         <mxCell id="edge_dec4_yes" edge="1" parent="1" source="dec_mat_khau_cu_dung" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#800000;strokeWidth=1;endArrow=open;endSize=8;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="act_cap_nhat_csdl">
