@@ -129,6 +129,13 @@ public class QuanLyDiaDiemController : ControllerBase
             return BadRequest(new { message = "Thiếu thông tin điểm tham quan hoặc đường dẫn tệp âm thanh." });
         }
 
+        // Kiểm tra xem địa điểm này đã có ngôn ngữ này chưa trong CSDL, nếu có rồi thì không cho tải lên trùng lặp
+        var danhSachHienCo = await _dichVuQuanLy.LayDanhSachNoiDungAsync(dto.MaDiaDiem);
+        if (danhSachHienCo.Any(n => n.MaNgonNgu.Equals(dto.MaNgonNgu, StringComparison.OrdinalIgnoreCase)))
+        {
+            return BadRequest(new { message = $"Địa điểm này đã có bài thuyết minh cho ngôn ngữ '{dto.TenNgonNgu}' ({dto.MaNgonNgu}). Vui lòng chọn ngôn ngữ khác hoặc xóa bài cũ trước." });
+        }
+
         // Nếu người quản trị không nhập văn bản, tự động lấy tiêu đề làm nội dung hiển thị
         if (string.IsNullOrWhiteSpace(dto.VanBanThuyetMinh))
         {

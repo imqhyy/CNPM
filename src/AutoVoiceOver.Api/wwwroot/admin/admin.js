@@ -8,12 +8,23 @@
 // ==========================================
 const API_BASE = '/api/admin';
 
+// Bộ mã ngôn ngữ chuẩn của hệ thống thuyết minh
+const SYSTEM_LANGUAGES = [
+    { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳', label: 'Tiếng Việt (vi)' },
+    { code: 'en', name: 'English', flag: '🇬🇧', label: 'English (en)' },
+    { code: 'fr', name: 'Français', flag: '🇫🇷', label: 'Français (fr)' },
+    { code: 'ja', name: '日本語', flag: '🇯🇵', label: '日本語 (ja)' },
+    { code: 'ko', name: '한국어', flag: '🇰🇷', label: '한국어 (ko)' },
+    { code: 'zh', name: '中文', flag: '🇨🇳', label: '中文 (zh)' }
+];
+
 const state = {
     maps: [],
     spots: [],
     visitors: new Map(), // connectionId -> visitor object
     currentMap: null,
     selectedSpotId: null,
+    currentSpotNarrations: [], // Danh sách các bài thuyết minh hiện có của điểm đang chọn
     isPickingCoordinates: false,
     mapImageObj: null,
     adminUser: null
@@ -134,7 +145,7 @@ async function compressImageFile(file, maxDimension = 1920, quality = 0.8) {
                         }
                         const baseName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
                         const newName = `${baseName}.jpg`;
-                        
+
                         const compressedFile = new File([blob], newName, {
                             type: 'image/jpeg',
                             lastModified: Date.now()
@@ -146,7 +157,7 @@ async function compressImageFile(file, maxDimension = 1920, quality = 0.8) {
                         const origKb = (file.size / 1024).toFixed(0);
                         const compKb = (compressedFile.size / 1024).toFixed(0);
                         console.log(`[Auto-Compress] Đã nén ảnh thành công: ${origKb} KB -> ${compKb} KB (Độ phân giải: ${width}x${height})`);
-                        
+
                         resolve(compressedFile);
                     },
                     'image/jpeg',
@@ -270,7 +281,7 @@ async function initAuth() {
         }
         clearAuthSession();
         if (signalRConnection) {
-            try { await signalRConnection.stop(); } catch {}
+            try { await signalRConnection.stop(); } catch { }
             signalRConnection = null;
         }
         if (headerProfile) headerProfile.style.display = 'none';
@@ -721,7 +732,7 @@ function updateRadarStats() {
     const statSpotCount = document.getElementById('statSpotCount');
     if (statSpotCount) {
         const currentMapId = state.currentMap ? state.currentMap.maBanDo : null;
-        const count = currentMapId 
+        const count = currentMapId
             ? state.spots.filter(s => s.maBanDo === currentMapId).length
             : state.spots.length;
         statSpotCount.innerText = count;
@@ -733,7 +744,7 @@ async function loadSpots() {
         const res = await fetch(`${API_BASE}/QuanLyDiaDiem`);
         if (res.ok) {
             state.spots = await res.json();
-            
+
             // Cập nhật thống kê điểm tham quan cho bản đồ đang chọn
             updateRadarStats();
 
@@ -807,9 +818,9 @@ function renderSpotsTable() {
                 </td>
                 <td>${langTags}</td>
                 <td>
-                    ${s.hoatDong 
-                        ? '<span class="badge badge-success"><i class="fa-solid fa-check"></i> Đang bật</span>'
-                        : '<span class="badge badge-secondary">Tạm tắt</span>'}
+                    ${s.hoatDong
+                ? '<span class="badge badge-success"><i class="fa-solid fa-check"></i> Đang bật</span>'
+                : '<span class="badge badge-secondary">Tạm tắt</span>'}
                 </td>
                 <td class="text-right">
                     <button class="btn btn-sm btn-outline mr-1" onclick="openEditSpotModal('${s.maDiaDiem}')" title="Sửa thông tin">
@@ -918,7 +929,7 @@ function renderRadarCanvas() {
 
     // 2. Vẽ các Điểm Tham quan & Vòng tròn Bán kính Nhận diện (Detection Radius)
     const currentMapId = state.currentMap ? state.currentMap.maBanDo : null;
-    const spotsToRender = currentMapId 
+    const spotsToRender = currentMapId
         ? state.spots.filter(s => s.maBanDo === currentMapId)
         : state.spots;
 
@@ -1003,7 +1014,7 @@ function renderRadarCanvas() {
         ctx.save();
         ctx.font = 'bold 11px "Plus Jakarta Sans", sans-serif';
         const textWidth = ctx.measureText(name).width;
-        
+
         ctx.fillStyle = 'rgba(17, 24, 39, 0.85)';
         ctx.fillRect(vx - textWidth / 2 - 6, vy - 28, textWidth + 12, 18);
         ctx.strokeStyle = 'rgba(16, 185, 129, 0.6)';
@@ -1131,7 +1142,7 @@ function initModalsAndForms() {
                     const u = new URL(inputVal);
                     qrNgrokBaseUrl = u.origin;
                     localStorage.setItem('admin_ngrok_url', qrNgrokBaseUrl);
-                } catch (e) {}
+                } catch (e) { }
             }
             renderQrWithUrl(inputVal, inputVal.includes('ngrok') ? 'ngrok' : 'lan');
             showToast('Đã cập nhật mã QR theo liên kết mới!', 'success');
@@ -1181,7 +1192,7 @@ function initModalsAndForms() {
     document.getElementById('formUploadMap')?.addEventListener('submit', handleMapSubmit);
 
     // Tự động nhận diện kích thước ảnh và điền sẵn chiều rộng/cao tối ưu khi Admin chọn ảnh sơ đồ
-    document.getElementById('inputMapImageFile')?.addEventListener('change', function(e) {
+    document.getElementById('inputMapImageFile')?.addEventListener('change', function (e) {
         const file = e.target.files[0];
         if (!file || !file.type.startsWith('image/')) return;
 
@@ -1213,7 +1224,7 @@ function initModalsAndForms() {
     });
 
     // Xử lý tự động đọc file .txt khi chọn file văn bản thuyết minh
-    document.getElementById('narrTextFile')?.addEventListener('change', async function(e) {
+    document.getElementById('narrTextFile')?.addEventListener('change', async function (e) {
         const file = e.target.files[0];
         if (!file) return;
 
@@ -1236,7 +1247,7 @@ function initModalsAndForms() {
         } catch (err) {
             console.warn('Fallback reading local file:', err);
             const reader = new FileReader();
-            reader.onload = function(evt) {
+            reader.onload = function (evt) {
                 const contentArea = document.getElementById('narrContent');
                 if (contentArea) contentArea.value = evt.target.result;
             };
@@ -1568,7 +1579,7 @@ function openAddSpotModal() {
     }, 60);
 }
 
-window.openEditSpotModal = function(spotId) {
+window.openEditSpotModal = function (spotId) {
     const spot = state.spots.find(s => s.maDiaDiem === spotId);
     if (!spot) return;
 
@@ -1681,7 +1692,7 @@ async function handleSpotSubmit(e) {
     }
 }
 
-window.deleteSpot = async function(spotId) {
+window.deleteSpot = async function (spotId) {
     if (!confirm('Bạn có chắc chắn muốn xóa điểm tham quan này và toàn bộ âm thanh thuyết minh đi kèm?')) return;
 
     try {
@@ -1701,7 +1712,7 @@ window.deleteSpot = async function(spotId) {
 // ------------------------------------------
 // Tùy chỉnh Nhanh Bán kính Nhận diện (Radius)
 // ------------------------------------------
-window.openRadiusModal = function(spotId, spotName, currentRadius) {
+window.openRadiusModal = function (spotId, spotName, currentRadius) {
     document.getElementById('radiusSpotId').value = spotId;
     document.getElementById('radiusSpotName').innerText = spotName;
     document.getElementById('quickRadiusInput').value = currentRadius;
@@ -1764,13 +1775,13 @@ function renderNarrationSpotList() {
     }).join('');
 }
 
-window.goToNarrationForSpot = function(spotId) {
+window.goToNarrationForSpot = function (spotId) {
     const tabNav = document.getElementById('navTabNarration');
     if (tabNav) tabNav.click();
     selectSpotForNarration(spotId);
 };
 
-window.selectSpotForNarration = async function(spotId) {
+window.selectSpotForNarration = async function (spotId) {
     state.selectedSpotId = spotId;
     renderNarrationSpotList();
 
@@ -1789,6 +1800,7 @@ window.selectSpotForNarration = async function(spotId) {
         const res = await fetch(`${API_BASE}/QuanLyDiaDiem/${spotId}/thuyet-minh`);
         if (res.ok) {
             const narrations = await res.json();
+            state.currentSpotNarrations = narrations || [];
             renderLanguageCards(narrations);
         }
     } catch (err) {
@@ -1833,12 +1845,23 @@ function renderLanguageCards(narrations) {
     `).join('');
 }
 
-window.openAddNarrationModal = function(spotId) {
+window.openAddNarrationModal = function (spotId) {
     document.getElementById('narrSpotId').value = spotId;
     document.getElementById('narrTitle').value = '';
     document.getElementById('narrContent').value = '';
     document.getElementById('narrAudioFile').value = '';
     document.getElementById('narrTextFile').value = '';
+
+    // Khởi tạo danh sách chọn ngôn ngữ từ bộ mã SYSTEM_LANGUAGES
+    const langSelect = document.getElementById('narrLangCode');
+    if (langSelect) {
+        const existingCodes = (state.currentSpotNarrations || []).map(n => (n.maNgonNgu || '').toLowerCase());
+        langSelect.innerHTML = SYSTEM_LANGUAGES.map(l => {
+            const isAlready = existingCodes.includes(l.code.toLowerCase());
+            return `<option value="${l.code}" ${isAlready ? 'disabled style="color:#94a3b8;"' : ''}>${l.label} ${isAlready ? '— (Đã có bài)' : ''}</option>`;
+        }).join('');
+    }
+
     openModal('modalNarration');
 };
 
@@ -1847,10 +1870,18 @@ async function handleNarrationSubmit(e) {
     const spotId = document.getElementById('narrSpotId').value;
     const langSelect = document.getElementById('narrLangCode');
     const langCode = langSelect.value;
-    const langName = langSelect.options[langSelect.selectedIndex].text.split('(')[0].trim();
+    const selectedLangObj = SYSTEM_LANGUAGES.find(l => l.code === langCode);
+    const langName = selectedLangObj ? selectedLangObj.name : langSelect.options[langSelect.selectedIndex].text.split('(')[0].trim();
     const title = document.getElementById('narrTitle').value.trim();
     const content = document.getElementById('narrContent').value.trim();
     const audioFileInput = document.getElementById('narrAudioFile');
+
+    // KIỂM TRA ĐÃ CÓ TRONG DATABASE / DANH SÁCH HIỆN CÓ CHƯA
+    const alreadyExists = (state.currentSpotNarrations || []).some(n => (n.maNgonNgu || '').toLowerCase() === langCode.toLowerCase());
+    if (alreadyExists) {
+        showToast(`Địa điểm này đã có bài thuyết minh cho ngôn ngữ ${langName} (${langCode}) rồi! Vui lòng chọn ngôn ngữ khác hoặc xóa bài cũ trước.`, 'warning');
+        return;
+    }
 
     let audioUrl = '';
 
@@ -1915,7 +1946,7 @@ async function handleNarrationSubmit(e) {
     }
 }
 
-window.deleteNarration = async function(contentId) {
+window.deleteNarration = async function (contentId) {
     if (!confirm('Bạn có chắc muốn xóa bản thuyết minh này?')) return;
 
     try {
@@ -2217,7 +2248,7 @@ function showToast(message, type = 'info') {
 
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
-    
+
     let icon = '<i class="fa-solid fa-circle-info"></i>';
     if (type === 'success') icon = '<i class="fa-solid fa-circle-check text-accent"></i>';
     if (type === 'error') icon = '<i class="fa-solid fa-circle-exclamation" style="color:var(--accent-rose);"></i>';
@@ -2296,9 +2327,9 @@ function renderQrWithUrl(targetUrl, badgeType = 'ngrok') {
         text: targetUrl,
         width: 190,
         height: 190,
-        colorDark : "#000000",
-        colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.M
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
     });
 }
 
